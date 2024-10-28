@@ -1,4 +1,3 @@
-const OPENAI_API_KEY = ;
 
 // Sample data
 const rawData = [65, 59, 80, 81, 56, 55, 72, 68, 75, 63, 58, 78, 82, 60, 71];
@@ -115,12 +114,6 @@ const tools = [
     }
 ];
 
-// Remove the hardcoded messages array and add this:
-let messages = [
-    {"role": "system", "content": "You are a helpful customer support assistant. Use the supplied tools to assist the user."}
-];
-
-// Remove the immediate handleUserRequest() call and console.log(response)
 
 // Add these functions for chat handling
 function addMessageToChat(content, role) {
@@ -142,23 +135,26 @@ async function handleChatSubmit() {
     addMessageToChat(userMessage, 'user');
     
     // Add user message to messages array
-    messages.push({"role": "user", "content": userMessage});
+    let messages = [
+        {"role": "system", "content": "You are a helpful customer support assistant. Use the supplied tools to assist the user."},
+        {"role": "user", "content": userMessage}
+    ];
     
+    console.log(messages);
     // Clear input
     chatInput.value = '';
     
     try {
-        const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        // Update to use the server endpoint instead of calling OpenAI directly
+        const response = await fetch('/api/chat', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${OPENAI_API_KEY}`
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify({
                 model: "gpt-4o-mini",  
                 messages: messages,
-                tools: tools,
-                tool_choice: "auto"
+                tools: tools
             })
         });
 
