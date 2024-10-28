@@ -146,16 +146,10 @@ async function handleChatSubmit() {
     
     try {
         // Update to use the server endpoint instead of calling OpenAI directly
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                model: "gpt-4o-mini",  
-                messages: messages,
-                tools: tools
-            })
+        const completion = await openai.chat.completions.create({
+            model: "gpt-4o-mini",
+            messages: messages,
+            tools: tools
         });
 
         const data = await response.json();
