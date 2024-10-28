@@ -1,4 +1,3 @@
-
 // Sample data
 const rawData = [65, 59, 80, 81, 56, 55, 72, 68, 75, 63, 58, 78, 82, 60, 71];
 
@@ -140,16 +139,20 @@ async function handleChatSubmit() {
         {"role": "user", "content": userMessage}
     ];
     
-    console.log(messages);
     // Clear input
     chatInput.value = '';
     
     try {
-        // Update to use the server endpoint instead of calling OpenAI directly
-        const completion = await openai.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: messages,
-            tools: tools
+        // Use the server endpoint instead of direct OpenAI call
+        const response = await fetch('/api/chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                messages: messages,
+                tools: tools
+            })
         });
 
         const data = await response.json();
