@@ -135,7 +135,7 @@ async function handleChatSubmit() {
     
     // Add user message to messages array
     let messages = [
-        {"role": "system", "content": "You are a helpful customer support assistant. Use the supplied tools to assist the user."},
+        {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user."},
         {"role": "user", "content": userMessage}
     ];
     
