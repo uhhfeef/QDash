@@ -14,15 +14,20 @@
         </header>
         <main>
             <div class="chart-container">
-                <div id="myChart">
-                </div>
+                <div id="myChart"></div>
                 <select id="chartType">
                     <option value="histogram">Histogram</option>
                     <option value="bar">Bar Chart</option>
                     <option value="line">Line Chart</option>
                     <option value="pie">Pie Chart</option>
                 </select>
-
+            </div>
+            <div class="chat-container">
+                <div id="chat-messages"></div>
+                <div class="chat-input-container">
+                    <input type="text" id="chat-input" placeholder="Ask about the chart...">
+                    <button id="send-button">Send</button>
+                </div>
             </div>
         </main>
     </div>
