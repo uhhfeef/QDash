@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Histogram Dashboard</title>
+    <title>Dashboard</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
@@ -14,13 +14,15 @@
         </header>
         <main>
             <div class="chart-container">
+                <div id="lineChart"></div>
+                <div id="barChart"></div>
                 <div id="myChart"></div>
                 <select id="chartType">
                     <option value="histogram">Histogram</option>
                     <option value="bar">Bar Chart</option>
                     <option value="line">Line Chart</option>
                     <option value="pie">Pie Chart</option>
-                </select>
+                </select>       
             </div>
             <div class="chat-container">
                 <div id="chat-messages"></div>
@@ -31,6 +33,10 @@
             </div>
         </main>
     </div>
-    <script src="script.js"></script>
+    <!-- <script type="module" src="script.js"></script> -->
+    <!-- <script src="bar_chart.js"></script> -->
+    <script src="lineChart.js"></script>
+    <script src="sqlQuery.js"></script>
+    <script type="module" src="chatHandler.js"></script>
 </body>
 </html>
