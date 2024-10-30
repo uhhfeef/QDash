@@ -1,11 +1,12 @@
 let tableSchema = '';
 let tools = [];
+let chatMessages = [];
 
 // Initialize table schema when the page loads
 async function initializeTableSchema() {
     try {
         tableSchema = await getTableSchema();
-        console.log(tableSchema);
+        // console.log(tableSchema);
         initializeTools(); // initialize tools only if schema is loaded
     } catch (error) {
         console.error('Error loading table schema:', error);
@@ -34,9 +35,9 @@ function initializeTools() {
         }
     ];
     
-    for (const tool of tools) {
-        console.log(tool);
-    }
+    // for (const tool of tools) {
+    //     console.log(tool);
+    // }
 }
 
 export function addMessageToChat(content, role) {
@@ -57,11 +58,17 @@ export async function handleChatSubmit() {
     
     addMessageToChat(userMessage, 'user');
     
+    // Format the chat history into a readable string
+    const formattedHistory = chatMessages.map(msg => 
+        `${msg.role}: ${msg.content}`
+    ).join('\n');
+    
     let messages = [
         {"role": "system", "content": "You are a helpful assistant. Use the available tools to assist the user. Make sure to provide explanations for your actions. Keep it concise and to the point. NEVER EVER INSERT OR DELETE FROMT THE TABLE"},
-        {"role": "user", "content": userMessage}
+        {"role": "user", "content": userMessage + " Context - Previous messages:\n" + formattedHistory}
     ];
-    
+    console.log(messages);
+
     chatInput.value = '';
     
     try {
@@ -79,7 +86,9 @@ export async function handleChatSubmit() {
         const data = await response.json();
         const message = data.choices[0].message;
         messages.push(message);
-        
+        chatMessages.push(message); // add to chat history  
+        console.log(chatMessages);
+
         if (message.content) {
             addMessageToChat(message.content, 'assistant');
         }
