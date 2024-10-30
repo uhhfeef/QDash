@@ -1,3 +1,6 @@
+import { handleChatSubmit } from './chatHandler.js';
+
+
 // Sample data
 const rawData = [65, 59, 80, 81, 56, 55, 72, 68, 75, 63, 58, 78, 82, 60, 71];
 
@@ -92,103 +95,5 @@ document.getElementById('chartType').addEventListener('change', (e) => {
 // Initial chart creation
 updateChart('histogram');
 
-const tools = [
-    {
-        "type": "function",
-        "function": {
-            "name": "updateChart",
-            "description": "Updates the chart with the selected type",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "chartType": {
-                        "type": "string",
-                        "enum": ["histogram", "bar", "line", "pie"],
-                        "description": "The type of chart to display"
-                    }
-                },
-                "required": ["chartType"]
-            }
-        }
-    }
-];
 
 
-// Add these functions for chat handling
-function addMessageToChat(content, role) {
-    const chatMessages = document.getElementById('chat-messages');
-    const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${role}-message`;
-    messageDiv.textContent = content;
-    chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
-}
-
-async function handleChatSubmit() {
-    const chatInput = document.getElementById('chat-input');
-    const userMessage = chatInput.value.trim();
-    
-    if (!userMessage) return;
-    
-    // Add user message to chat
-    addMessageToChat(userMessage, 'user');
-    
-    // Add user message to messages array
-    let messages = [
-        {"role": "system", "content": "You are a helpful assistant. Use the supplied tools to assist the user."},
-        {"role": "user", "content": userMessage}
-    ];
-    
-    // Clear input
-    chatInput.value = '';
-    
-    try {
-        // Use the server endpoint instead of direct OpenAI call
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                messages: messages,
-                tools: tools
-            })
-        });
-
-        const data = await response.json();
-        
-        // Handle the response
-        const message = data.choices[0].message;
-        
-        // Add assistant's response to messages array
-        messages.push(message);
-        
-        // Add assistant's response to chat
-        if (message.content) {
-            addMessageToChat(message.content, 'assistant');
-        }
-        
-        if (message.tool_calls) {
-            const functionCall = message.tool_calls[0];
-            if (functionCall.function.name === 'updateChart') {
-                const args = JSON.parse(functionCall.function.arguments);
-                updateChart(args.chartType);
-                // Update the dropdown menu to reflect the chart type
-                const chartTypeSelect = document.getElementById('chartType');
-                chartTypeSelect.value = args.chartType;
-                addMessageToChat(`Chart updated to ${args.chartType} type.`, 'assistant');
-            }
-        }
-    } catch (error) {
-        console.error('Error:', error);
-        addMessageToChat('Sorry, there was an error processing your request.', 'assistant');
-    }
-}
-
-// Add event listeners for chat
-document.getElementById('send-button').addEventListener('click', handleChatSubmit);
-document.getElementById('chat-input').addEventListener('keypress', (e) => {
-    if (e.key === 'Enter') {
-        handleChatSubmit();
-    }
-});
