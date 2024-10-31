@@ -57,23 +57,40 @@ function initializeTools() {
         {
             type: "function",
             function: {
-                name: "createLineChart",
-                description: "Create a line chart with the provided x and y values",
+                name: "createChart",
+                description: "Create a chart with the provided x and y values",
                 parameters: {
                     type: "object",
                     properties: {
                         x: { 
                             type: "array", 
-                            description: "The fetched database x values for the line chart", 
+                            description: "The fetched database x values for the chart", 
                             items: { type: "number" } 
                         },
                         y: { 
                             type: "array", 
-                            description: "The fetched database y values for the line chart", 
+                            description: "The fetched database y values for the chart", 
                             items: { type: "number" } 
-                        }
+                        },
+                        chartType: { 
+                            type: "string", 
+                            description: "The type of chart to create", 
+                            enum: ["line", "bar"] 
+                        },
+                        title: { 
+                            type: "string", 
+                            description: "The title of the chart"
+                        },
+                        xAxisTitle: { 
+                            type: "string", 
+                            description: "The title of the x axis"
+                        },
+                        yAxisTitle: { 
+                            type: "string", 
+                            description: "The title of the y axis"
+                        }   
                     },
-                    required: ["x", "y"],
+                    required: ["x", "y", "chartType", "title", "xAxisTitle", "yAxisTitle"],
                     additionalProperties: false
                 }
             }
