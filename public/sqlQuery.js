@@ -13,9 +13,9 @@ async function executeSqlQuery(query) {
             throw new Error(result.error);
         }
 
-        result.data.forEach(row => {
-            console.log(row);
-        });
+        // result.data.forEach(row => {
+        //     console.log(row);
+        // });
 
 
         return result.data;

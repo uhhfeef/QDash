@@ -17,24 +17,49 @@ async function initializeTableSchema() {
 function initializeTools() {
     tools = [
         {
-            "type": "function",
-            "function": {
-                "name": "execute_sql_query",
-                "description": "Execute a SQL query on the database based on user request. The data will be used to create charts. You must always output 2 values, x and y. Schema is: " + tableSchema,
-                "parameters": {
-                    "type": "object",
-                    "properties": {
+            type: "function",
+            function: {
+                name: "executeSqlQuery",
+                strict: true,
+                description: "Execute a SQL query on the database based on user request. The data will be used to create charts. You must always output 2 values, x and y. Schema is: " + tableSchema,
+                parameters: {
+                    type: "object",
+                    properties: {
                         "query": {
-                            "type": "string",
-                            "description": "The SQL query to execute"
+                            type: "string",
+                            description: "The SQL query to execute"
                         }
                     },
-                    "required": ["query"]
+                    required: ["query"],
+                    additionalProperties: false
+                }
+            },
+        },
+        {
+            type: "function",
+            function: {
+                name: "createLineChart",
+                description: "Create a line chart with the provided x and y values",
+                parameters: {
+                    type: "object",
+                    properties: {
+                        x: { 
+                            type: "array", 
+                            description: "The fetched database x values for the line chart", 
+                            items: { type: "number" } 
+                        },
+                        y: { 
+                            type: "array", 
+                            description: "The fetched database y values for the line chart", 
+                            items: { type: "number" } 
+                        }
+                    },
+                    required: ["x", "y"],
+                    additionalProperties: false
                 }
             }
         }
     ];
-    
     // for (const tool of tools) {
     //     console.log(tool);
     // }
@@ -64,59 +89,85 @@ export async function handleChatSubmit() {
     ).join('\n');
     
     let messages = [
-        {"role": "system", "content": "You are a helpful assistant. Use the available tools to assist the user. Make sure to provide explanations for your actions. Keep it concise and to the point. NEVER EVER INSERT OR DELETE FROMT THE TABLE"},
+        {"role": "system", "content": "You are a helpful assistant. Let's think step by step. You have access to a database and 2 tools. an sql tool and a chart tool. You must use the sql tool to get the data from the database. and the chart tool to create charts. Your top priority is to get the data from the database and then create a chart by calling the chart tool. use multiple tools if needed. You will NEVER GENERATE RANDOM X AND Y VALUES for the chart tool. You will always double check and think step by step before you call the chart tool. If you need to perform multiple steps, explicitly state 'CONTINUE' at the end of your message. If you're done with all steps, explicitly state 'DONE' at the end of your message. NEVER EVER INSERT OR DELETE FROM THE TABLE"},
         {"role": "user", "content": userMessage + " Context - Previous messages:\n" + formattedHistory}
     ];
-    console.log(messages);
+    // console.log(messages);
 
     chatInput.value = '';
-    
+    let iterationCount = 0;
+    const MAX_ITERATIONS = 5;
+
     try {
-        const response = await fetch('/api/chat', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({
-                messages: messages,
-                tools: tools
-            })
-        });
+        while (iterationCount < MAX_ITERATIONS) {
+            console.log('Messages', messages);
+            iterationCount++;
+            console.log(`Iteration ${iterationCount} of ${MAX_ITERATIONS}`);
 
-        const data = await response.json();
-        const message = data.choices[0].message;
-        messages.push(message);
-        chatMessages.push(message); // add to chat history  
-        console.log(chatMessages);
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    messages: messages,
+                    tools: tools,
+                    tool_choice: "auto"
+                })
+            });
 
-        if (message.content) {
-            addMessageToChat(message.content, 'assistant');
-        }
-        
-        if (message.tool_calls) {
-            const functionCall = message.tool_calls[0];
-            const args = JSON.parse(functionCall.function.arguments);
+            const data = await response.json();
+            console.log('data', data);
+            const message = data.choices[0].message;
+            messages.push(message);
+            chatMessages.push(message);
+
+            if (message.content) {
+                addMessageToChat(message.content, 'assistant');
+                if (message.content.includes('DONE')) {
+                    break;
+                }   
+            }
             
-            switch (functionCall.function.name) {
-                case 'createLineChart':
-                    createLineChart(args.x, args.y);
-                    addMessageToChat(`Creating line chart with provided data.`, 'assistant');
-                    break;
-                case 'execute_sql_query':
-                    const queryResult = await executeSqlQuery(args.query);
-                    if (queryResult && queryResult.length > 0) {
-                        // Extract x and y values from query result
-                        const x = queryResult.map(row => Object.values(row)[0]); // First column
-                        console.log(x);
-                        const y = queryResult.map(row => Object.values(row)[1]); // Second column
-                        console.log(y);
-                        createLineChart(x, y);
+            if (message.tool_calls) {
+                for (const toolCall of message.tool_calls) {
+                    const args = JSON.parse(toolCall.function.arguments);
+                    let toolResult;
+                    
+                    switch (toolCall.function.name) {
+                        case 'createLineChart':
+                            createLineChart(args.x, args.y);
+                            toolResult = { success: true, message: 'Chart created successfully' };
+                            addMessageToChat(`Creating line chart with provided data.`, 'assistant');
+                            break;
+                            
+                        case 'executeSqlQuery':
+                            const queryResult = await executeSqlQuery(args.query);
+                            toolResult = queryResult;
+                            if (queryResult && queryResult.length > 0) {
+                                const x = queryResult.map(row => Object.values(row)[0]);
+                                const y = queryResult.map(row => Object.values(row)[1]);
+                                console.log('Query results - x:', x, 'y:', y);
+                                toolResult = { x, y, queryResult };
+                            }
+                            addMessageToChat(`Executing SQL query: ${args.query}`, 'assistant');
+                            break;
                     }
-                    addMessageToChat(`Executing SQL query: ${args.query}`, 'assistant');
-                    break;
+
+                    // Add tool response message
+                    messages.push({
+                        role: "tool",
+                        tool_call_id: toolCall.id,
+                        content: JSON.stringify(toolResult)
+                    });
+                }
             }
         }
-        console.log('message:', message);
+
+        if (iterationCount >= MAX_ITERATIONS) {
+            addMessageToChat("Reached maximum number of iterations. Stopping here.", 'assistant');
+        }
+
     } catch (error) {
         console.error('Error:', error);
         addMessageToChat('Sorry, there was an error processing your request.', 'assistant');
