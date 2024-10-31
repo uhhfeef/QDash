@@ -18,19 +18,15 @@
  */
 
 import { addMessageToChat } from './uiUtils.js';
-import { createLineChart } from '/lineChart.js';
 import { executeSqlQuery } from '/sqlQuery.js';
+import { createChart } from '/createChart.js';
 
 export async function handleToolCall(toolCall, messages) {
     const args = JSON.parse(toolCall.function.arguments);
     let toolResult;
     
     switch (toolCall.function.name) {
-        case 'createLineChart':
-            createLineChart(args.x, args.y);
-            toolResult = { success: true, message: 'Chart created successfully' };
-            addMessageToChat(`Creating line chart with provided data.`, 'assistant');
-            break;
+       
             
         case 'executeSqlQuery':
             const queryResult = await executeSqlQuery(args.query);
@@ -42,6 +38,13 @@ export async function handleToolCall(toolCall, messages) {
                 toolResult = { x, y, queryResult };
             }
             addMessageToChat(`Executing SQL query: ${args.query}`, 'assistant');
+            break;
+
+
+        case 'createChart':
+            createChart(args.x, args.y, args.chartType, args.title, args.xAxisTitle, args.yAxisTitle);
+            toolResult = { success: true, message: 'Chart created successfully' };
+            addMessageToChat(`Creating chart with provided data.`, 'assistant');
             break;
     }
 

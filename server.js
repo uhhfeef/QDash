@@ -34,13 +34,13 @@ app.get('/', (req, res) => {
 // OpenAI API endpoint
 app.post('/api/chat', async (req, res) => {
     try {
-        const { messages, tools } = req.body;
+        const { messages, tools, tool_choice } = req.body;
         
         const response = await openai.chat.completions.create({
             model: "gpt-4o-mini",
             messages: messages,
             tools: tools,
-            tool_choice: "auto",
+            tool_choice: tool_choice,
         });
 
         res.json(response);

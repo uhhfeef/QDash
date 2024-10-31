@@ -15,17 +15,17 @@
  * createLineChart([1,2,3], [10,20,30]);
  */
 
-export function createLineChart(x, y) {
+export function createChart(x, y, chartType, title, xAxisTitle, yAxisTitle) {
     var trace = { 
         x: x,
         y: y,
-        type: 'line'
+        type: chartType
     };
 
     var layout = {
-        title: 'Line Chart',
-        xaxis: {title: 'X Axis'},
-        yaxis: {title: 'Y Axis'}
+        title: title,
+        xaxis: {title: xAxisTitle},
+        yaxis: {title: yAxisTitle}
     };
 
     Plotly.newPlot('lineChart', [trace], layout, {responsive: true});

@@ -40,7 +40,7 @@ export async function handleChatSubmit() {
     ).join('\n');
     
     let messages = [
-        {"role": "system", "content": "You are a helpful assistant. Let's think step by step. You have access to a database and 2 tools. an sql tool and a chart tool. You must use the sql tool to get the data from the database. and the chart tool to create charts. Your top priority is to get the data from the database and then create a chart by calling the chart tool. use multiple tools if needed. You will NEVER GENERATE RANDOM X AND Y VALUES for the chart tool. You will always double check and think step by step before you call the chart tool. If you need to perform multiple steps, explicitly state 'CONTINUE' at the end of your message. If you're done with all steps, explicitly state 'DONE' at the end of your message. NEVER EVER INSERT OR DELETE FROM THE TABLE"},
+        {"role": "system", "content": "You are a helpful assistant. Let's think step by step. You have access to a database and 2 tools. an sql tool and a chart tool. If you need to convert data from one chart type to another, you dont need to call the sql tool again and again to fetch the same data. You will NEVER GENERATE RANDOM X AND Y VALUES for the chart tool. You will always double check and think step by step before you call the chart tool. If you're done with all steps, explicitly state 'DONE' at the end of your message. NEVER EVER INSERT OR DELETE FROM THE TABLE"},
         {"role": "user", "content": userMessage + " Context - Previous messages:\n" + formattedHistory}
     ];
 
@@ -53,6 +53,7 @@ export async function handleChatSubmit() {
             iterationCount++;
             console.log(`Iteration ${iterationCount} of ${MAX_ITERATIONS}`);
 
+            console.log('Messages:', messages);
             const response = await fetch('/api/chat', {
                 method: 'POST',
                 headers: {
@@ -66,6 +67,7 @@ export async function handleChatSubmit() {
             });
 
             const data = await response.json();
+            console.log('Response:', data.choices[0].message);
             const message = data.choices[0].message;
             messages.push(message);
             chatMessages.push(message);
