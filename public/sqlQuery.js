@@ -1,4 +1,20 @@
-async function executeSqlQuery(query) {
+/**
+ * @fileoverview SQL query execution module
+ * @module sqlQuery
+ * 
+ * @description
+ * Handles all database-related operations:
+ * - Executing SQL queries
+ * - Retrieving table schema
+ * - Error handling for database operations
+ * 
+ * @example
+ * import { executeSqlQuery, getTableSchema } from './sqlQuery.js';
+ * const results = await executeSqlQuery('SELECT * FROM orders');
+ * const schema = await getTableSchema();
+ */
+
+export async function executeSqlQuery(query) {
     try {
         const response = await fetch('/api/query', {
             method: 'POST',
@@ -13,11 +29,6 @@ async function executeSqlQuery(query) {
             throw new Error(result.error);
         }
 
-        // result.data.forEach(row => {
-        //     console.log(row);
-        // });
-
-
         return result.data;
     } catch (error) {
         console.error('Error executing query:', error);
@@ -25,7 +36,7 @@ async function executeSqlQuery(query) {
     }
 }
 
-async function getTableSchema() {
+export async function getTableSchema() {
     try {
         const query = `SELECT sql FROM sqlite_master WHERE type='table' AND name='orders'`;
         const response = await fetch('/api/query', {
