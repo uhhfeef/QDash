@@ -94,6 +94,28 @@ function initializeTools() {
                     additionalProperties: false
                 }
             }
+        },
+        {
+            type: "function",
+            function: {
+                name: "createCard",
+                description: "Create a card with the provided title and content",
+                parameters: {
+                    type: "object",
+                    properties: {
+                        title: { 
+                            type: "string",
+                            description: "The title of the card"
+                        },
+                        value: { 
+                            type: "number",
+                            description: "The value of the card"
+                        }
+                    },
+                    required: ["title", "value"],
+                    additionalProperties: false
+                }
+            }
         }
     ];
 }

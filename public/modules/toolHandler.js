@@ -20,6 +20,8 @@
 import { addMessageToChat } from './uiUtils.js';
 import { executeSqlQuery } from '/sqlQuery.js';
 import { createChart } from '/createChart.js';
+import { createSpace } from '/createSpace.js';
+import { createCard } from '/createCard.js';
 
 export async function handleToolCall(toolCall, messages) {
     const args = JSON.parse(toolCall.function.arguments);
@@ -42,9 +44,17 @@ export async function handleToolCall(toolCall, messages) {
 
 
         case 'createChart':
-            createChart(args.x, args.y, args.chartType, args.title, args.xAxisTitle, args.yAxisTitle);
+            const id = await createSpace('chart');
+            createChart(id, args.x, args.y, args.chartType, args.title, args.xAxisTitle, args.yAxisTitle);
             toolResult = { success: true, message: 'Chart created successfully' };
             addMessageToChat(`Creating chart with provided data.`, 'assistant');
+            break;
+
+        case 'createCard':
+            const cardId = await createSpace('card');
+            createCard(cardId, args.title, args.value);
+            toolResult = { success: true, message: 'Card created successfully' };
+            addMessageToChat(`Creating card with provided data.`, 'assistant');
             break;
     }
 

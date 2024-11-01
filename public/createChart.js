@@ -15,7 +15,7 @@
  * createLineChart([1,2,3], [10,20,30]);
  */
 
-export function createChart(x, y, chartType, title, xAxisTitle, yAxisTitle) {
+export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) {
     var trace = { 
         x: x,
         y: y,
@@ -25,10 +25,11 @@ export function createChart(x, y, chartType, title, xAxisTitle, yAxisTitle) {
     var layout = {
         title: title,
         xaxis: {title: xAxisTitle},
-        yaxis: {title: yAxisTitle}
+        yaxis: {title: yAxisTitle},
+        autosize: true
     };
 
-    Plotly.newPlot('lineChart', [trace], layout, {responsive: true});
-    console.log("Line Chart created with x:", x, "and y:", y);
+    Plotly.newPlot(id, [trace], layout, {responsive: true});
+    console.log("Chart created with x:", x, "and y:", y);
 }
 
