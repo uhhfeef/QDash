@@ -4,6 +4,7 @@
   "description": "Interactive chart dashboard with OpenAI integration",
   "main": "server.js",
   "scripts": {
+    "build:css": "npx postcss public/styles.css -o public/output.css --watch",
     "start": "node server.js",
     "dev": "nodemon server.js"
   },
@@ -14,7 +15,10 @@
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
-    "nodemon": "^3.0.3"
+    "autoprefixer": "^10.4.20",
+    "nodemon": "^3.0.3",
+    "postcss": "^8.4.47",
+    "tailwindcss": "^3.4.14"
   },
   "directories": {
     "lib": "lib"

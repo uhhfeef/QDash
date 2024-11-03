@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="output.css">
     <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body>
@@ -13,7 +13,21 @@
             <h1>Dashboard</h1>
         </header>
         <main>
-            <div class="chart-container">
+            <div class="chart-container flex-1 grid gap-5 grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+                <style>
+                    .card-container {
+                        height: 200px; /* Adjust this value as needed */
+                        width: 100%;
+                        max-width: 300px; /* Adjust this value as needed */
+                        margin: 0 auto;
+                    }
+                    
+                    .chart-container {
+                        min-height: 400px; /* Regular chart height */
+                        width: 100%;
+                    }
+                </style>
+                <!-- Chart cards go here -->
             </div>
             <div class="chat-container">
                 <div id="chat-messages"></div>
