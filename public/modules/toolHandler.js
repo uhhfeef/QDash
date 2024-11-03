@@ -9,7 +9,7 @@
  * @description
  * Handles execution of various tools available to the AI:
  * - SQL query execution
- * - Line chart creation
+ * - Line / Bar chart creation
  * - Message handling for tool results
  * 
  * @example
@@ -51,8 +51,8 @@ export async function handleToolCall(toolCall, messages) {
             break;
 
         case 'createCard':
-            const cardId = await createSpace('card');
-            createCard(cardId, args.title, args.value);
+            // const cardId = await createSpace('card');
+            createCard(args.title, args.value);
             toolResult = { success: true, message: 'Card created successfully' };
             addMessageToChat(`Creating card with provided data.`, 'assistant');
             break;

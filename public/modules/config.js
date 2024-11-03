@@ -8,7 +8,6 @@
  * Manages system configuration and tool definitions:
  * - Database schema initialization
  * - Tool configurations for AI
- * - Function definitions for SQL and chart tools
  * 
  * @property {string} tableSchema - The database table schema
  * @property {Array<Object>} tools - Array of tool definitions for AI
