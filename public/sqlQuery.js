@@ -38,7 +38,7 @@ export async function executeSqlQuery(query) {
 
 export async function getTableSchema() {
     try {
-        const query = `SELECT sql FROM sqlite_master WHERE type='table' AND name='orders'`;
+        const query = `SELECT sql FROM sqlite_master WHERE type='table'`;
         const response = await fetch('/api/query', {
             method: 'POST',
             headers: {
@@ -51,8 +51,8 @@ export async function getTableSchema() {
         if (result.error) {
             throw new Error(result.error);
         }
-
-        return result.data[0].sql;
+        // console.log(result.data);
+        return result.data.map(table => table.sql).join('\n');
     } catch (error) {
         console.error('Error getting schema:', error);
         throw error;

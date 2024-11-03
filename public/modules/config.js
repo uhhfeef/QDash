@@ -25,6 +25,7 @@ let tools = [];
 async function initializeTableSchema() {
     try {
         tableSchema = await getTableSchema();
+        // console.log("Table Schema:", tableSchema);
         initializeTools();
     } catch (error) {
         console.error('Error loading table schema:', error);
@@ -39,7 +40,7 @@ function initializeTools() {
             function: {
                 name: "executeSqlQuery",
                 strict: true,
-                description: "Execute a SQL query on the database based on user request. The data will be used to create charts. You must always output 2 values, x and y. Schema is: " + tableSchema,
+                description: "Execute a SQL query on the database based on user request. The data will be used to create charts. For chart requests, you must always output 2 values, x and y. Schema is: " + tableSchema,
                 parameters: {
                     type: "object",
                     properties: {
@@ -117,6 +118,7 @@ function initializeTools() {
             }
         }
     ];
+    console.log(tools);
 }
 
 export { tools, tableSchema, initializeTableSchema }; 

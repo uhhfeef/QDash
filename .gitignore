@@ -8,3 +8,4 @@ lib/
 data/
 include/
 App.js
+.DS_Store

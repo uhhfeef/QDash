@@ -28,36 +28,35 @@ export async function handleToolCall(toolCall, messages) {
     let toolResult;
     
     switch (toolCall.function.name) {
-       
-            
         case 'executeSqlQuery':
             const queryResult = await executeSqlQuery(args.query);
-            toolResult = queryResult;
             if (queryResult && queryResult.length > 0) {
-                const x = queryResult.map(row => Object.values(row)[0]);
-                const y = queryResult.map(row => Object.values(row)[1]);
-                console.log('Query results - x:', x, 'y:', y);
-                toolResult = { x, y, queryResult };
+                window.x = queryResult.map(row => Object.values(row)[0]);
+                window.y = queryResult.map(row => Object.values(row)[1]);
+                console.log('Query results - x:', window.x, 'y:', window.y);
+                toolResult = { message: "Query has received results and has been saved in window.x and window.y. Do NOT execute any more queries. Give this result to the next tool." };
             }
-            addMessageToChat(`Executing SQL query: ${args.query}`, 'assistant');
-            break;
-
-
-        case 'createChart':
-            const id = await createSpace('chart');
-            createChart(id, args.x, args.y, args.chartType, args.title, args.xAxisTitle, args.yAxisTitle);
-            toolResult = { success: true, message: 'Chart created successfully' };
-            addMessageToChat(`Creating chart with provided data.`, 'assistant');
+            // addMessageToChat(`Query has received results. Give this result to the next tool.`, 'assistant');
             break;
 
         case 'createCard':
-            // const cardId = await createSpace('card');
-            createCard(args.title, args.value);
+            console.log("x:", window.x);
+            console.log("x:", window.x[0], "type:", typeof window.x[0]);
+            const value = window.x[0];
+            createCard(args.title, value);
             toolResult = { success: true, message: 'Card created successfully' };
             addMessageToChat(`Creating card with provided data.`, 'assistant');
             break;
+
+        case 'createChart':
+            const id = await createSpace('chart');
+            createChart(id, window.x, window.y, args.chartType, args.title, args.xAxisTitle, args.yAxisTitle);
+            toolResult = { success: true, message: 'Chart created successfully' };
+            addMessageToChat(`Creating chart with provided data.`, 'assistant');
+            break;
     }
 
+    // Tool result is sent to the next tool. The next iteration starts with the tool result and previous messages as context.
     messages.push({
         role: "tool",
         tool_call_id: toolCall.id,

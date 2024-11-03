@@ -18,7 +18,7 @@ app.use(express.json());
 app.use('/data', express.static('data'));
 
 // Database connection
-const db = new sqlite3.Database('data/orders.db', (err) => {
+const db = new sqlite3.Database('data/dashboard.db', (err) => {
     if (err) {
         console.error('Error opening database:', err);
     } else {
