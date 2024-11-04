@@ -6,8 +6,8 @@
  * @requires ../config/toolsConfig
  */
 
-import { initializeTableSchema, tableSchema } from '../config/databaseConfig.js';
-import { generateTools } from '../config/toolsConfig.js';
+import { initializeTableSchema, tableSchema } from './databaseConfig.js';
+import { generateTools } from './toolsConfig.js';
 
 let tools = [];
 
