@@ -22,6 +22,7 @@ import { executeSqlQuery } from '../services/sqlQuery.js';
 import { createChart } from '../components/createChart.js';
 import { createSpace } from '../components/createSpace.js';
 import { createCard } from '../components/createCard.js';
+import { createPieChart } from '../components/createPieChart.js';
 
 export async function handleToolCall(toolCall, messages) {
     const args = JSON.parse(toolCall.function.arguments);
@@ -53,6 +54,16 @@ export async function handleToolCall(toolCall, messages) {
             createChart(id, window.x, window.y, args.chartType, args.title, args.xAxisTitle, args.yAxisTitle);
             toolResult = { success: true, message: 'Chart created successfully' };
             addMessageToChat(`Creating chart with provided data.`, 'assistant');
+            break;
+
+        case 'createPieChart':
+            const pieChartId = await createSpace('pieChart');
+            // The LLM can decide on an sql query that either genrates x as values and y as labels or vice versa. So we need to check which one is which.
+            const values = typeof window.x[0] === 'number' ? window.x : window.y;
+            const labels = typeof window.x[0] === 'number' ? window.y : window.x;
+            createPieChart(pieChartId, values, labels, args.title);
+            toolResult = { success: true, message: 'Pie chart created successfully' };
+            addMessageToChat(`Creating pie chart with provided data.`, 'assistant');
             break;
     }
 

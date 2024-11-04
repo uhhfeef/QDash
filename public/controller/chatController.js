@@ -33,6 +33,8 @@ export async function handleChatSubmit() {
             messages.push(message);
             chatManager.addMessage(message);
 
+            console.log('message:', message);
+
             if (message.content) {
                 addMessageToChat(message.content, 'assistant');
                 if (message.content.includes('DONE')) break;

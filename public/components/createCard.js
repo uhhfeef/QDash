@@ -32,7 +32,7 @@ export function createCard(title, value) {
     if (!isNumeric) {
         // Not using Plotly for text values. Some display error.
         const textDiv = document.createElement('div');
-        textDiv.className = 'text-gray-900 font-inter font-semibold text-center h-full flex items-center justify-center';
+        textDiv.className = 'text-gray-900 font-inter text-center h-full flex items-center justify-center';
         textDiv.style.height = '100px';
         textDiv.style.fontSize = '36px';
         textDiv.textContent = valueToDisplay;
