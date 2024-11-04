@@ -2,7 +2,7 @@
  * @fileoverview Database configuration and schema management
  */
 
-import { getTableSchema } from '../sqlQuery.js';
+import { getTableSchema } from '../public/services/sqlQuery.js';
 
 let tableSchema = '';
 

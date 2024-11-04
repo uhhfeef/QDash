@@ -3,10 +3,10 @@
  */
 
 import { tools, initializeTableSchema } from './modules/config.js';
-import { addMessageToChat, setupEventListeners } from './modules/uiUtils.js';
-import { handleToolCall } from './modules/toolExecutor.js';
-import { createChatManager, MAX_ITERATIONS } from './modules/chatManager.js';
-import { sendChatRequest } from './services/chatApiRequest.js';
+import { addMessageToChat, setupEventListeners } from '../modules/uiUtils.js';
+import { handleToolCall } from '../modules/toolExecutor.js';
+import { createChatManager, MAX_ITERATIONS } from '../modules/chatManager.js';
+import { sendChatRequest } from '../services/chatApiRequest.js';
 
 const chatManager = createChatManager();
 
