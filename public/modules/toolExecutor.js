@@ -18,10 +18,10 @@
  */
 
 import { addMessageToChat } from './uiUtils.js';
-import { executeSqlQuery } from '/sqlQuery.js';
-import { createChart } from '/createChart.js';
-import { createSpace } from '/createSpace.js';
-import { createCard } from '/createCard.js';
+import { executeSqlQuery } from '../services/sqlQuery.js';
+import { createChart } from '../components/createChart.js';
+import { createSpace } from '../components/createSpace.js';
+import { createCard } from '../components/createCard.js';
 
 export async function handleToolCall(toolCall, messages) {
     const args = JSON.parse(toolCall.function.arguments);

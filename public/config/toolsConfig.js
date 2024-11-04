@@ -67,6 +67,34 @@ export function generateTools(tableSchema) {
         {
             type: "function",
             function: {
+                name: "createPieChart",
+                description: "Create a pie chart with the provided values and labels",
+                parameters: {
+                    type: "object",
+                    properties: {
+                        values: { 
+                            type: "array", 
+                            description: "The fetched database values for the chart", 
+                            items: { type: "number" } 
+                        },
+                        labels: { 
+                            type: "array", 
+                            description: "The fetched database labels for the chart", 
+                            items: { type: "string" } 
+                        },
+                        title: { 
+                            type: "string", 
+                            description: "The title of the chart"
+                        }   
+                    },
+                    required: ["values", "labels", "title"],
+                    additionalProperties: false
+                }
+            }
+        },
+        {
+            type: "function",
+            function: {
                 name: "createCard",
                 description: "Create a card with the provided title and content",
                 parameters: {

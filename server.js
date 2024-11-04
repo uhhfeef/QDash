@@ -13,7 +13,13 @@ const openai = new OpenAI({
 });
 
 // Middleware
-app.use(express.static('public'));
+app.use(express.static('public', {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.css')) {
+            res.setHeader('Content-Type', 'text/css');
+        }
+    }
+}));
 app.use(express.json());
 app.use('/data', express.static('data'));
 
