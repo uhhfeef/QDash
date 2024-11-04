@@ -1,4 +1,3 @@
-
 export function createPieChart(id, values, labels, title) {
     var trace = { 
         values: values,
@@ -8,7 +7,14 @@ export function createPieChart(id, values, labels, title) {
 
     var layout = {
         title: title,
-        autosize: true
+        autosize: true,
+        height: 350,
+        margin: {
+            l: 30,
+            r: 30,
+            t: 40,
+            b: 30
+        }
     };
 
     Plotly.newPlot(id, [trace], layout, {responsive: true});
