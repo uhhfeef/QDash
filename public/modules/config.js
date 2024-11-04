@@ -1,124 +1,20 @@
 /**
- * @fileoverview Configuration and tool definitions module
+ * @fileoverview Main configuration orchestrator
  * @module config
  * 
- * @requires ../sqlQuery
- * 
- * @description
- * Manages system configuration and tool definitions:
- * - Database schema initialization
- * - Tool configurations for AI
- * 
- * @property {string} tableSchema - The database table schema
- * @property {Array<Object>} tools - Array of tool definitions for AI
- * 
- * @example
- * import { tools, initializeTableSchema } from './modules/config.js';
- * await initializeTableSchema();
+ * @requires ../config/databaseConfig
+ * @requires ../config/toolsConfig
  */
 
-import { getTableSchema } from '../sqlQuery.js';
+import { initializeTableSchema, tableSchema } from '../config/databaseConfig.js';
+import { generateTools } from '../config/toolsConfig.js';
 
-let tableSchema = '';
 let tools = [];
 
-async function initializeTableSchema() {
-    try {
-        tableSchema = await getTableSchema();
-        // console.log("Table Schema:", tableSchema);
-        initializeTools();
-    } catch (error) {
-        console.error('Error loading table schema:', error);
-        tableSchema = 'Error loading schema';
-    }
+async function initialize() {
+    const schema = await initializeTableSchema();
+    tools = generateTools(schema);
+    console.log('Tools initialized:', tools);
 }
 
-function initializeTools() {
-    tools = [
-        {
-            type: "function",
-            function: {
-                name: "executeSqlQuery",
-                strict: true,
-                description: "Execute a SQL query on the database based on user request. The data will be used to create charts. For chart requests, you must always output 2 values, x and y. Schema is: " + tableSchema,
-                parameters: {
-                    type: "object",
-                    properties: {
-                        "query": {
-                            type: "string",
-                            description: "The SQL query to execute"
-                        }
-                    },
-                    required: ["query"],
-                    additionalProperties: false
-                }
-            },
-        },
-        {
-            type: "function",
-            function: {
-                name: "createChart",
-                description: "Create a chart with the provided x and y values",
-                parameters: {
-                    type: "object",
-                    properties: {
-                        x: { 
-                            type: "array", 
-                            description: "The fetched database x values for the chart", 
-                            items: { type: "number" } 
-                        },
-                        y: { 
-                            type: "array", 
-                            description: "The fetched database y values for the chart", 
-                            items: { type: "number" } 
-                        },
-                        chartType: { 
-                            type: "string", 
-                            description: "The type of chart to create", 
-                            enum: ["line", "bar"] 
-                        },
-                        title: { 
-                            type: "string", 
-                            description: "The title of the chart"
-                        },
-                        xAxisTitle: { 
-                            type: "string", 
-                            description: "The title of the x axis"
-                        },
-                        yAxisTitle: { 
-                            type: "string", 
-                            description: "The title of the y axis"
-                        }   
-                    },
-                    required: ["x", "y", "chartType", "title", "xAxisTitle", "yAxisTitle"],
-                    additionalProperties: false
-                }
-            }
-        },
-        {
-            type: "function",
-            function: {
-                name: "createCard",
-                description: "Create a card with the provided title and content",
-                parameters: {
-                    type: "object",
-                    properties: {
-                        title: { 
-                            type: "string",
-                            description: "The title of the card"
-                        },
-                        value: { 
-                            type: "number",
-                            description: "The value of the card"
-                        }
-                    },
-                    required: ["title", "value"],
-                    additionalProperties: false
-                }
-            }
-        }
-    ];
-    console.log(tools);
-}
-
-export { tools, tableSchema, initializeTableSchema }; 
+export { tools, tableSchema, initialize as initializeTableSchema }; 

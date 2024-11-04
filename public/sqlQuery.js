@@ -51,7 +51,7 @@ export async function getTableSchema() {
         if (result.error) {
             throw new Error(result.error);
         }
-        // console.log(result.data);
+        console.log(result.data);
         return result.data.map(table => table.sql).join('\n');
     } catch (error) {
         console.error('Error getting schema:', error);

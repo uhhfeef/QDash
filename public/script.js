@@ -1,4 +1,4 @@
-import { handleChatSubmit } from './chatHandler.js';
+import { handleChatSubmit } from './chatController.js';
 
 
 // Sample data
