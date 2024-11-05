@@ -588,14 +588,6 @@ video {
   }
 }
 
-.visible {
-  visibility: visible;
-}
-
-.fixed {
-  position: fixed;
-}
-
 .mx-auto {
   margin-left: auto;
   margin-right: auto;
@@ -625,12 +617,20 @@ video {
   display: grid;
 }
 
+.h-full {
+  height: 100%;
+}
+
 .min-h-\[200px\] {
   min-height: 200px;
 }
 
 .min-h-screen {
   min-height: 100vh;
+}
+
+.w-\[280px\] {
+  width: 280px;
 }
 
 .w-full {
@@ -681,6 +681,10 @@ video {
   --tw-space-y-reverse: 0;
   margin-top: calc(1rem * calc(1 - var(--tw-space-y-reverse)));
   margin-bottom: calc(1rem * var(--tw-space-y-reverse));
+}
+
+.overflow-visible {
+  overflow: visible;
 }
 
 .overflow-y-auto {
@@ -869,4 +873,5 @@ video {
   .lg\:grid-cols-4 {
     grid-template-columns: repeat(4, minmax(0, 1fr));
   }
-} 
+}
+

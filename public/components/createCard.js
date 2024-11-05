@@ -1,3 +1,5 @@
+import Plotly from 'plotly.js-dist';
+
 export function createCard(title, value) {
     const valueToDisplay = Array.isArray(value) ? value[0] : value;
     const isNumeric = !isNaN(valueToDisplay) && valueToDisplay !== '';

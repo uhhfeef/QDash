@@ -1,3 +1,5 @@
+import Plotly from 'plotly.js-dist'; // Added import for Plotly
+
 export function createPieChart(id, values, labels, title) {
     var trace = { 
         values: values,

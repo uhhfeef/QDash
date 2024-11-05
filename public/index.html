@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard</title>
-    <link rel="stylesheet" href="styles/output.css">
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
 </head>
 <body class="bg-gray-50">
     <div class="min-h-screen p-6 flex flex-col">
@@ -13,46 +11,18 @@
             <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
         </header>
         <main class="flex-1 flex flex-col gap-8">
-            <!-- Stats Card Grid -->
-            <div class="stats-card-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-                <!-- Stats cards will be dynamically inserted here -->
-            </div>
-
-            <!-- Regular Charts Grid -->
-            <div class="chart-container grid grid-cols-1 md:grid-cols-2 gap-6">
-                <!-- Charts will be dynamically inserted here -->
-            </div>
-
-            <!-- Spacer to push chat to bottom -->
+            <div class="stats-card-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
+            <div class="chart-container grid grid-cols-1 md:grid-cols-2 gap-6"></div>
             <div class="flex-1"></div>
-
-            <!-- Chat Container fixed at bottom -->
             <div class="chat-container bg-white rounded-xl shadow-sm p-6 mx-auto w-full max-w-2xl">
-                <!-- Chat Messages -->
-                <div id="chat-messages" class="overflow-y-auto space-y-4">
-                    <!-- Messages will be inserted here -->
-                </div>
-                
-                <!-- Chat Input Container -->
+                <div id="chat-messages" class="overflow-y-auto space-y-4"></div>
                 <div class="chat-input-container flex gap-4 items-center">
-                    <input 
-                        type="text" 
-                        id="chat-input" 
-                        placeholder="Create a dashboard..." 
-                        class="flex-1 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
-                    >
-                    <button 
-                        id="send-button"
-                        class="px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm hover:shadow flex items-center justify-center min-w-[100px]"
-                    >
-                        Send
-                    </button>
+                    <input type="text" id="chat-input" placeholder="Create a dashboard..." class="flex-1 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
+                    <button id="send-button" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm hover:shadow flex items-center justify-center min-w-[100px]">Send</button>
                 </div>
             </div>
         </main>
     </div>
-    <script type="module" src="services/sqlQuery.js"></script>
-    <script type="module" src="controller/chatController.js"></script>
-    <script type="module" src="components/createSpace.js"></script>
+    <!-- Webpack will inject the script here -->
 </body>
 </html>

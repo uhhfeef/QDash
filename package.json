@@ -4,21 +4,38 @@
   "description": "Interactive chart dashboard with OpenAI integration",
   "main": "server.js",
   "scripts": {
-    "build:css": "npx postcss public/styles.css -o public/output.css --watch",
-    "start": "node server.js",
-    "dev": "nodemon server.js"
+    "build": "npm run build:css && webpack --mode production",
+    "start": "concurrently \"npm run start:frontend\" \"npm run start:backend\"",
+    "start:frontend": "npm run build:css && webpack serve --mode development",
+    "start:backend": "nodemon server.js",
+    "dev": "nodemon server.js",
+    "build:css": "tailwindcss -i ./public/styles/styles.css -o ./public/styles/output.css",
+    "watch:css": "tailwindcss -i ./public/styles/styles.css -o ./public/styles/output.css --watch"
   },
   "dependencies": {
     "dotenv": "^16.4.1",
     "express": "^4.21.1",
     "openai": "^4.26.0",
+    "plotly.js-dist": "^2.35.2",
     "sqlite3": "^5.1.7"
   },
   "devDependencies": {
+    "@babel/core": "^7.26.0",
+    "@babel/preset-env": "^7.26.0",
     "autoprefixer": "^10.4.20",
+    "babel-loader": "^9.2.1",
+    "concurrently": "^9.1.0",
+    "css-loader": "^7.1.2",
+    "html-webpack-plugin": "^5.6.3",
+    "interpret": "^3.1.1",
     "nodemon": "^3.0.3",
     "postcss": "^8.4.47",
-    "tailwindcss": "^3.4.14"
+    "postcss-loader": "^8.1.1",
+    "style-loader": "^4.0.0",
+    "tailwindcss": "^3.4.14",
+    "webpack": "^5.96.1",
+    "webpack-cli": "^5.1.4",
+    "webpack-dev-server": "^5.1.0"
   },
   "directories": {
     "lib": "lib"

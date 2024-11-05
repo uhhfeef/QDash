@@ -15,6 +15,8 @@
  * createLineChart([1,2,3], [10,20,30]);
  */
 
+import Plotly from 'plotly.js-dist'; // Added import for Plotly
+
 export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) {
     var trace = { 
         x: x,
