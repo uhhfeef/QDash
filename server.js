@@ -110,15 +110,6 @@ const isAuthenticated = (req, res, next) => {
 };
 
 // Middleware
-app.use(
-  express.static("public", {
-    setHeaders: (res, filePath) => {
-      if (filePath.endsWith(".css")) {
-        res.setHeader("Content-Type", "text/css");
-      }
-    },
-  })
-);
 app.use(express.json());
 app.use("/data", express.static("data"));
 
@@ -152,39 +143,61 @@ const db = new sqlite3.Database("data/dashboard.db", (err) => {
 });
 
 // Auth Routes
+app.get("/login", (req, res) => {
+  // If already authenticated, redirect to home
+  if (req.isAuthenticated()) {
+    res.redirect("/");
+  } else {
+    res.sendFile(path.join(__dirname, "public", "login.html"));
+  }
+});
+
 app.get(
   "/auth/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
 );
 
+// Update the Google callback route to redirect to root
 app.get(
   "/auth/google/callback",
   passport.authenticate("google", {
     failureRedirect: "/login",
-    successRedirect: "/",
+    successRedirect: "/", // This will now go to the authenticated homepage
   })
 );
 
 app.get("/logout", (req, res) => {
   req.logout(() => {
-    res.redirect("/");
+    res.redirect("/login");
   });
 });
 
-// Public Routes
-
-app.get("/login", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "login.html"));
-});
-
-app.get("/", isAuthenticated, (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "index.html"));
-});
-
 // // Protected Routes
-// app.get("/dashboard", isAuthenticated, (req, res) => {
-//   res.sendFile(path.join(__dirname, "public", "dashboard.html"));
-// });
+// Make root route protected
+app.get(
+  "/",
+  (req, res, next) => {
+    if (!req.isAuthenticated()) {
+      res.redirect("/login");
+    } else {
+      next();
+    }
+  },
+  (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
+  }
+);
+
+// Move static middleware AFTER the routes
+app.use(
+  express.static("public", {
+    setHeaders: (res, filePath) => {
+      if (filePath.endsWith(".css")) {
+        res.setHeader("Content-Type", "text/css");
+      }
+    },
+  })
+);
 
 // OpenAI API endpoint
 app.post("/api/chat", isAuthenticated, async (req, res) => {
