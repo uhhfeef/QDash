@@ -3,7 +3,7 @@ import Plotly from 'plotly.js-dist';
 import { initDuckDB } from '../config/duckDbConfig.js';
 import { handleChatSubmit } from './controller/chatController.js';
 import { setupEventListeners } from './modules/uiUtils.js';
-import { initializeTableSchema } from './config/config.js';
+import { initializeTableSchema } from '../config/config.js';
 import { initialize } from './services/duckDbService.js';
 
 // Make Plotly available globally
