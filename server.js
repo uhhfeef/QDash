@@ -2,7 +2,6 @@ require('dotenv').config();
 const express = require('express');
 const path = require('path');
 const OpenAI = require('openai');
-const sqlite3 = require('sqlite3').verbose();
 
 const app = express();
 const port = process.env.PORT || 3001;
@@ -13,24 +12,8 @@ const openai = new OpenAI({
 });
 
 // Middleware
-app.use(express.static('public', {
-    setHeaders: (res, filePath) => {
-        if (filePath.endsWith('.css')) {
-            res.setHeader('Content-Type', 'text/css');
-        }
-    }
-}));
+app.use(express.static('public'));
 app.use(express.json());
-app.use('/data', express.static('data'));
-
-// Database connection
-const db = new sqlite3.Database('data/dashboard.db', (err) => {
-    if (err) {
-        console.error('Error opening database:', err);
-    } else {
-        console.log('Connected to SQLite database');
-    }
-});
 
 // Serve the HTML file
 app.get('/', (req, res) => {
@@ -55,21 +38,6 @@ app.post('/api/chat', async (req, res) => {
         res.status(500).json({ error: 'An error occurred while processing your request.' });
     }
 });
-
-app.post('/api/query', (req, res) => {
-    console.log('Query received:', req.body.query);
-
-    const { query } = req.body;
-    
-    db.all(query, [], (err, rows) => {
-        if (err) {
-            res.status(400).json({ error: err.message });
-            return;
-        }
-        res.json({ data: rows });
-    });
-});
-
 
 app.listen(port, () => {
     console.log(`Server running at http://localhost:${port}`);

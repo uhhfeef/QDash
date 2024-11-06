@@ -6,15 +6,18 @@
  * @requires ../config/toolsConfig
  */
 
-import { initializeTableSchema, tableSchema } from './databaseConfig.js';
 import { generateTools } from './toolsConfig.js';
+import { getCurrentTableName, getTableSchema } from '../public/services/duckDbService.js';
 
 let tools = [];
 
-async function initialize() {
-    const schema = await initializeTableSchema();
+export async function updateTools() {
+    const tableName = getCurrentTableName();
+    if (!tableName) return;
+    
+    const schema = await getTableSchema(tableName);
     tools = generateTools(schema);
-    console.log('Tools initialized:', tools);
+    console.log('Tools updated with new schema:', tools);
 }
 
-export { tools, tableSchema, initialize as initializeTableSchema }; 
+export { tools }; 

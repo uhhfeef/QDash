@@ -14,6 +14,10 @@
  * setupEventListeners(handleChatSubmit);
  */
 
+export function showError(message) {
+    addMessageToChat(`Error: ${message}`, 'assistant');
+}
+
 export function addMessageToChat(content, role) {
     const chatMessages = document.getElementById('chat-messages');
     const messageDiv = document.createElement('div');

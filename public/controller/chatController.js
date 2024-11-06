@@ -2,11 +2,12 @@
  * @fileoverview Main chat handling module that coordinates AI interactions and tool execution
  */
 
-import { tools, initializeTableSchema } from '../../config/config.js';
-import { addMessageToChat, setupEventListeners } from '../modules/uiUtils.js';
+import { tools } from '../../config/config.js';
+import { addMessageToChat, setupEventListeners, showError } from '../modules/uiUtils.js';
 import { handleToolCall } from '../modules/toolExecutor.js';
 import { createChatManager, MAX_ITERATIONS } from '../modules/chatManager.js';
 import { sendChatRequest } from '../services/chatApiRequest.js';
+import { isDataLoaded } from '../services/duckDbService.js';
 
 const chatManager = createChatManager();
 
@@ -15,6 +16,12 @@ export async function handleChatSubmit() {
     const userMessage = chatInput.value.trim();
     
     if (!userMessage) return;
+
+    // Check if data is loaded before proceeding
+    if (!isDataLoaded()) {
+        showError("Please upload a CSV file first");
+        return;
+    }
     
     addMessageToChat(userMessage, 'user');
     chatInput.value = '';
@@ -57,8 +64,5 @@ export async function handleChatSubmit() {
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    initializeTableSchema();
-    setupEventListeners(handleChatSubmit);
-});
+// Remove the DOMContentLoaded event listener since initialization is now handled in index.js
 
