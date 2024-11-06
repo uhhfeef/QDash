@@ -113,6 +113,47 @@ export function generateTools(tableSchema) {
                     additionalProperties: false
                 }
             }
+        },
+        {
+            type: "function",
+            function: {
+                name: "createStackedBarChart",
+                description: "Create a stacked bar chart with the provided values and categories",
+                parameters: {
+                    type: "object",
+                    properties: {
+                        x: { 
+                            type: "array", 
+                            description: "The fetched database x values for the chart", 
+                            items: { type: "number" } 
+                        },
+                        y: { 
+                            type: "array", 
+                            description: "The fetched database y values for the chart", 
+                            items: { type: "number" } 
+                        },
+                        stackBy: { 
+                            type: "array", 
+                            description: "The fetched database categories for the chart", 
+                            items: { type: "string" } 
+                        },
+                        title: { 
+                            type: "string", 
+                            description: "The title of the chart" 
+                        },
+                        xAxisTitle: { 
+                            type: "string", 
+                            description: "The title of the x axis" 
+                        },
+                        yAxisTitle: { 
+                            type: "string", 
+                            description: "The title of the y axis" 
+                        }
+                    },
+                    required: ["x", "y", "stackBy", "title", "xAxisTitle", "yAxisTitle"],
+                    additionalProperties: false
+                }
+            }
         }
     ];
 } 

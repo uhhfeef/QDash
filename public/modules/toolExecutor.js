@@ -1,21 +1,3 @@
-/**
- * @fileoverview Tool execution handler module
- * @module toolHandler
- * 
- * @requires ./uiUtils
- * @requires ../lineChart
- * @requires ../sqlQuery
- * 
- * @description
- * Handles execution of various tools available to the AI:
- * - SQL query execution
- * - Line / Bar chart creation
- * - Message handling for tool results
- * 
- * @example
- * import { handleToolCall } from './modules/toolHandler.js';
- * await handleToolCall(toolCall, messages);
- */
 
 import { addMessageToChat } from './uiUtils.js';
 // import { executeSqlQuery } from '../services/sqlQuery.js';  // Comment out or remove this line
@@ -24,7 +6,7 @@ import { createChart } from '../components/createChart.js';
 import { createSpace } from '../components/createSpace.js';
 import { createCard } from '../components/createCard.js';
 import { createPieChart } from '../components/createPieChart.js';
-
+import { createStackedBarChart } from '../components/createStackedBarChart.js';
 export async function handleToolCall(toolCall, messages) {
     const args = JSON.parse(toolCall.function.arguments);
     let toolResult;
@@ -57,6 +39,13 @@ export async function handleToolCall(toolCall, messages) {
             addMessageToChat(`Creating chart with provided data.`, 'assistant');
             break;
 
+        case 'createStackedBarChart':
+            const stackedBarChartId = await createSpace('stackedBarChart');
+            createStackedBarChart(stackedBarChartId, window.x, window.y, args.stackBy, args.title, args.xAxisTitle, args.yAxisTitle);
+            toolResult = { success: true, message: 'Stacked bar chart created successfully' };
+            addMessageToChat(`Creating stacked bar chart with provided data.`, 'assistant');
+            break;
+
         case 'createPieChart':
             const pieChartId = await createSpace('pieChart');
             // The LLM can decide on an sql query that either genrates x as values and y as labels or vice versa. So we need to check which one is which.
@@ -66,6 +55,8 @@ export async function handleToolCall(toolCall, messages) {
             toolResult = { success: true, message: 'Pie chart created successfully' };
             addMessageToChat(`Creating pie chart with provided data.`, 'assistant');
             break;
+        
+
     }
 
     // Tool result is sent to the next tool. The next iteration starts with the tool result and previous messages as context.
