@@ -1,56 +1,142 @@
 <!DOCTYPE html>
 <html lang="en" class="loading">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard</title>
     <!-- Add type="module" to your script -->
     <style>
-        .loading { visibility: hidden; }
-        .loaded { visibility: visible; }
+      .loading {
+        visibility: hidden;
+      }
+      .loaded {
+        visibility: visible;
+      }
     </style>
     <script>
-        document.documentElement.classList.add('loading');
-        window.addEventListener('load', () => {
-            document.documentElement.classList.remove('loading');
-            document.documentElement.classList.add('loaded');
-        });
+      document.documentElement.classList.add("loading");
+      window.addEventListener("load", () => {
+        document.documentElement.classList.remove("loading");
+        document.documentElement.classList.add("loaded");
+      });
+
+      window.onload = function () {
+        // Check if the URL has the authSuccess parameter
+        const urlParams = new URLSearchParams(window.location.search);
+        if (urlParams.has("authSuccess")) {
+          // Call hideLoginOverlay to hide the login overlay
+          hideLoginOverlay();
+        }
+      };
+
+      function hideLoginOverlay() {
+        // Example logic to hide the overlay
+        const overlay = document.getElementById("login-overlay");
+        if (overlay) {
+          overlay.style.display = "none";
+        }
+      }
     </script>
-</head>
-<body class="bg-gray-50">
+  </head>
+  <body class="bg-gray-50">
+    <!--Start Auth -->
+    <div
+      id="login-overlay"
+      class="fixed top-0 left-0 w-full h-full bg-gray-900 bg-opacity-50 flex justify-center items-center z-50"
+    >
+      <div
+        class="bg-white p-8 rounded-lg shadow-xl max-w-sm w-full text-center"
+      >
+        <h2 class="text-2xl font-semibold text-gray-800 mb-6">Please Log In</h2>
+
+        <a
+          href="/auth/google"
+          class="flex items-center justify-center bg-black hover:bg-gray-800 text-white font-bold py-3 px-6 rounded-lg shadow-md transform transition duration-200 ease-in-out hover:scale-105"
+        >
+          <!-- Google Logo -->
+          <img
+            src="https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg"
+            alt="Google logo"
+            class="w-6 h-6 mr-3"
+          />
+          Sign in with Google
+        </a>
+      </div>
+    </div>
+
+    <!--End Auth -->
+
     <div class="min-h-screen p-6 flex flex-col">
-        <header class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
-        </header>
-        <main class="flex-1 flex flex-col">
-            <div class="space-y-8 mb-8">
-                <div class="stats-card-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-                <div class="chart-container grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      <header class="mb-8">
+        <h1 class="text-3xl font-bold text-gray-900">Dashboard</h1>
+      </header>
+      <main class="flex-1 flex flex-col">
+        <div class="space-y-8 mb-8">
+          <div
+            class="stats-card-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          ></div>
+          <div
+            class="chart-container grid grid-cols-1 md:grid-cols-2 gap-6"
+          ></div>
+        </div>
+
+        <div class="flex-1"></div>
+
+        <div class="space-y-2">
+          <div
+            class="uploaded-file-info text-sm text-gray-600 mx-auto w-full max-w-2xl hidden"
+          >
+            Currently loaded:
+            <span id="uploaded-filename" class="font-medium"></span>
+          </div>
+          <div
+            class="chat-container bg-white rounded-xl shadow-sm p-6 mx-auto w-full max-w-2xl"
+          >
+            <div id="chat-messages" class="overflow-y-auto space-y-4"></div>
+            <div class="chat-input-container flex gap-4 items-center">
+              <input
+                type="text"
+                id="chat-input"
+                placeholder="Create a dashboard..."
+                class="flex-1 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+              />
+              <label
+                for="csv-upload"
+                class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-600 hover:to-purple-700 active:from-indigo-700 active:to-purple-800 transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center cursor-pointer gap-2"
+              >
+                <input
+                  type="file"
+                  id="csv-upload"
+                  accept=".csv"
+                  class="hidden"
+                />
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  class="h-5 w-5"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"
+                  />
+                </svg>
+                <span>Upload CSV</span>
+              </label>
+              <button
+                id="send-button"
+                class="px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm hover:shadow flex items-center justify-center min-w-[100px]"
+              >
+                Send
+              </button>
             </div>
-            
-            <div class="flex-1"></div>
-            
-            <div class="space-y-2">
-                <div class="uploaded-file-info text-sm text-gray-600 mx-auto w-full max-w-2xl hidden">
-                    Currently loaded: <span id="uploaded-filename" class="font-medium"></span>
-                </div>
-                <div class="chat-container bg-white rounded-xl shadow-sm p-6 mx-auto w-full max-w-2xl">
-                    <div id="chat-messages" class="overflow-y-auto space-y-4"></div>
-                    <div class="chat-input-container flex gap-4 items-center">
-                        <input type="text" id="chat-input" placeholder="Create a dashboard..." class="flex-1 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                        <label for="csv-upload" class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-600 hover:to-purple-700 active:from-indigo-700 active:to-purple-800 transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center cursor-pointer gap-2">
-                            <input type="file" id="csv-upload" accept=".csv" class="hidden">
-                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
-                            </svg>
-                            <span>Upload CSV</span>
-                        </label>
-                        <button id="send-button" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm hover:shadow flex items-center justify-center min-w-[100px]">Send</button>
-                    </div>
-                </div>
-            </div>
-        </main>
+          </div>
+        </div>
+      </main>
     </div>
     <!-- Webpack will inject the script here -->
-</body>
+  </body>
 </html>
