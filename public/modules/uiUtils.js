@@ -1,19 +1,3 @@
-/**
- * @fileoverview UI utility functions module
- * @module uiUtils
- * 
- * @description
- * Provides utility functions for UI interactions:
- * - Adding messages to chat display
- * - Setting up event listeners
- * - Managing chat scroll behavior
- * 
- * @example
- * import { addMessageToChat, setupEventListeners } from './modules/uiUtils.js';
- * addMessageToChat('Hello', 'user');
- * setupEventListeners(handleChatSubmit);
- */
-
 export function showError(message) {
     addMessageToChat(`Error: ${message}`, 'assistant');
 }
@@ -21,8 +5,20 @@ export function showError(message) {
 export function addMessageToChat(content, role) {
     const chatMessages = document.getElementById('chat-messages');
     const messageDiv = document.createElement('div');
-    messageDiv.className = `message ${role}-message`;
-    messageDiv.textContent = content;
+    
+    messageDiv.className = `message flex w-full mb-4 ${
+        role === 'user' ? 'justify-end' : 'justify-start'
+    }`;
+    
+    const innerDiv = document.createElement('div');
+    innerDiv.className = `max-w-[70%] rounded-lg p-3 ${
+        role === 'user' 
+            ? 'bg-blue-500 text-white ml-auto' 
+            : 'bg-gray-200 text-gray-800'
+    }`;
+    innerDiv.textContent = content;
+    
+    messageDiv.appendChild(innerDiv);
     chatMessages.appendChild(messageDiv);
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
