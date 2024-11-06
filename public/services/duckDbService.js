@@ -3,17 +3,16 @@ import { initDuckDB } from '../../config/duckDbConfig';
 let db;
 let conn;
 
-// Initialize the database connection
-async function initialize() {
-    const connection = await initDuckDB();
+// Modify initialize to accept the connection
+async function initialize(connection) {
     db = connection.db;
     conn = connection.conn;
 }
 
+export { initialize };
+
 // Initialize DuckDB on page load
 document.addEventListener("DOMContentLoaded", () => {
-    initialize();
-    
     // Add event listener for CSV file upload
     const csvUpload = document.getElementById('csv-upload');
     if (csvUpload) {
