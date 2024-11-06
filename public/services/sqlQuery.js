@@ -31,7 +31,6 @@ export async function executeSqlQuery(query) {
 
         return result.data;
     } catch (error) {
-        console.error('Error executing query:', error);
         throw error;
     }
 }
@@ -49,6 +48,7 @@ export async function getTableSchema() {
 
         const result = await response.json();
         if (result.error) {
+            console.error('Error getting schema:', result.error);
             throw new Error(result.error);
         }
         console.log(result.data);

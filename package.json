@@ -13,6 +13,7 @@
     "watch:css": "tailwindcss -i ./public/styles/styles.css -o ./public/styles/output.css --watch"
   },
   "dependencies": {
+    "@duckdb/duckdb-wasm": "^1.29.0",
     "dotenv": "^16.4.1",
     "express": "^4.21.1",
     "openai": "^4.26.0",

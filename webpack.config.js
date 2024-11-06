@@ -7,33 +7,44 @@ module.exports = {
         filename: 'bundle.js',
         path: path.resolve(__dirname, 'dist'),
         clean: true,
+        publicPath: '/'
+    },
+    experiments: {
+        asyncWebAssembly: true,
+        topLevelAwait: true
+    },
+    resolve: {
+        fallback: {
+            "fs": false,
+            "path": false,
+            "crypto": false
+        }
     },
     module: {
         rules: [
+            {
+                test: /\.css$/,
+                use: [
+                    'style-loader',
+                    'css-loader',
+                    'postcss-loader'
+                ],
+            },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env'],
-                    },
-                },
+                        presets: ['@babel/preset-env']
+                    }
+                }
             },
             {
-                test: /\.css$/,
-                use: [
-                    'style-loader',
-                    {
-                        loader: 'css-loader',
-                        options: {
-                            importLoaders: 1
-                        }
-                    },
-                    'postcss-loader'
-                ],
-            },
-        ],
+                test: /\.wasm$/,
+                type: 'webassembly/async'
+            }
+        ]
     },
     plugins: [
         new HtmlWebpackPlugin({
@@ -42,7 +53,10 @@ module.exports = {
         }),
     ],
     devServer: {
-        static: './dist',
+        static: {
+            directory: path.join(__dirname, 'public'),
+        },
+        compress: true,
         port: 3000,
         proxy: [{
             context: ['/api'],

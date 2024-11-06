@@ -18,7 +18,8 @@
  */
 
 import { addMessageToChat } from './uiUtils.js';
-import { executeSqlQuery } from '../services/sqlQuery.js';
+// import { executeSqlQuery } from '../services/sqlQuery.js';  // Comment out or remove this line
+import { executeDuckDbQuery } from '../services/duckDbService.js';
 import { createChart } from '../components/createChart.js';
 import { createSpace } from '../components/createSpace.js';
 import { createCard } from '../components/createCard.js';
@@ -30,14 +31,14 @@ export async function handleToolCall(toolCall, messages) {
     
     switch (toolCall.function.name) {
         case 'executeSqlQuery':
-            const queryResult = await executeSqlQuery(args.query);
+            const queryResult = await executeDuckDbQuery(args.query);
             if (queryResult && queryResult.length > 0) {
                 window.x = queryResult.map(row => Object.values(row)[0]);
                 window.y = queryResult.map(row => Object.values(row)[1]);
                 console.log('Query results - x:', window.x, 'y:', window.y);
                 toolResult = { message: "Query has received results and has been saved in window.x and window.y. Do NOT execute any more queries. Give this result to the next tool." };
             }
-            // addMessageToChat(`Query has received results. Give this result to the next tool.`, 'assistant');
+            addMessageToChat(`Executed query: ${args.query}`, 'assistant');
             break;
 
         case 'createCard':

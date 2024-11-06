@@ -57,6 +57,8 @@ app.post('/api/chat', async (req, res) => {
 });
 
 app.post('/api/query', (req, res) => {
+    console.log('Query received:', req.body.query);
+
     const { query } = req.body;
     
     db.all(query, [], (err, rows) => {
