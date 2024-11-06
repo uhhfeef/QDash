@@ -1,11 +1,3 @@
-/**
- * @fileoverview Main configuration orchestrator
- * @module config
- * 
- * @requires ../config/databaseConfig
- * @requires ../config/toolsConfig
- */
-
 import { generateTools } from './toolsConfig.js';
 import { getCurrentTableName, getTableSchema } from '../public/services/duckDbService.js';
 
