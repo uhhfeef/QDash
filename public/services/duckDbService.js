@@ -4,6 +4,7 @@ let db;
 let conn;
 let isLoaded = false;
 let currentTableName = null;
+let loadedTables = new Set();
 
 export async function initialize(connection) {
     db = connection.db;
@@ -16,6 +17,10 @@ export function isDataLoaded() {
 
 export function getCurrentTableName() {
     return currentTableName;
+}
+
+export function getLoadedTables() {
+    return Array.from(loadedTables); 
 }
 
 // This function is being called from the index.js file
@@ -31,24 +36,29 @@ export async function handleCsvUpload(file) {
         // Register the file content with DuckDB
         await db.registerFileBuffer(file.name, new Uint8Array(await file.arrayBuffer()));
         
-        // Create table from CSV
-        await conn.query(`DROP TABLE IF EXISTS ${tableName}`);
+        // Create table from CSV without dropping existing ones
         await conn.query(`
-            CREATE TABLE ${tableName} AS 
+            CREATE TABLE IF NOT EXISTS ${tableName} AS 
             SELECT * 
             FROM read_csv_auto('${file.name}', header=true, AUTO_DETECT=true)
         `);
+        
+        // Add table to our tracked tables
+        loadedTables.add(tableName);
+        console.log(loadedTables);
         
         // Update UI to show uploaded filename
         const fileInfoContainer = document.querySelector('.uploaded-file-info');
         const filenameElement = document.getElementById('uploaded-filename');
         if (fileInfoContainer && filenameElement) {
-            filenameElement.textContent = file.name;
+            const existingText = filenameElement.textContent;
+            const newText = existingText ? `${existingText}, ${file.name}` : file.name;
+            filenameElement.textContent = newText;
             fileInfoContainer.classList.remove('hidden');
         }
 
         // Get schema information
-        const schemaInfo = await getTableSchema(tableName);
+        const schemaInfo = await getSchema();
         isLoaded = true;
 
         return schemaInfo;
@@ -58,16 +68,16 @@ export async function handleCsvUpload(file) {
     }
 }
 
-export async function getTableSchema(tableName) {
+export async function getSchema() {
     try {
-        if (!conn || !tableName) {
-            throw new Error("Database or table not initialized");
+        if (!conn) {
+            throw new Error("Database not initialized");
         }
 
         const result = await conn.query(`
             SELECT sql 
             FROM sqlite_master 
-            WHERE type='table' AND name='${tableName}'
+            WHERE type='table'
         `);
 
         return result;
