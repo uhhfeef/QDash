@@ -1,13 +1,18 @@
-import Plotly from 'plotly.js-dist'; // Added import for Plotly
+import Plotly from 'plotly.js-dist';
 
 export function createPieChart(id, values, labels, title) {
-    var trace = { 
+    const trace = {
         values: values,
         labels: labels,
-        type: 'pie'
+        type: 'pie',
+        marker: {
+            colors: labels.map((_, index) => 
+                `hsl(${index * (360 / labels.length)}, 70%, 50%)`
+            )
+        }
     };
 
-    var layout = {
+    const layout = {
         title: title,
         autosize: true,
         height: 350,
@@ -20,6 +25,5 @@ export function createPieChart(id, values, labels, title) {
     };
 
     Plotly.newPlot(id, [trace], layout, {responsive: true});
-    console.log("Chart created with values:", values, "and labels:", labels);
 }
 

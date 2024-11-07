@@ -65,9 +65,9 @@ export async function getTableSchema(tableName) {
         }
 
         const result = await conn.query(`
-            SELECT column_name, data_type 
-            FROM information_schema.columns 
-            WHERE table_name = '${tableName}'
+            SELECT sql 
+            FROM sqlite_master 
+            WHERE type='table' AND name='${tableName}'
         `);
 
         return result;

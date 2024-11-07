@@ -14,11 +14,18 @@
   },
   "dependencies": {
     "@duckdb/duckdb-wasm": "^1.29.0",
+    "@radix-ui/react-slot": "^1.1.0",
+    "@shadcn/ui": "^0.0.4",
+    "class-variance-authority": "^0.7.0",
+    "clsx": "^2.1.1",
     "dotenv": "^16.4.1",
     "express": "^4.21.1",
+    "lucide-react": "^0.454.0",
     "openai": "^4.26.0",
     "plotly.js-dist": "^2.35.2",
-    "sqlite3": "^5.1.7"
+    "recharts": "^2.13.3",
+    "sqlite3": "^5.1.7",
+    "tailwind-merge": "^2.5.4"
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
