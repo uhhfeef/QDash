@@ -3,7 +3,7 @@ import { addMessageToChat } from './uiUtils.js';
 // import { executeSqlQuery } from '../services/sqlQuery.js';  // Comment out or remove this line
 import { executeDuckDbQuery } from '../services/duckDbService.js';
 import { createChart } from '../components/createChart.js';
-import { createSpace } from '../components/createSpace.js';
+import { createSpace } from '../components/createSpaceForCharts.js';
 import { createCard } from '../components/createCard.js';
 import { createPieChart } from '../components/createPieChart.js';
 import { createStackedBarChart } from '../components/createStackedBarChart.js';
@@ -33,21 +33,21 @@ export async function handleToolCall(toolCall, messages) {
             break;
 
         case 'createChart':
-            const id = await createSpace('chart');
+            const id = await createSpace();
             createChart(id, window.x, window.y, args.chartType, args.title, args.xAxisTitle, args.yAxisTitle);
             toolResult = { success: true, message: 'Chart created successfully' };
             addMessageToChat(`Creating chart with provided data.`, 'assistant');
             break;
 
         case 'createStackedBarChart':
-            const stackedBarChartId = await createSpace('stackedBarChart');
+            const stackedBarChartId = await createSpace();
             createStackedBarChart(stackedBarChartId, window.x, window.y, args.stackBy, args.title, args.xAxisTitle, args.yAxisTitle);
             toolResult = { success: true, message: 'Stacked bar chart created successfully' };
             addMessageToChat(`Creating stacked bar chart with provided data.`, 'assistant');
             break;
 
         case 'createPieChart':
-            const pieChartId = await createSpace('pieChart');
+            const pieChartId = await createSpace();
             // The LLM can decide on an sql query that either genrates x as values and y as labels or vice versa. So we need to check which one is which.
             const values = typeof window.x[0] === 'number' ? window.x : window.y;
             const labels = typeof window.x[0] === 'number' ? window.y : window.x;
