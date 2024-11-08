@@ -30,17 +30,19 @@ export async function handleChatSubmit() {
     let iterationCount = 0;
 
     try {
+        console.group('Chat Processing');
         while (iterationCount < MAX_ITERATIONS) {
             iterationCount++;
-            console.log(`Iteration ${iterationCount} of ${MAX_ITERATIONS}`);
+            console.log('%c Iteration ' + iterationCount + ' of ' + MAX_ITERATIONS, 'background: #333; color: #00ff00; padding: 2px 6px; border-radius: 2px;');
 
+            console.log('%c Sending chat request to LLM...', 'color: #0066ff; font-weight: bold;');
             const data = await sendChatRequest(messages, tools);
             const message = data.choices[0].message;
             
             messages.push(message);
             chatManager.addMessage(message);
 
-            console.log('message:', message);
+            console.log('%c Received message:', 'color: #ff6600; font-weight: bold;', message);
 
             if (message.content) {
                 addMessageToChat(message.content, 'assistant');
@@ -53,6 +55,7 @@ export async function handleChatSubmit() {
                 }
             }
         }
+        console.groupEnd();
 
         if (iterationCount >= MAX_ITERATIONS) {
             addMessageToChat("Reached maximum number of iterations. Stopping here.", 'assistant');

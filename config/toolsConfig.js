@@ -9,7 +9,7 @@ export function generateTools(tableSchema) {
             function: {
                 name: "executeSqlQuery",
                 strict: true,
-                description: `Execute a SQL query on the database based on user request. The data will be used to create charts. For chart requests, you must always output 2 values, x and y. Schema is: ${tableSchema}`,
+                description: `Execute a SQL query on the database based on user request. The data will be used to create charts or cards. Cards only require one value (string or integer but no arrays). For chart requests, you must always output 2 values, x and y. Schema is: ${tableSchema}`,
                 parameters: {
                     type: "object",
                     properties: {
@@ -114,46 +114,46 @@ export function generateTools(tableSchema) {
                 }
             }
         },
-        {
-            type: "function",
-            function: {
-                name: "createStackedBarChart",
-                description: "Create a stacked bar chart with the provided values and categories",
-                parameters: {
-                    type: "object",
-                    properties: {
-                        x: { 
-                            type: "array", 
-                            description: "The fetched database x values for the chart", 
-                            items: { type: "number" } 
-                        },
-                        y: { 
-                            type: "array", 
-                            description: "The fetched database y values for the chart", 
-                            items: { type: "number" } 
-                        },
-                        stackBy: { 
-                            type: "array", 
-                            description: "The fetched database categories for the chart", 
-                            items: { type: "string" } 
-                        },
-                        title: { 
-                            type: "string", 
-                            description: "The title of the chart" 
-                        },
-                        xAxisTitle: { 
-                            type: "string", 
-                            description: "The title of the x axis" 
-                        },
-                        yAxisTitle: { 
-                            type: "string", 
-                            description: "The title of the y axis" 
-                        }
-                    },
-                    required: ["x", "y", "stackBy", "title", "xAxisTitle", "yAxisTitle"],
-                    additionalProperties: false
-                }
-            }
-        }
+        // {
+        //     type: "function",
+        //     function: {
+        //         name: "createStackedBarChart",
+        //         description: "Create a stacked bar chart with the provided values and categories",
+        //         parameters: {
+        //             type: "object",
+        //             properties: {
+        //                 x: { 
+        //                     type: "array", 
+        //                     description: "The fetched database x values for the chart", 
+        //                     items: { type: "number" } 
+        //                 },
+        //                 y: { 
+        //                     type: "array", 
+        //                     description: "The fetched database y values for the chart", 
+        //                     items: { type: "number" } 
+        //                 },
+        //                 stackBy: { 
+        //                     type: "array", 
+        //                     description: "The fetched database categories for the chart", 
+        //                     items: { type: "string" } 
+        //                 },
+        //                 title: { 
+        //                     type: "string", 
+        //                     description: "The title of the chart" 
+        //                 },
+        //                 xAxisTitle: { 
+        //                     type: "string", 
+        //                     description: "The title of the x axis" 
+        //                 },
+        //                 yAxisTitle: { 
+        //                     type: "string", 
+        //                     description: "The title of the y axis" 
+        //                 }
+        //             },
+        //             required: ["x", "y", "stackBy", "title", "xAxisTitle", "yAxisTitle"],
+        //             additionalProperties: false
+        //         }
+        //     }
+        // }
     ];
 } 
