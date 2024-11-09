@@ -16,6 +16,7 @@ export async function handleToolCall(toolCall, messages) {
     switch (toolCall.function.name) {
         case 'executeSqlQuery':
             console.log('%c📊 Executing SQL query:', 'color: #FF9800; font-weight: bold;', args.query);
+
             const queryResult = await executeDuckDbQuery(args.query);
             if (queryResult && queryResult.length > 0) {
                 window.x = queryResult.map(row => Object.values(row)[0]);
@@ -25,6 +26,11 @@ export async function handleToolCall(toolCall, messages) {
                 toolResult = { message: "Query has received results and has been saved in window.x and window.y. Do NOT execute any more queries. Give this result to the next tool." };
             }
             addMessageToChat(`Executed query: ${args.query}`, 'assistant');
+
+            // If the query has an explanation, add it to the chat. It should have one because it has been set as required in tools config.
+            if (args.explanation) {
+                addMessageToChat(`Query explanation: ${args.explanation}`, 'assistant');
+            }
             break;
 
         case 'createCard':

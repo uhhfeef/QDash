@@ -13,12 +13,17 @@ export function generateTools(tableSchema) {
                 parameters: {
                     type: "object",
                     properties: {
+                        "explanation": {
+                            type: "array",
+                            description: "The explanation of the query",
+                            items: { type: "string" }
+                        },
                         "query": {
                             type: "string",
                             description: "The SQL query to execute"
                         }
                     },
-                    required: ["query"],
+                    required: ["explanation", "query"],
                     additionalProperties: false
                 }
             },
