@@ -7,14 +7,14 @@ const { randomUUID } = require('crypto');
 
 const sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
 
-const app = express();
-const port = process.env.PORT || 3001;
-
 // Initialize OpenAI
 const openai = new OpenAI({
     apiKey: process.env.OPENAI_API_KEY
 });
 const langfuseOpenAI = observeOpenAI(openai); // Wrap the OpenAI client with Langfuse
+
+const app = express();
+const port = process.env.PORT || 3001;
 
 
 // Middleware
