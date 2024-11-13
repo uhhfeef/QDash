@@ -6,7 +6,7 @@ export function createCard(title, value) {
     
     // Create the container div with stats card styling
     const container = document.createElement('div');
-    container.className = 'bg-white p-4 rounded-lg shadow w-[280px] overflow-visible';
+    container.className = 'bg-white p-4 rounded-lg overflow-visible';
     
     // Create and append title elements
     const titleWrapper = document.createElement('div');
