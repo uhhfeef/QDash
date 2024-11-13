@@ -5,7 +5,7 @@ import { createChart } from '../components/createChart.js';
 import { createSpace } from '../components/createSpaceForCharts.js';
 import { createCard } from '../components/createCard.js';
 import { createPieChart } from '../components/createPieChart.js';
-import { createStackedBarChart } from '../components/createStackedBarChart.js';
+import { createStackedBarChart } from '../components/createStackedBarchart.js';
 export async function handleToolCall(toolCall, messages) {
     const args = JSON.parse(toolCall.function.arguments);
     let toolResult;

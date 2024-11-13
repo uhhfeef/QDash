@@ -58,10 +58,16 @@ module.exports = {
         },
         compress: true,
         port: 3000,
-        proxy: [{
-            context: ['/api'],
-            target: 'http://localhost:3001',
-        }],
+        proxy: {
+            '/api': {
+                target: 'http://localhost:3001',
+                changeOrigin: true,
+                secure: false,
+                onError: (err, req, res) => {
+                    console.log('Proxy Error:', err);
+                }
+            }
+        },
         hot: true
     },
 } 
