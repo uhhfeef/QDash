@@ -60,7 +60,7 @@ module.exports = {
         port: 3000,
         proxy: [{
             context: ['/api'],
-            target: 'http://localhost:3001',
+            target: 'http://localhost:3001'
         }],
         hot: true
     },

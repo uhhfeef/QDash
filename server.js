@@ -21,6 +21,14 @@ const langfuseOpenAI = observeOpenAI(openai); // Wrap the OpenAI client with Lan
 app.use(express.static('public'));
 app.use(express.json());
 
+// Add CORS headers if needed
+app.use((req, res, next) => {
+    res.header('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
+    res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+    next();
+});
+
 // Serve the HTML file
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'public', 'index.html'));
