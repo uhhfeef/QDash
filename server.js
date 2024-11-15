@@ -45,6 +45,46 @@ app.use(session({
     }
 }));
 
+// Authentication middleware - apply before routes but after session
+app.use((req, res, next) => {
+    console.log('Request path:', req.path);
+    console.log('Session:', req.session);
+    next();
+});
+
+app.use((req, res, next) => {
+    try {
+        // Allow CORS preflight requests
+        if (req.method === 'OPTIONS') {
+            return next();
+        }
+        
+        // For API requests, check authentication
+        if (req.path.startsWith('/api/')) {
+            if (req.path === '/api/login' || req.path === '/api/register' || 
+                req.path === '/api/auth-status' || req.path === '/api/logout') {
+                return next();
+            }
+            
+            if (!req.session || !req.session.userId) {
+                console.log('Unauthorized access attempt:', {
+                    path: req.path,
+                    session: req.session,
+                    userId: req.session?.userId
+                });
+                return res.status(401).json({ error: 'Unauthorized' });
+            }
+        }
+        
+        next();
+    } catch (error) {
+        console.error('Auth middleware error:', error);
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+app.use(express.static('public')); 
+
 // Initialize SQLite database
 let db;
 (async () => {
@@ -76,38 +116,6 @@ let db;
         console.error('Error creating demo user:', err);
     }
 })();
-
-// Authentication middleware
-const requireAuth = (req, res, next) => {
-    try {
-        // Allow CORS preflight requests
-        if (req.method === 'OPTIONS') {
-            return next();
-        }
-        
-        // For API requests, return 401 instead of redirecting
-        if (req.path.startsWith('/api/')) {
-            if (req.path === '/api/login' || req.path === '/api/register' || 
-                req.path === '/api/auth-status' || req.path === '/api/logout') {
-                return next();
-            }
-            return res.status(401).json({ error: 'Unauthorized' });
-        }
-        
-        // For non-API requests, check session
-        if (!req.session || !req.session.userId) {
-            return res.redirect('/login');
-        }
-        next();
-    } catch (error) {
-        console.error('Auth middleware error:', error);
-        res.status(500).json({ error: 'Internal server error' });
-    }
-};
-
-// Middleware
-app.use(requireAuth); 
-app.use(express.static('public')); 
 
 // Registration endpoint
 app.post('/api/register', async (req, res) => {

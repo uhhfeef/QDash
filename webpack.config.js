@@ -35,6 +35,7 @@ module.exports = {
             headers: {
                 Connection: 'keep-alive'
             },
+            cookieDomainRewrite: 'localhost',
             proxyTimeout: 60000,
             timeout: 60000
         }],

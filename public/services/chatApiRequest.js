@@ -9,6 +9,7 @@ export async function sendChatRequest(messages, tools) {
             headers: {
                 'Content-Type': 'application/json'
             },
+            credentials: 'include',
             body: JSON.stringify({
                 messages: messages,
                 tools: tools,
