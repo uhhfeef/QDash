@@ -2,6 +2,7 @@ const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
+    mode: 'development',
     entry: './public/index.js',
     output: {
         filename: 'bundle.js',
@@ -19,6 +20,29 @@ module.exports = {
             "path": false,
             "crypto": false
         }
+    },
+    devServer: {
+        static: {
+            directory: path.join(__dirname, 'public'),
+        },
+        compress: true,
+        port: 3000,
+        proxy: [{
+            context: ['/api'],
+            target: 'http://localhost:3001',
+            secure: false,
+            changeOrigin: true,
+            headers: {
+                Connection: 'keep-alive'
+            },
+            proxyTimeout: 60000,
+            timeout: 60000
+        }],
+        client: {
+            webSocketURL: 'auto://0.0.0.0:0/ws'
+        },
+        hot: true,
+        historyApiFallback: true
     },
     module: {
         rules: [
@@ -52,18 +76,4 @@ module.exports = {
             filename: 'index.html',
         }),
     ],
-    devServer: {
-        static: {
-            directory: path.join(__dirname, 'public'),
-        },
-        compress: true,
-        port: 3000,
-        proxy: [
-            {
-              context: ['/api'],
-              target: 'http://localhost:3001',
-            },
-        ],
-        hot: true
-    },
-} 
+}
