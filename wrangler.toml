@@ -1,0 +1,8 @@
+name = "qdash"
+main = "server.js"
+compatibility_date = "2024-01-29"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "qdash-users"
+database_id = "d79734cb-f61d-473a-bc9c-0e06bf01be58"

@@ -9,3 +9,4 @@ data/
 include/
 App.js
 .DS_Store
+db/
