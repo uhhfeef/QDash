@@ -4,6 +4,9 @@ let db;
 let conn = null;
 
 export async function initDuckDB() {
+
+
+
   try {
     const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
     const bundle = await duckdb.selectBundle(JSDELIVR_BUNDLES);

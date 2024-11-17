@@ -1,262 +1,350 @@
-require('dotenv').config();
-const express = require('express');
-const path = require('path');
-const cors = require('cors');
-const OpenAI = require('openai');
-const { observeOpenAI } = require('langfuse');
-const { randomUUID } = require('crypto');
-const session = require('express-session');
-const SQLiteStore = require('connect-sqlite3')(session);
-const bcrypt = require('bcryptjs');
-const sqlite3 = require('sqlite3').verbose();
-const { open } = require('sqlite');
+import { Hono } from 'hono'
+import { cors } from 'hono/cors'
+import { OpenAI } from 'openai'
+import { setCookie, getCookie, deleteCookie } from 'hono/cookie'
+import bcrypt from 'bcryptjs'
+import { randomUUID } from 'node:crypto'
 
-// Initialize session store
-const sessionStore = new SQLiteStore({
-    dir: './db',
-    db: 'sessions.db'
-});
+const app = new Hono()
 
-const app = express();
-const port = process.env.PORT || 3001;
+// List of public paths that don't require authentication
+const publicPaths = [
+  '/login',
+  '/register',
+  '/api/login',
+  '/api/register',
+  '/styles/output.css',
+  '/bundle.js',
+  '/favicon.ico'
+]
 
-// Middleware order is important
-app.use(express.json());
+// Middleware to log requests
+app.use('*', async (c, next) => {
+  console.log('\n[DEBUG] ==========================================')
+  console.log(`[DEBUG] NEW REQUEST - ${Date.now()}`)
+  console.log(`[DEBUG] URL: ${c.req.url}`)
+  console.log(`[DEBUG] Method: ${c.req.method}`)
+  console.log(`[DEBUG] Path: ${new URL(c.req.url).pathname}`)
+  console.log(`[DEBUG] Origin:`, c.req.header('Origin'))
+  console.log(`[DEBUG] Cookie:`, c.req.header('Cookie'))
+  
+  const response = await next()
+  
+  // Log response details
+  if (response instanceof Response) {
+    console.log(`[DEBUG] Response Status: ${response.status}`)
+    console.log(`[DEBUG] Response Headers:`, Object.fromEntries(response.headers))
+  }
+  
+  console.log('[DEBUG] Request Complete')
+  console.log('[DEBUG] ========================================')
+  return response
+})
 
-// CORS configuration
-app.use(cors({
-    origin: 'http://localhost:3000',
-    credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    allowedHeaders: ['Content-Type', 'Authorization', 'X-Requested-With']
-}));
+// CORS middleware
+app.use('*', cors({
+  origin: 'https://qdash.afeefkhan99.workers.dev',  // Must be specific when using credentials
+  allowHeaders: ['Content-Type', 'Authorization'],
+  allowMethods: ['POST', 'GET', 'OPTIONS'],
+  credentials: true
+}))
 
-// Session middleware
-app.use(session({
-    store: sessionStore,
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: {
-        secure: false, // set to true in production with HTTPS
-        httpOnly: true,
-        maxAge: 24 * 60 * 60 * 1000, // 24 hours
-        sameSite: 'lax'
+// Security headers middleware
+app.use('*', async (c, next) => {
+  const response = await next()
+  if (response instanceof Response) {
+    response.headers.set('X-XSS-Protection', '1; mode=block')
+    response.headers.set('X-Content-Type-Options', 'nosniff')
+    response.headers.set('X-Frame-Options', 'DENY')
+    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
+    response.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';")
+    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
+    response.headers.set('Permissions-Policy', 'geolocation=(), microphone=()')
+  }
+  return response
+})
+
+// Root route handler - just serve index.html
+app.get('/', async (c) => {
+  console.log('[DEBUG] Root route accessed');
+  try {
+    const asset = await c.env.ASSETS.fetch(new Request('index.html'));
+    if (!asset.ok) {
+      console.error('[DEBUG] Failed to load index.html:', asset.status);
+      return c.text('Failed to load main page', 500);
     }
-}));
+    const html = await asset.text();
+    return c.html(html);
+  } catch (error) {
+    console.error('[DEBUG] Error serving main page:', error);
+    return c.text('Internal Server Error', 500);
+  }
+})
 
-// Authentication middleware - apply before routes but after session
-app.use((req, res, next) => {
-    console.log('Request path:', req.path);
-    console.log('Session:', req.session);
-    next();
-});
+// Login page route
+app.get('/login', async (c) => {
+  try {
+    const asset = await c.env.ASSETS.fetch(new Request('/login.html'))
+    return asset.ok ? c.html(await asset.text()) : c.text('Failed to load login page', 500)
+  } catch (error) {
+    console.error('[DEBUG] Error serving login page:', error)
+    return c.text('Internal Server Error', 500)
+  }
+})
 
-app.use((req, res, next) => {
+// API routes
+app.post('/api/register', async (c) => {
+  try {
+    const { username, email, password } = await c.req.json()
+    console.log('[DEBUG] Registration attempt for user:', username)
+
+    // Check if user already exists
+    const existingUser = await c.env.DB.prepare(
+      'SELECT * FROM users WHERE username = ?'
+    ).bind(username).first()
+
+    if (existingUser) {
+      return c.json({ error: 'Username already exists' }, 400)
+    }
+
+    // Hash password
+    const hashedPassword = await bcrypt.hash(password, 10)
+
+    // Insert new user with auto-incrementing id
+    const result = await c.env.DB.prepare(
+      'INSERT INTO users (username, email, password) VALUES (?, ?, ?)'
+    ).bind(username, email, hashedPassword).run()
+
+    if (!result.success) {
+      throw new Error('Failed to create user')
+    }
+
+    return c.json({ message: 'Registration successful' })
+  } catch (error) {
+    console.error('[DEBUG] Registration error:', error)
+    return c.json({ error: 'Registration failed' }, 500)
+  }
+})
+
+app.post('/api/login', async (c) => {
+  try {
+    const { username, password } = await c.req.json()
+    console.log('[DEBUG] Login attempt for user:', username)
+
+    // Get user by username
+    const user = await c.env.DB.prepare(
+      'SELECT * FROM users WHERE username = ?'
+    ).bind(username).first()
+
+    if (!user) {
+      console.log('[DEBUG] User not found:', username);
+      return c.json({ error: 'Invalid credentials' }, 401)
+    }
+
+    // Verify password
+    const validPassword = await bcrypt.compare(password, user.password)
+    if (!validPassword) {
+      console.log('[DEBUG] Invalid password for user:', username);
+      return c.json({ error: 'Invalid credentials' }, 401)
+    }
+
+    // Generate session
+    const sessionId = randomUUID()
+    console.log('[DEBUG] Generated session ID:', sessionId);
+    
+    const sessionData = {
+      userId: user.id,
+      username: user.username
+    };
+    console.log('[DEBUG] Session data:', sessionData);
+    
     try {
-        // Allow CORS preflight requests
-        if (req.method === 'OPTIONS') {
-            return next();
-        }
-        
-        // For API requests, check authentication
-        if (req.path.startsWith('/api/')) {
-            if (req.path === '/api/login' || req.path === '/api/register' || 
-                req.path === '/api/auth-status' || req.path === '/api/logout') {
-                return next();
-            }
-            
-            if (!req.session || !req.session.userId) {
-                console.log('Unauthorized access attempt:', {
-                    path: req.path,
-                    session: req.session,
-                    userId: req.session?.userId
-                });
-                return res.status(401).json({ error: 'Unauthorized' });
-            }
-        }
-        
-        next();
+      await c.env.SESSION_STORE.put(sessionId, JSON.stringify(sessionData), { 
+        expirationTtl: 86400 // 24 hours
+      });
+      console.log('[DEBUG] Session stored in KV');
     } catch (error) {
-        console.error('Auth middleware error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+      console.error('[DEBUG] Error storing session:', error);
+      return c.json({ error: 'Internal Server Error - Session Storage Failed' }, 500);
     }
-});
 
-app.use(express.static('public')); 
+    // Set cookie with strict options
+    const cookieOptions = {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'Strict',  // Changed to Strict since we're same-origin
+      path: '/'
+    };
 
-// Initialize SQLite database
-let db;
-(async () => {
-    db = await open({
-        filename: 'db/users.db',
-        driver: sqlite3.Database
+    setCookie(c, 'session', sessionId, cookieOptions);
+    
+    // Set response headers
+    c.header('Access-Control-Allow-Credentials', 'true');
+    c.header('Access-Control-Allow-Origin', 'https://qdash.afeefkhan99.workers.dev');
+    
+    // Create response with headers
+    const response = c.json({ 
+      success: true,
+      username: user.username
     });
 
-    // Create users table if it doesn't exist
-    await db.exec(`
-        CREATE TABLE IF NOT EXISTS users (
-            id INTEGER PRIMARY KEY AUTOINCREMENT,
-            username TEXT UNIQUE NOT NULL,
-            email TEXT UNIQUE NOT NULL,
-            password TEXT NOT NULL,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-        )
-    `);
+    // Log final state
+    console.log('[DEBUG] Cookie options:', cookieOptions);
+    console.log('[DEBUG] Final response headers:', Object.fromEntries(c.res.headers.entries()));
+    
+    return response;
+  } catch (error) {
+    console.error('[DEBUG] Login error:', error)
+    return c.json({ error: 'Internal Server Error' }, 500)
+  }
+})
 
-    // Insert demo user if it doesn't exist
-    const salt = await bcrypt.genSalt(10);
-    const hashedPassword = await bcrypt.hash('demo123', salt);
-    try {
-        await db.run(
-            'INSERT OR IGNORE INTO users (username, email, password) VALUES (?, ?, ?)',
-            ['demo', 'demo@example.com', hashedPassword]
-        );
-    } catch (err) {
-        console.error('Error creating demo user:', err);
+app.post('/api/logout', async (c) => {
+  try {
+    const sessionId = getCookie(c, 'session')
+    if (sessionId) {
+      await c.env.SESSION_STORE.delete(sessionId)
+      deleteCookie(c, 'session')
     }
-})();
+    return c.json({ message: 'Logout successful' })
+  } catch (error) {
+    console.error('[DEBUG] Logout error:', error)
+    return c.json({ error: 'Logout failed' }, 500)
+  }
+})
 
-// Registration endpoint
-app.post('/api/register', async (req, res) => {
-    try {
-        const { username, email, password } = req.body;
+// Session validation endpoint
+app.get('/api/validate-session', async (c) => {
+  try {
+    const sessionId = getCookie(c, 'session');
+    console.log('[DEBUG] Validating session ID:', sessionId);
 
-        if (!username || !email || !password) {
-            return res.status(400).json({ error: 'All fields are required' });
-        }
-
-        // Check if username or email already exists
-        const existingUser = await db.get(
-            'SELECT * FROM users WHERE username = ? OR email = ?',
-            [username, email]
-        );
-
-        if (existingUser) {
-            return res.status(400).json({
-                error: 'Username or email already exists'
-            });
-        }
-
-        // Hash password
-        const salt = await bcrypt.genSalt(10);
-        const hashedPassword = await bcrypt.hash(password, salt);
-
-        // Insert new user
-        await db.run(
-            'INSERT INTO users (username, email, password) VALUES (?, ?, ?)',
-            [username, email, hashedPassword]
-        );
-
-        res.status(201).json({ message: 'User registered successfully' });
-    } catch (error) {
-        console.error('Registration error:', error);
-        res.status(500).json({ error: 'Registration failed' });
+    if (!sessionId) {
+      console.log('[DEBUG] No session cookie found');
+      return c.json({ valid: false }, 401);
     }
-});
 
-// Login endpoint
-app.post('/api/login', async (req, res) => {
-    try {
-        const { userId, password } = req.body;
+    const sessionData = await c.env.SESSION_STORE.get(sessionId);
+    console.log('[DEBUG] Session data from KV:', sessionData);
 
-        // Find user by username
-        const user = await db.get(
-            'SELECT * FROM users WHERE username = ?',
-            [userId]
-        );
-
-        if (!user) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        // Verify password
-        const isMatch = await bcrypt.compare(password, user.password);
-        if (!isMatch) {
-            return res.status(401).json({ error: 'Invalid credentials' });
-        }
-
-        // Set session
-        req.session.userId = user.username;
-        res.json({ message: 'Logged in successfully' });
-    } catch (error) {
-        console.error('Login error:', error);
-        res.status(500).json({ error: 'Login failed' });
+    if (!sessionData) {
+      console.log('[DEBUG] No session data found in KV');
+      return c.json({ valid: false }, 401);
     }
+
+    const { username } = JSON.parse(sessionData);
+    console.log('[DEBUG] Session validated for user:', username);
+
+    return c.json({ 
+      valid: true,
+      username 
+    });
+  } catch (error) {
+    console.error('[DEBUG] Session validation error:', error);
+    return c.json({ valid: false, error: 'Session validation failed' }, 500);
+  }
 });
 
-// Logout endpoint
-app.post('/api/logout', (req, res) => {
-    req.session.destroy();
-    res.json({ success: true });
-});
+// Auth status endpoint commented out for now
+/*
+app.get('/api/auth-status', async (c) => {
+  const sessionId = getCookie(c, 'session')
+  if (!sessionId) {
+    return c.json({ authenticated: false })
+  }
+  return c.json({ authenticated: true })
+})
+*/
 
-// Serve the login page
-app.get('/login', (req, res) => {
-    if (req.session && req.session.userId) {
-        res.redirect('/');
-    } else {
-        res.sendFile(path.join(__dirname, 'public', 'login.html'));
+// Chat endpoint
+app.post('/api/chat', async (c) => {
+  try {
+    const { message } = await c.req.json()
+    console.log('[DEBUG] Chat message received:', message)
+
+    const openai = new OpenAI({
+      apiKey: c.env.OPENAI_API_KEY
+    })
+
+    const completion = await openai.chat.completions.create({
+      messages: [{ role: "user", content: message }],
+      model: "gpt-3.5-turbo",
+    })
+
+    console.log('[DEBUG] Chat response:', completion.choices[0])
+    return c.json({ 
+      response: completion.choices[0].message.content 
+    })
+  } catch (error) {
+    console.error('[DEBUG] Chat error:', error)
+    return c.json({ error: 'Failed to process chat message' }, 500)
+  }
+})
+
+// Static asset handler - MUST be last
+app.get('/*', async (c) => {
+  const path = new URL(c.req.url).pathname
+  
+  // Skip API routes
+  if (path.startsWith('/api/')) {
+    console.log('[DEBUG] Skipping API route in static handler:', path)
+    return c.notFound()
+  }
+  
+  console.log('[DEBUG] Static asset request for:', path)
+
+  try {
+    if (!c.env.ASSETS) {
+      console.error('[DEBUG] ASSETS binding is not defined')
+      return c.text('Server configuration error', 500)
     }
-});
 
-// Serve the HTML file
-app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'public', 'index.html'));
-});
+    const asset = await c.env.ASSETS.fetch(new Request(path))
+    console.log('[DEBUG] Asset fetch status:', asset.status)
 
-// Check auth status
-app.get('/api/auth-status', (req, res) => {
-    try {
-        const isAuthenticated = !!(req.session && req.session.userId);
-        console.log('Auth status check:', {
-            isAuthenticated,
-            session: req.session,
-            userId: req.session?.userId
-        });
-        res.json({ 
-            isAuthenticated,
-            userId: req.session?.userId 
-        });
-    } catch (error) {
-        console.error('Auth status error:', error);
-        res.status(500).json({ error: 'Internal server error' });
+    if (!asset.ok) {
+      console.error('[DEBUG] Failed to fetch asset:', path, asset.status)
+      return c.notFound()
     }
-});
 
-// Initialize OpenAI
-const openai = new OpenAI({
-    apiKey: process.env.OPENAI_API_KEY
-});
-const langfuseOpenAI = observeOpenAI(openai); // Wrap the OpenAI client with Langfuse
+    const contentType = asset.headers.get('content-type')
+    console.log('[DEBUG] Asset content type:', contentType)
 
-const sessionId = Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
+    const response = new Response(asset.body, {
+      status: asset.status,
+      headers: {
+        'content-type': contentType || 'application/octet-stream',
+        'cache-control': 'public, max-age=31536000',
+      }
+    })
 
-// OpenAI API endpoint
-app.post('/api/chat', async (req, res) => {
-    try {
-        // Example request body:
-        // messages: [{role: "user", content: "Hello, how are you?"}, {role: "assistant", content: "I'm doing great, thank you!"}]
-        // tools: [{type: "function", function: {name: "get_current_time", description: "Get the current time", parameters: {type: "object", properties: {time: {type: "string", description: "The current time"}}}}]
-        // tool_choice: "auto"
-        const { messages, tools, tool_choice } = req.body;
-        // console.log('Messages being sent to LLM:', JSON.stringify(req.body, null, 4));
+    console.log('[DEBUG] Successfully serving asset:', path)
+    return response
+  } catch (error) {
+    console.error('[DEBUG] Error serving static asset:', path, '\n', error.message, '\n', error.stack)
+    return c.notFound()
+  }
+})
 
-        const response = await langfuseOpenAI.chat.completions.create({
-            model: "gpt-4o-mini",
-            messages: messages,
-            tools: tools,
-            tool_choice: tool_choice,
-        });
+// Local session store for development
+const localSessionStore = new Map()
 
-        // console.log('Response from LLM:', JSON.stringify(response, null, 4));
-        res.json(response);
-    } catch (error) {
-        console.error('Error:', error);
-        res.status(500).json({ error: 'An error occurred while processing your request.' });
-    }
-});
+// Initialize database tables
+async function initDatabase(db) {
+  try {
+    await db.prepare(`
+      CREATE TABLE IF NOT EXISTS users (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        username TEXT UNIQUE,
+        email TEXT UNIQUE,
+        password TEXT,
+        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+      )
+    `).run()
+    console.log('[DEBUG] Database initialized successfully')
+  } catch (error) {
+    console.error('[DEBUG] Database initialization error:', error)
+  }
+}
 
-app.listen(port, () => {
-    console.log(`Server running at http://localhost:${port}`);
-});
+export default app

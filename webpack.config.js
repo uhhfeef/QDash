@@ -1,14 +1,19 @@
-const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
+import path from 'path';
+import HtmlWebpackPlugin from 'html-webpack-plugin';
+import { fileURLToPath } from 'url';
 
-module.exports = {
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+export default {
     mode: 'development',
+    devtool: 'source-map',
     entry: './public/index.js',
     output: {
         filename: 'bundle.js',
-        path: path.resolve(__dirname, 'dist'),
-        clean: true,
-        publicPath: '/'
+        path: path.resolve(__dirname, 'public'),
+        clean: false,
+        publicPath: ''
     },
     experiments: {
         asyncWebAssembly: true,
@@ -19,7 +24,13 @@ module.exports = {
             "fs": false,
             "path": false,
             "crypto": false
-        }
+        },
+        extensions: ['.js', '.mjs', '.cjs', '.json'],
+        alias: {
+            '@config': path.resolve(__dirname, 'config'),
+            '@public': path.resolve(__dirname, 'public')
+        },
+        modules: ['node_modules', path.resolve(__dirname, 'config')]
     },
     devServer: {
         static: {
@@ -48,12 +59,12 @@ module.exports = {
     module: {
         rules: [
             {
-                test: /\.css$/,
-                use: [
-                    'style-loader',
-                    'css-loader',
-                    'postcss-loader'
-                ],
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader', 'postcss-loader'],
+            },
+            {
+                test: /\.(png|svg|jpg|jpeg|gif)$/i,
+                type: 'asset/resource',
             },
             {
                 test: /\.js$/,
@@ -75,6 +86,7 @@ module.exports = {
         new HtmlWebpackPlugin({
             template: './public/index.html',
             filename: 'index.html',
+            minify: false
         }),
     ],
 }
