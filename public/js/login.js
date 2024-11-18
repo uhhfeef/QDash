@@ -23,61 +23,66 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
             window.location.href = '/';
         } else {
             console.error('[DEBUG] Login failed:', data.error);
-            alert(data.error || 'Login failed');
+            document.getElementById('loginError').textContent = data.error;
+            document.getElementById('loginError').classList.remove('hidden');
         }
     } catch (error) {
-        console.error('[DEBUG] Login error:', error);
-        alert('Login failed. Please try again.');
+        console.error('[DEBUG] Error during login:', error);
+        document.getElementById('loginError').textContent = 'An error occurred during login. Please try again.';
+        document.getElementById('loginError').classList.remove('hidden');
     }
 });
 
 // Handle registration form submission
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const username = document.getElementById('reg-username').value;
-    const email = document.getElementById('reg-email').value;
-    const password = document.getElementById('reg-password').value;
-    const confirmPassword = document.getElementById('reg-confirm-password').value;
+    const username = document.getElementById('registerUsername').value;
+    const password = document.getElementById('registerPassword').value;
+    const confirmPassword = document.getElementById('confirmPassword').value;
 
     if (password !== confirmPassword) {
-        alert('Passwords do not match');
+        document.getElementById('registerError').textContent = 'Passwords do not match';
+        document.getElementById('registerError').classList.remove('hidden');
         return;
     }
 
     try {
+        console.log('[DEBUG] Attempting registration for user:', username);
         const response = await fetch('/api/register', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, email, password }),
-            credentials: 'include'
+            body: JSON.stringify({ username, password })
         });
 
+        const data = await response.json();
+        console.log('[DEBUG] Registration response:', data);
+
         if (response.ok) {
-            alert('Registration successful! Please login.');
+            console.log('[DEBUG] Registration successful');
             toggleForms(); // Switch back to login form
+            document.getElementById('registrationSuccess').classList.remove('hidden');
         } else {
-            const data = await response.json();
-            alert(data.error || 'Registration failed');
+            console.error('[DEBUG] Registration failed:', data.error);
+            document.getElementById('registerError').textContent = data.error;
+            document.getElementById('registerError').classList.remove('hidden');
         }
     } catch (error) {
-        console.error('Registration error:', error);
-        alert('Registration failed. Please try again.');
+        console.error('[DEBUG] Error during registration:', error);
+        document.getElementById('registerError').textContent = 'An error occurred during registration. Please try again.';
+        document.getElementById('registerError').classList.remove('hidden');
     }
 });
 
-// Toggle between login and registration forms
 function toggleForms() {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
-    const toggleLogin = document.getElementById('toggleLogin');
-    const toggleRegister = document.getElementById('toggleRegister');
+    const registrationSuccess = document.getElementById('registrationSuccess');
     
     loginForm.classList.toggle('hidden');
     registerForm.classList.toggle('hidden');
-    toggleLogin.classList.toggle('hidden');
-    toggleRegister.classList.toggle('hidden');
+    registrationSuccess.classList.add('hidden');
 }
 
 document.getElementById('toggleRegister').addEventListener('click', toggleForms);

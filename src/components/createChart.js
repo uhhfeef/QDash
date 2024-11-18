@@ -1,4 +1,4 @@
-import Plotly from 'plotly.js-dist'; // Added import for Plotly
+// Removed Plotly import since it's loaded from CDN
 
 export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) {
     var trace = { 
@@ -18,4 +18,3 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
     Plotly.newPlot(id, [trace], layout, {responsive: true});
     console.log("Chart created with x:", x, "and y:", y);
 }
-

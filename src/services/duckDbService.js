@@ -1,4 +1,4 @@
-import { initDuckDB } from '../../config/duckDbConfig.js';
+import { initDuckDB } from './duckDbConfig.js';
 
 let db;
 let conn;
@@ -7,8 +7,14 @@ let currentTableName = null;
 let loadedTables = new Set();
 
 export async function initialize(connection) {
-    db = connection.db;
-    conn = connection.conn;
+    if (!connection) {
+        const instance = await initDuckDB();
+        db = instance.db;
+        conn = instance.conn;
+    } else {
+        db = connection.db;
+        conn = connection.conn;
+    }
 }
 
 export function isDataLoaded() {

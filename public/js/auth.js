@@ -19,52 +19,34 @@ document.addEventListener('DOMContentLoaded', async () => {
             return;
         }
         
-        // Valid session, show the dashboard
-        console.log('[DEBUG] Valid session, showing dashboard');
+        console.log('[DEBUG] Session is valid');
         document.documentElement.classList.remove('loading');
         document.documentElement.classList.add('loaded');
-        
-        // Update UI with username if available
-        if (data.username) {
-            const usernameDisplay = document.createElement('span');
-            usernameDisplay.textContent = `Welcome, ${data.username}`;
-            usernameDisplay.classList.add('text-gray-600', 'mr-4');
-            document.querySelector('header').insertBefore(usernameDisplay, document.getElementById('logoutBtn'));
-        }
     } catch (error) {
-        console.error('[DEBUG] Session validation error:', error);
+        console.error('[DEBUG] Error validating session:', error);
         window.location.href = '/login';
-    }
-    
-    // Setup logout handler
-    const logoutBtn = document.getElementById('logoutBtn');
-    if (logoutBtn) {
-        logoutBtn.addEventListener('click', async () => {
-            try {
-                const response = await fetch('/api/logout', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include'  // Add this to send cookies
-                });
-
-                if (response.ok) {
-                    window.location.href = '/login';
-                } else {
-                    const data = await response.json();
-                    alert(data.error || 'Logout failed');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                alert('Logout failed. Please try again.');
-            }
-        });
     }
 });
 
-// Handle page load visibility
-window.addEventListener('load', () => {
-    document.documentElement.classList.remove('loading');
-    document.documentElement.classList.add('loaded');
+// Handle logout button click
+document.getElementById('logoutBtn')?.addEventListener('click', async () => {
+    try {
+        console.log('[DEBUG] Logging out...');
+        const response = await fetch('/api/logout', {
+            method: 'POST',
+            credentials: 'include'
+        });
+        
+        if (response.ok) {
+            console.log('[DEBUG] Logout successful');
+            window.location.href = '/login';
+        } else {
+            console.error('[DEBUG] Logout failed');
+            const error = await response.text();
+            alert(`Logout failed: ${error}`);
+        }
+    } catch (error) {
+        console.error('[DEBUG] Error during logout:', error);
+        alert('Error during logout. Please try again.');
+    }
 });

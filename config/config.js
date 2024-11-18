@@ -1,5 +1,5 @@
 import { generateTools } from './toolsConfig.js';
-import { getCurrentTableName, getSchema } from '../public/services/duckDbService.js';
+import { getCurrentTableName, getSchema } from '../src/services/duckDbService.js';
 
 let tools = [];
 

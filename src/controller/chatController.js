@@ -2,7 +2,7 @@
  * @fileoverview Main chat handling module that coordinates AI interactions and tool execution
  */
 
-import { tools } from '../../config/config.js';
+import { tools } from '../services/config.js';
 import { addMessageToChat, setupEventListeners, showError } from '../modules/uiUtils.js';
 import { handleToolCall } from '../modules/toolExecutor.js';
 import { createChatManager, MAX_ITERATIONS } from '../modules/chatManager.js';

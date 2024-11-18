@@ -1,4 +1,4 @@
-import Plotly from 'plotly.js-dist';
+// Remove Plotly import since it's loaded from CDN
 
 export function createPieChart(id, values, labels, title) {
     const trace = {
@@ -26,4 +26,3 @@ export function createPieChart(id, values, labels, title) {
 
     Plotly.newPlot(id, [trace], layout, {responsive: true});
 }
-

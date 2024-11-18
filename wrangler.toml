@@ -25,7 +25,7 @@ command = "npm run build"
 # Assets configuration for fullstack apps
 [assets]
 binding = "ASSETS"
-directory = "./public"
+directory = "./dist"
 
 [env.development]
 vars = { ENVIRONMENT = "development" }

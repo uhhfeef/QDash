@@ -1,92 +1,123 @@
 import path from 'path';
-import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { fileURLToPath } from 'url';
+import CopyWebpackPlugin from 'copy-webpack-plugin';
+import MiniCssExtractPlugin from 'mini-css-extract-plugin';
+import TerserPlugin from 'terser-webpack-plugin';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 export default {
-    mode: 'development',
-    devtool: 'source-map',
-    entry: './public/index.js',
+    mode: 'production',
+    entry: {
+        main: './src/index.js'
+    },
     output: {
-        filename: 'bundle.js',
-        path: path.resolve(__dirname, 'public'),
-        clean: false,
-        publicPath: ''
+        filename: 'assets/js/[name].bundle.js',
+        chunkFilename: 'assets/js/[name].chunk.js',
+        path: path.resolve(__dirname, 'dist'),
+        clean: true,
+        publicPath: '/',
+        assetModuleFilename: 'assets/[name][ext]'
     },
-    experiments: {
-        asyncWebAssembly: true,
-        topLevelAwait: true
+    devtool: 'source-map',
+    externals: {
+        'plotly.js-dist': 'Plotly'
     },
-    resolve: {
-        fallback: {
-            "fs": false,
-            "path": false,
-            "crypto": false
-        },
-        extensions: ['.js', '.mjs', '.cjs', '.json'],
-        alias: {
-            '@config': path.resolve(__dirname, 'config'),
-            '@public': path.resolve(__dirname, 'public')
-        },
-        modules: ['node_modules', path.resolve(__dirname, 'config')]
-    },
-    devServer: {
-        static: {
-            directory: path.join(__dirname, 'public'),
-        },
-        compress: true,
-        port: 3000,
-        proxy: [{
-            context: ['/api'],
-            target: 'http://localhost:3001',
-            secure: false,
-            changeOrigin: true,
-            headers: {
-                Connection: 'keep-alive'
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin({
+            terserOptions: {
+                compress: {
+                    drop_console: false,
+                },
             },
-            cookieDomainRewrite: 'localhost',
-            proxyTimeout: 60000,
-            timeout: 60000
-        }],
-        client: {
-            webSocketURL: 'auto://0.0.0.0:0/ws'
+        })],
+        splitChunks: {
+            chunks: 'all',
+            minSize: 0,
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all'
+                },
+                common: {
+                    name: 'common',
+                    minChunks: 2,
+                    chunks: 'all',
+                    priority: -20
+                }
+            }
         },
-        hot: true,
-        historyApiFallback: true
     },
     module: {
         rules: [
-            {
-                test: /\.css$/i,
-                use: ['style-loader', 'css-loader', 'postcss-loader'],
-            },
-            {
-                test: /\.(png|svg|jpg|jpeg|gif)$/i,
-                type: 'asset/resource',
-            },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: {
                     loader: 'babel-loader',
                     options: {
-                        presets: ['@babel/preset-env']
+                        presets: [
+                            ['@babel/preset-env', {
+                                targets: {
+                                    browsers: ['last 2 versions', 'not dead']
+                                },
+                                modules: false,
+                                useBuiltIns: 'usage',
+                                corejs: 3
+                            }]
+                        ],
+                        plugins: ['@babel/plugin-syntax-dynamic-import'],
+                        cacheDirectory: true
                     }
                 }
             },
             {
-                test: /\.wasm$/,
-                type: 'webassembly/async'
+                test: /\.css$/i,
+                use: [
+                    MiniCssExtractPlugin.loader,
+                    'css-loader',
+                    'postcss-loader'
+                ]
             }
-        ]
+        ],
     },
     plugins: [
-        new HtmlWebpackPlugin({
-            template: './public/index.html',
-            filename: 'index.html',
-            minify: false
+        new MiniCssExtractPlugin({
+            filename: 'assets/styles/output.css',
+        }),
+        new CopyWebpackPlugin({
+            patterns: [
+                { 
+                    from: 'public',
+                    globOptions: {
+                        ignore: [
+                            '**/styles/**',
+                        ],
+                    },
+                    to: '[path][name][ext]',
+                },
+                {
+                    from: 'public/js',
+                    to: 'js'
+                }
+            ],
         }),
     ],
-}
+    cache: {
+        type: 'filesystem'
+    },
+    devServer: {
+        static: {
+            directory: path.join(__dirname, 'dist'),
+        },
+        compress: true,
+        port: 8080,
+        proxy: [{
+            context: ['/api'],
+            target: 'http://localhost:3000',
+        }],
+    },
+};

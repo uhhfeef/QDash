@@ -1,5 +1,3 @@
-import Plotly from 'plotly.js-dist';
-
 export function createStackedBarChart(id, x, y, stackBy, title, xAxisTitle, yAxisTitle) {
     console.log("xAxisTitle:", xAxisTitle);
     console.log("yAxisTitle:", yAxisTitle);

@@ -13,8 +13,11 @@ const publicPaths = [
   '/register',
   '/api/login',
   '/api/register',
-  '/styles/output.css',
-  '/bundle.js',
+  '/assets/styles/output.css',
+  '/assets/js/main.bundle.js',
+  '/assets/js/vendors.chunk.js',
+  '/assets/js/common.chunk.js',
+  '/js/auth.js',
   '/favicon.ico'
 ]
 
@@ -299,29 +302,16 @@ app.get('/*', async (c) => {
       return c.text('Server configuration error', 500)
     }
 
-    const asset = await c.env.ASSETS.fetch(new Request(path))
-    console.log('[DEBUG] Asset fetch status:', asset.status)
-
+    const asset = await c.env.ASSETS.fetch(c.req.raw)
     if (!asset.ok) {
       console.error('[DEBUG] Failed to fetch asset:', path, asset.status)
       return c.notFound()
     }
 
-    const contentType = asset.headers.get('content-type')
-    console.log('[DEBUG] Asset content type:', contentType)
-
-    const response = new Response(asset.body, {
-      status: asset.status,
-      headers: {
-        'content-type': contentType || 'application/octet-stream',
-        'cache-control': 'public, max-age=31536000',
-      }
-    })
-
     console.log('[DEBUG] Successfully serving asset:', path)
-    return response
+    return asset
   } catch (error) {
-    console.error('[DEBUG] Error serving static asset:', path, '\n', error.message, '\n', error.stack)
+    console.error('[DEBUG] Error serving static asset:', path, '\n', error.message)
     return c.notFound()
   }
 })

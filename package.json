@@ -6,9 +6,10 @@
   "type": "module",
   "scripts": {
     "build": "npm run build:css && webpack --mode production",
-    "start": "wrangler dev",
-    "build:css": "tailwindcss -i ./public/styles/styles.css -o ./public/styles/output.css",
-    "watch:css": "tailwindcss -i ./public/styles/styles.css -o ./public/styles/output.css --watch"
+    "start": "wrangler dev --assets dist",
+    "build:css": "tailwindcss -i ./src/styles/styles.css -o ./dist/styles/output.css",
+    "watch:css": "tailwindcss -i ./src/styles/styles.css -o ./dist/styles/output.css --watch",
+    "dev": "npm run watch:css & npm start"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.4",
@@ -29,15 +30,20 @@
   },
   "devDependencies": {
     "@babel/core": "^7.26.0",
+    "@babel/plugin-syntax-dynamic-import": "^7.8.3",
     "@babel/preset-env": "^7.26.0",
     "autoprefixer": "^10.4.20",
     "babel-loader": "^9.2.1",
+    "copy-webpack-plugin": "^12.0.2",
+    "core-js": "^3.39.0",
     "css-loader": "^7.1.2",
     "html-webpack-plugin": "^5.6.3",
+    "mini-css-extract-plugin": "^2.9.2",
     "postcss": "^8.4.47",
     "postcss-loader": "^8.1.1",
     "style-loader": "^4.0.0",
     "tailwindcss": "^3.4.14",
+    "terser-webpack-plugin": "^5.3.10",
     "webpack": "^5.96.1",
     "webpack-cli": "^5.1.4",
     "webpack-dev-server": "^5.1.0",
