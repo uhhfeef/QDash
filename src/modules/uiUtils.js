@@ -23,9 +23,10 @@ export function addMessageToChat(content, role) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
-export function setupEventListeners(handleChatSubmit) {
+export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateTools }) {
     const sendButton = document.getElementById('send-button');
     const chatInput = document.getElementById('chat-input');
+    const csvUpload = document.getElementById('csv-upload');
     
     if (sendButton) {
         sendButton.addEventListener('click', () => handleChatSubmit());
@@ -38,4 +39,20 @@ export function setupEventListeners(handleChatSubmit) {
             }
         });
     }
-} 
+
+    if (csvUpload) {
+        csvUpload.addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                try {
+                    await handleCsvUpload(file);
+                    await updateTools();
+                    addMessageToChat(`Successfully loaded ${file.name}`, 'assistant');
+                } catch (error) {
+                    console.error('Error uploading CSV:', error);
+                    showError(`Failed to upload CSV: ${error.message}`);
+                }
+            }
+        });
+    }
+}
