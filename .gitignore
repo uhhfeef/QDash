@@ -14,7 +14,7 @@ node_modules/
 # Build outputs
 /dist
 /build
-/.wrangler
+
 
 # Bundle files
 public/bundle.js*
