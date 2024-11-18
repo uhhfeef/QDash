@@ -262,25 +262,25 @@ app.get('/api/auth-status', async (c) => {
 // Chat endpoint
 app.post('/api/chat', async (c) => {
   try {
-    const { message } = await c.req.json()
-    console.log('[DEBUG] Chat message received:', message)
+    const { messages, tools, tool_choice } = await c.req.json()
 
     const openai = new OpenAI({
       apiKey: c.env.OPENAI_API_KEY
     })
 
     const completion = await openai.chat.completions.create({
-      messages: [{ role: "user", content: message }],
-      model: "gpt-3.5-turbo",
+      model: 'gpt-4o-mini',
+      messages,
+      tools,
+      tool_choice
     })
 
-    console.log('[DEBUG] Chat response:', completion.choices[0])
-    return c.json({ 
-      response: completion.choices[0].message.content 
-    })
+    // Return the entire completion object so client can access choices[0].message
+    return c.json(completion)
   } catch (error) {
     console.error('[DEBUG] Chat error:', error)
-    return c.json({ error: 'Failed to process chat message' }, 500)
+    console.error('[DEBUG] Full error object:', JSON.stringify(error, null, 2))
+    return c.json({ error: error.message }, 500)
   }
 })
 

@@ -35,7 +35,7 @@ var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__ge
   mod
 ));
 
-// .wrangler/tmp/bundle-RyEEO0/checked-fetch.js
+// .wrangler/tmp/bundle-tzvUhM/checked-fetch.js
 function checkURL(request, init) {
   const url = request instanceof URL ? request : new URL(
     (typeof request === "string" ? new Request(request, init) : request).url
@@ -53,7 +53,7 @@ function checkURL(request, init) {
 }
 var urls;
 var init_checked_fetch = __esm({
-  ".wrangler/tmp/bundle-RyEEO0/checked-fetch.js"() {
+  ".wrangler/tmp/bundle-tzvUhM/checked-fetch.js"() {
     urls = /* @__PURE__ */ new Set();
     __name(checkURL, "checkURL");
     globalThis.fetch = new Proxy(globalThis.fetch, {
@@ -1897,10 +1897,10 @@ var require_bcrypt = __commonJS({
   }
 });
 
-// .wrangler/tmp/bundle-RyEEO0/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-tzvUhM/middleware-loader.entry.ts
 init_checked_fetch();
 
-// .wrangler/tmp/bundle-RyEEO0/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-tzvUhM/middleware-insertion-facade.js
 init_checked_fetch();
 
 // server.js
@@ -9221,22 +9221,21 @@ app.get("/api/validate-session", async (c) => {
 });
 app.post("/api/chat", async (c) => {
   try {
-    const { message } = await c.req.json();
-    console.log("[DEBUG] Chat message received:", message);
+    const { messages, tools, tool_choice } = await c.req.json();
     const openai = new OpenAI({
       apiKey: c.env.OPENAI_API_KEY
     });
     const completion = await openai.chat.completions.create({
-      messages: [{ role: "user", content: message }],
-      model: "gpt-3.5-turbo"
+      model: "gpt-4o-mini",
+      messages,
+      tools,
+      tool_choice
     });
-    console.log("[DEBUG] Chat response:", completion.choices[0]);
-    return c.json({
-      response: completion.choices[0].message.content
-    });
+    return c.json(completion);
   } catch (error) {
     console.error("[DEBUG] Chat error:", error);
-    return c.json({ error: "Failed to process chat message" }, 500);
+    console.error("[DEBUG] Full error object:", JSON.stringify(error, null, 2));
+    return c.json({ error: error.message }, 500);
   }
 });
 app.get("/*", async (c) => {
@@ -9308,7 +9307,7 @@ var jsonError = /* @__PURE__ */ __name(async (request, env, _ctx, middlewareCtx)
 }, "jsonError");
 var middleware_miniflare3_json_error_default = jsonError;
 
-// .wrangler/tmp/bundle-RyEEO0/middleware-insertion-facade.js
+// .wrangler/tmp/bundle-tzvUhM/middleware-insertion-facade.js
 var __INTERNAL_WRANGLER_MIDDLEWARE__ = [
   middleware_ensure_req_body_drained_default,
   middleware_miniflare3_json_error_default
@@ -9341,7 +9340,7 @@ function __facade_invoke__(request, env, ctx, dispatch, finalMiddleware) {
 }
 __name(__facade_invoke__, "__facade_invoke__");
 
-// .wrangler/tmp/bundle-RyEEO0/middleware-loader.entry.ts
+// .wrangler/tmp/bundle-tzvUhM/middleware-loader.entry.ts
 var __Facade_ScheduledController__ = class {
   constructor(scheduledTime, cron, noRetry) {
     this.scheduledTime = scheduledTime;

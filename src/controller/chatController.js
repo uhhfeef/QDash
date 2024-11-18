@@ -37,6 +37,8 @@ export async function handleChatSubmit() {
 
             console.log('%c Sending chat request to LLM...', 'color: #0066ff; font-weight: bold;');
             const data = await sendChatRequest(messages, tools);
+
+            console.log('%c Received chat response from LLM...', data);
             const message = data.choices[0].message;
             
             messages.push(message);
