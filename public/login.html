@@ -10,10 +10,12 @@
     <div class="min-h-screen flex items-center justify-center">
         <div class="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
             <div>
-                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900">
+                <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900" id="formTitle">
                     Sign in to Dashboard
                 </h2>
             </div>
+
+            <!-- Login Form -->
             <form class="mt-8 space-y-6" id="loginForm">
                 <div class="rounded-md shadow-sm -space-y-px">
                     <div>
@@ -29,6 +31,7 @@
                             placeholder="Password">
                     </div>
                 </div>
+                <div id="loginError" class="text-red-500 text-sm text-center hidden"></div>
                 <div>
                     <button type="submit" 
                         class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
@@ -42,34 +45,36 @@
                 </div>
             </form>
 
-            <!-- Registration form (hidden by default) -->
+            <!-- Registration Form -->
             <form class="mt-8 space-y-6 hidden" id="registerForm">
                 <div class="rounded-md shadow-sm -space-y-px">
                     <div>
-                        <label for="reg-username" class="sr-only">Username</label>
-                        <input id="reg-username" name="username" type="text" required 
+                        <label for="registerUsername" class="sr-only">Username</label>
+                        <input id="registerUsername" name="username" type="text" required 
                             class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
                             placeholder="Username">
                     </div>
                     <div>
-                        <label for="reg-email" class="sr-only">Email</label>
-                        <input id="reg-email" name="email" type="email" required 
+                        <label for="registerEmail" class="sr-only">Email</label>
+                        <input id="registerEmail" name="email" type="email" required 
                             class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
                             placeholder="Email">
                     </div>
                     <div>
-                        <label for="reg-password" class="sr-only">Password</label>
-                        <input id="reg-password" name="password" type="password" required 
+                        <label for="registerPassword" class="sr-only">Password</label>
+                        <input id="registerPassword" name="password" type="password" required 
                             class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
                             placeholder="Password">
                     </div>
                     <div>
-                        <label for="reg-confirm-password" class="sr-only">Confirm Password</label>
-                        <input id="reg-confirm-password" name="confirmPassword" type="password" required 
+                        <label for="confirmPassword" class="sr-only">Confirm Password</label>
+                        <input id="confirmPassword" name="confirmPassword" type="password" required 
                             class="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm" 
                             placeholder="Confirm Password">
                     </div>
                 </div>
+                <div id="registerError" class="text-red-500 text-sm text-center hidden"></div>
+                <div id="registrationSuccess" class="text-green-500 text-sm text-center hidden">Registration successful! Please sign in.</div>
                 <div>
                     <button type="submit" 
                         class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">

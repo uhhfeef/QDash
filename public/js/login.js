@@ -37,6 +37,7 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 document.getElementById('registerForm').addEventListener('submit', async (e) => {
     e.preventDefault();
     const username = document.getElementById('registerUsername').value;
+    const email = document.getElementById('registerEmail').value;
     const password = document.getElementById('registerPassword').value;
     const confirmPassword = document.getElementById('confirmPassword').value;
 
@@ -53,7 +54,7 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
             headers: {
                 'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ username, password })
+            body: JSON.stringify({ username, email, password })
         });
 
         const data = await response.json();
@@ -78,11 +79,17 @@ document.getElementById('registerForm').addEventListener('submit', async (e) => 
 function toggleForms() {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
+    const formTitle = document.getElementById('formTitle');
     const registrationSuccess = document.getElementById('registrationSuccess');
     
     loginForm.classList.toggle('hidden');
     registerForm.classList.toggle('hidden');
     registrationSuccess.classList.add('hidden');
+    
+    // Update the title based on which form is visible
+    formTitle.textContent = loginForm.classList.contains('hidden') 
+        ? 'Create an Account' 
+        : 'Sign in to Dashboard';
 }
 
 document.getElementById('toggleRegister').addEventListener('click', toggleForms);
