@@ -102,7 +102,7 @@ export async function executeDuckDbQuery(query) {
         const result = await conn.query(query, { returnResultType: "arrow" });
         return convertArrowToRows(result);
     } catch (error) {
-        console.error("Error executing DuckDB query:", error);
+        // console.error("Error executing DuckDB query:", error);
         throw error;
     }
 }

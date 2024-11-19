@@ -16,27 +16,33 @@ export async function handleToolCall(toolCall, messages) {
     switch (toolCall.function.name) {
         case 'executeSqlQuery':
             console.log('%c📊 Executing SQL query:', 'color: #FF9800; font-weight: bold;', args.query);
+            try {
+                const queryResult = await executeDuckDbQuery(args.query);
+                if (queryResult && queryResult.length > 0) {
+                    window.x = queryResult.map(row => Object.values(row)[0]);
+                    window.y = queryResult.map(row => Object.values(row)[1]);
+                    console.log('%cQuery results:', 'color: #4CAF50; font-weight: bold;');
+                    console.table({ x: window.x, y: window.y });
+                    toolResult = { message: "Query has received results and has been saved in window.x and window.y. Do NOT execute any more queries. Give this result to the next tool." };
+                }
+                addMessageToChat(`Executed query: ${args.query}`, 'assistant');
 
-            const queryResult = await executeDuckDbQuery(args.query);
-            if (queryResult && queryResult.length > 0) {
-                window.x = queryResult.map(row => Object.values(row)[0]);
-                window.y = queryResult.map(row => Object.values(row)[1]);
-                console.log('%cQuery results:', 'color: #4CAF50; font-weight: bold;');
-                console.table({ x: window.x, y: window.y });
-                toolResult = { message: "Query has received results and has been saved in window.x and window.y. Do NOT execute any more queries. Give this result to the next tool." };
-            }
-            addMessageToChat(`Executed query: ${args.query}`, 'assistant');
-
-            // If the query has an explanation, add it to the chat. It should have one because it has been set as required in tools config.
-            if (args.explanation) {
-                addMessageToChat(`Query explanation: ${args.explanation}`, 'assistant');
-            }
+                // If the query has an explanation, add it to the chat. It should have one because it has been set as required in tools config.
+                if (args.explanation) {
+                    addMessageToChat(`Query explanation: ${args.explanation}`, 'assistant');
+                }
+            } catch (error) {
+                console.error('Error executing SQL query:', error);
+                toolResult = { error: error.message };
+                addMessageToChat(`Error executing query: ${error.message}`, 'assistant');
+            }            
             break;
 
         case 'createCard':
             console.log('%c🃏 Card Data:', 'color: #9C27B0; font-weight: bold;', 'x:', window.x);
             const value = window.x[0];
-            createCard(args.title, value);
+            const trendingPercentage = window.y[0];
+            createCard(args.title, value, trendingPercentage);
             toolResult = { success: true, message: 'Card created successfully' };
             addMessageToChat(`Creating card with provided data.`, 'assistant');
             break;

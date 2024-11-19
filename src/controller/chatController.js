@@ -38,10 +38,11 @@ export async function handleChatSubmit() {
             console.log('%c Sending chat request to LLM...', 'color: #0066ff; font-weight: bold;');
             const data = await sendChatRequest(messages, tools);
 
-            console.log('%c Received chat response from LLM...', data);
+            // console.log('%c Received chat response from LLM...', data);
             const message = data.choices[0].message;
             
             messages.push(message);
+            // console.log('%c Updated messages:', 'color: #ff6600; font-weight: bold;', messages);
             chatManager.addMessage(message);
 
             console.log('%c Received message:', 'color: #ff6600; font-weight: bold;', message);
@@ -68,6 +69,4 @@ export async function handleChatSubmit() {
         addMessageToChat('Sorry, there was an error processing your request.', 'assistant');
     }
 }
-
-// Remove the DOMContentLoaded event listener since initialization is now handled in index.js
 

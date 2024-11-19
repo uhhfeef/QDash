@@ -9,7 +9,7 @@ export function generateTools(tableSchema) {
             function: {
                 name: "executeSqlQuery",
                 strict: true,
-                description: `Execute a SQL query on the database based on user request. The data will be used to create charts or cards. Cards only require one value (string or integer but no arrays). For chart requests, you must always output 2 values, x and y. Schema is: ${tableSchema}`,
+                description: `Execute a SQL query on the database based on user request. The data will be used to create charts or cards. For chart requests, you must always output 2 values, x and y. For card requests, you must always have the main value in x and a trending percentage value in y. It SHOULD only be based on the database and not on random values. Schema is: ${tableSchema}`,
                 parameters: {
                     type: "object",
                     properties: {
@@ -85,12 +85,12 @@ export function generateTools(tableSchema) {
                             type: "string",
                             description: "The title of the card"
                         },
-                        subtitle: {
-                            type: "string",
-                            description: "Optional subtitle for additional context",
+                        trend: {
+                            type: ["string", "number"],
+                            description: "The trend value to display in the card"
                         }
                     },
-                    required: ["value", "title"],
+                    required: ["value", "title", "trend"],
                     additionalProperties: false
                 }
             }
