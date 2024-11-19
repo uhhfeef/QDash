@@ -2,6 +2,8 @@
  * @fileoverview Tool definitions for AI interactions
  */
 
+import { XAxis } from "recharts";
+
 export function generateTools(tableSchema) {
     return [
         {
@@ -9,7 +11,7 @@ export function generateTools(tableSchema) {
             function: {
                 name: "executeSqlQuery",
                 strict: true,
-                description: `Execute a SQL query on the database based on user request. The data will be used to create charts or cards. For chart requests, you must always output 2 values, x and y. For card requests, you must always have the main value in x and a trending percentage value in y. It SHOULD only be based on the database and not on random values. Schema is: ${tableSchema}`,
+                description: `Execute a SQL query on the database based on user request. The data will be used to create charts or cards. For chart requests, you must always output 2 values, x and y. For card requests, you must always have the main value in x and a trending percentage value in y. For pie chart, values would be in x and labels for the values in y. It SHOULD only be based on the database and not on random values. Schema is: ${tableSchema}`,
                 parameters: {
                     type: "object",
                     properties: {
@@ -32,7 +34,7 @@ export function generateTools(tableSchema) {
             type: "function",
             function: {
                 name: "createChart",
-                description: "Create a chart with the provided x and y values",
+                description: "Create a chart with the provided x and y values. ",
                 parameters: {
                     type: "object",
                     properties: {
@@ -44,7 +46,7 @@ export function generateTools(tableSchema) {
                         y: { 
                             type: "array", 
                             description: "The fetched database y values for the chart", 
-                            items: { type: "number" } 
+                            items: { type: ["number", "string"] } 
                         },
                         chartType: { 
                             type: "string", 
@@ -55,11 +57,11 @@ export function generateTools(tableSchema) {
                             type: "string",
                             description: "The title of the chart"
                         },
-                        xAxisLabel: {
+                        xAxisTitle: {
                             type: "string",
                             description: "The label for the x-axis"
                         },
-                        yAxisLabel: {
+                        yAxisTitle: {
                             type: "string",
                             description: "The label for the y-axis"
                         }
