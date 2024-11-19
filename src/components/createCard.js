@@ -1,4 +1,4 @@
-export function createCard(title, value) {
+export function createCard(title, value, trend) {
     const valueToDisplay = Array.isArray(value) ? value[0] : value;
     const isNumeric = !isNaN(valueToDisplay) && valueToDisplay !== '';
     
@@ -24,6 +24,24 @@ export function createCard(title, value) {
     const plotId = `plot-${Date.now()}`;
     plotWrapper.id = plotId;
     container.appendChild(plotWrapper);
+
+    // Create trend display
+    if (trend !== undefined && trend !== null) {
+        const trendWrapper = document.createElement('div');
+        trendWrapper.className = 'w-full flex justify-center mt-2';
+        
+        const trendElement = document.createElement('div');
+        const trendValue = typeof trend === 'number' ? trend.toFixed(1) : trend;
+        const isPositive = !isNaN(parseFloat(trendValue)) && parseFloat(trendValue) > 0;
+        const trendColor = isPositive ? 'text-green-600' : 'text-red-600';
+        const trendArrow = isPositive ? '↑' : '↓';
+        
+        trendElement.className = `text-sm font-medium ${trendColor}`;
+        trendElement.textContent = `${trendArrow}${Math.abs(trendValue)}% vs last month`;
+        
+        trendWrapper.appendChild(trendElement);
+        container.appendChild(trendWrapper);
+    }
 
     // Append container to the stats grid
     const statsGrid = document.querySelector('.stats-card-grid');
