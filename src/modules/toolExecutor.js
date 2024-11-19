@@ -24,6 +24,7 @@ export async function handleToolCall(toolCall, messages) {
                     console.log('%cQuery results:', 'color: #4CAF50; font-weight: bold;');
                     console.table({ x: window.x, y: window.y });
                     toolResult = { message: "Query has received results and has been saved in window.x and window.y. Do NOT execute any more queries. Give this result to the next tool." };
+                    // toolResult = { success: true, x: window.x, y: window.y };
                 }
                 addMessageToChat(`Executed query: ${args.query}`, 'assistant');
 

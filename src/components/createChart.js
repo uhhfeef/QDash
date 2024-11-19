@@ -5,20 +5,24 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
     // console.log("yAxisTitle:", yAxisTitle);
     
 
+    let trace;
+    let layout;
+
     if (chartType === 'pie') {
-        const trace = {
-            type: 'pie',  // Moving type to the top level
-            values: x,
-            labels: y,
-            // marker: {
-            //     colors: y.map((_, index) => 
-            //         `hsl(${index * (360 / y.length)}, 70%, 50%)`
-            //     )
-            // }
+        console.log("Creating pie chart with x:", x, "and y:", y);
+        trace = {
+            type: 'pie',
+            values: y,
+            labels: x,
+            marker: {
+                colors: y.map((_, index) => 
+                    `hsl(${index * (360 / y.length)}, 70%, 50%)`
+                )
+            }
         };    
 
         // layout for pie chart
-        var layout = {
+        layout = {
             title: title,
             autosize: true,
             height: 350,
@@ -30,14 +34,14 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
             }
         };
     } else {
-        var trace = { 
+        trace = { 
             x: x,
             y: y,
             type: chartType
         };
 
         // layout for other charts
-        var layout = {
+        layout = {
             title: title,
             xaxis: {
                 title: {
