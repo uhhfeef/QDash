@@ -33,8 +33,7 @@
                 <div class="chat-container bg-white rounded-xl shadow-sm p-6 mx-auto w-full max-w-2xl">
                     <div id="chat-messages" class="flex flex-col w-full max-h-[50vh] overflow-y-auto p-4 space-y-4 mb-4"></div>
                     <div class="chat-input-container flex gap-4 items-center">
-                        <input id="chat-input" placeholder="Create a dashboard..." class="flex-1 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all">
-                        <label for="csv-upload" class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-600 hover:to-purple-700 active:from-indigo-700 active:to-purple-800 transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2 cursor-pointer">
+                        <textarea id="chat-input" placeholder="Create a dashboard..." class="flex-1 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none overflow-hidden" rows="1"></textarea>                        <label for="csv-upload" class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-600 hover:to-purple-700 active:from-indigo-700 active:to-purple-800 transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2 cursor-pointer">
                             Upload CSV
                             <input type="file" id="csv-upload" class="hidden" accept=".csv">
                         </label>

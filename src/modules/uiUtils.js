@@ -23,6 +23,21 @@ export function addMessageToChat(content, role) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+export function autoResizeChatInput(element) {
+    // Reset height to auto to get the correct scrollHeight
+    element.style.height = 'auto';
+    // Set new height based on scrollHeight
+    element.style.height = `${element.scrollHeight}px`;
+    // Set a maximum height if needed (e.g., 200px)
+    const maxHeight = 200;
+    if (element.scrollHeight > maxHeight) {
+        element.style.height = `${maxHeight}px`;
+        element.style.overflowY = 'auto';
+    } else {
+        element.style.overflowY = 'hidden';
+    }
+}
+
 export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateTools }) {
     const sendButton = document.getElementById('send-button');
     const chatInput = document.getElementById('chat-input');
@@ -38,6 +53,13 @@ export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateT
                 handleChatSubmit();
             }
         });
+        
+        // Add input and keyup event listeners for auto-resizing
+        chatInput.addEventListener('input', () => autoResizeChatInput(chatInput));
+        chatInput.addEventListener('keyup', () => autoResizeChatInput(chatInput));
+        
+        // Initial resize
+        autoResizeChatInput(chatInput);
     }
 
     if (csvUpload) {
