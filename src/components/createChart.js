@@ -40,7 +40,13 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
             type: chartType,
             marker: {
                 color: 'rgb(38, 98, 217)'
-            }
+            },
+            line: chartType === 'line' ? {
+                shape: 'spline',
+                color: 'rgb(38, 98, 217)'
+            } : undefined,
+            fill: chartType === 'line' ? 'tozeroy' : undefined,
+            fillcolor: chartType === 'line' ? 'rgba(38, 98, 217, 0.2)' : undefined
         };
 
         // layout for other charts
