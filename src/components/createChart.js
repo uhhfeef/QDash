@@ -37,7 +37,10 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
         trace = { 
             x: x,
             y: y,
-            type: chartType
+            type: chartType,
+            marker: {
+                color: 'rgb(38, 98, 217)'
+            }
         };
 
         // layout for other charts
@@ -53,6 +56,7 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
                     text: yAxisTitle
                 }
             },
+            barcornerradius: 8,
             autosize: true
         };
     }
