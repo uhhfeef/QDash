@@ -1,6 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { OpenAI } from 'openai'
+import { observeOpenAI, Langfuse  } from "langfuse";
 import { setCookie, getCookie, deleteCookie } from 'hono/cookie'
 import bcrypt from 'bcryptjs'
 import { randomUUID } from 'node:crypto'
@@ -264,16 +265,28 @@ app.post('/api/chat', async (c) => {
   try {
     const { messages, tools, tool_choice } = await c.req.json()
 
-    const openai = new OpenAI({
-      apiKey: c.env.OPENAI_API_KEY
-    })
-
-    const completion = await openai.chat.completions.create({
+    const langfuse = new Langfuse({
+      publicKey: c.env.LANGFUSE_PUBLIC_KEY,
+      secretKey: c.env.LANGFUSE_SECRET_KEY,
+      baseUrl: c.env.LANGFUSE_HOST || "https://cloud.langfuse.com"
+    });
+    
+    const langfuseopenai = observeOpenAI(new OpenAI({ 
+      apiKey: c.env.OPENAI_API_KEY 
+    }), langfuse);
+    
+    const trace = langfuse.trace({});
+    
+    const completion = await langfuseopenai.chat.completions.create({
       model: 'gpt-4o-mini',
       messages,
       tools,
       tool_choice
-    })
+    });
+    
+    trace.update({});
+  
+  
 
     // Return the entire completion object so client can access choices[0].message
     return c.json(completion)
