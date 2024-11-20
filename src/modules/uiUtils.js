@@ -38,6 +38,55 @@ export function autoResizeChatInput(element) {
     }
 }
 
+export function addDeleteButton(wrapperDiv, id) {
+    // Create delete button
+    const deleteButton = document.createElement('button');
+    deleteButton.innerHTML = '×';
+    deleteButton.style.position = 'absolute';
+    deleteButton.style.right = '10px';
+    deleteButton.style.top = '10px';
+    deleteButton.style.background = 'rgba(255, 255, 255, 0.8)';
+    deleteButton.style.border = '1px solid #ddd';
+    deleteButton.style.borderRadius = '50%';
+    deleteButton.style.width = '24px';
+    deleteButton.style.height = '24px';
+    deleteButton.style.cursor = 'pointer';
+    deleteButton.style.fontSize = '18px';
+    deleteButton.style.display = 'flex';
+    deleteButton.style.alignItems = 'center';
+    deleteButton.style.justifyContent = 'center';
+    deleteButton.style.zIndex = '1000';
+    
+    // Add hover effect
+    deleteButton.onmouseover = () => {
+        deleteButton.style.background = 'rgba(255, 0, 0, 0.1)';
+        deleteButton.style.border = '1px solid #ff0000';
+    };
+    deleteButton.onmouseout = () => {
+        deleteButton.style.background = 'rgba(255, 255, 255, 0.8)';
+        deleteButton.style.border = '1px solid #ddd';
+    };
+    
+    // Add delete functionality
+    deleteButton.onclick = () => {
+        // Get the parent container before removing anything
+        const parentContainer = wrapperDiv.parentElement;
+        if (parentContainer && parentContainer.classList.contains('bg-white')) {
+            parentContainer.remove();
+        } else {
+            // Fallback: remove wrapper and try to clean up other elements
+            wrapperDiv.remove();
+            const originalElement = document.getElementById(id);
+            if (originalElement) {
+                originalElement.remove();
+            }
+        }
+    };
+    
+    wrapperDiv.appendChild(deleteButton);
+    return deleteButton;
+}
+
 export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateTools }) {
     const sendButton = document.getElementById('send-button');
     const chatInput = document.getElementById('chat-input');

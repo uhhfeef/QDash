@@ -1,3 +1,5 @@
+import { addDeleteButton } from '../modules/uiUtils.js';
+
 export function createCard(title, value, trend) {
     const valueToDisplay = Array.isArray(value) ? value[0] : value;
     const isNumeric = !isNaN(valueToDisplay) && valueToDisplay !== '';
@@ -5,6 +7,14 @@ export function createCard(title, value, trend) {
     // Create the container div with stats card styling
     const container = document.createElement('div');
     container.className = 'bg-white p-4 rounded-lg overflow-visible';
+    container.id = `card-${Date.now()}`;
+    
+    // Create wrapper div for positioning delete button
+    const contentWrapper = document.createElement('div');
+    contentWrapper.style.position = 'relative';
+    
+    // Add delete button using the utility function
+    addDeleteButton(contentWrapper, container.id);
     
     // Create and append title elements
     const titleWrapper = document.createElement('div');
@@ -15,19 +25,18 @@ export function createCard(title, value, trend) {
     titleElement.textContent = title;
     
     titleWrapper.appendChild(titleElement);
-    container.appendChild(titleWrapper);
-
+    
     // Create plot wrapper
     const plotWrapper = document.createElement('div');
     plotWrapper.style.width = '100%';
     plotWrapper.style.height = '100px';
     const plotId = `plot-${Date.now()}`;
     plotWrapper.id = plotId;
-    container.appendChild(plotWrapper);
 
     // Create trend display
+    let trendWrapper;
     if (trend !== undefined && trend !== null) {
-        const trendWrapper = document.createElement('div');
+        trendWrapper = document.createElement('div');
         trendWrapper.className = 'w-full flex justify-center mt-2';
         
         const trendElement = document.createElement('div');
@@ -40,9 +49,19 @@ export function createCard(title, value, trend) {
         trendElement.textContent = `${trendArrow}${Math.abs(trendValue)}% vs last month`;
         
         trendWrapper.appendChild(trendElement);
-        container.appendChild(trendWrapper);
     }
 
+    // Move all content into the wrapper instead of the container
+    contentWrapper.appendChild(titleWrapper);
+    contentWrapper.appendChild(plotWrapper);
+    if (trendWrapper) {
+        contentWrapper.appendChild(trendWrapper);
+    }
+    
+    // Add the wrapper to the container
+    container.appendChild(contentWrapper);
+
+    Z
     // Append container to the stats grid
     const statsGrid = document.querySelector('.stats-card-grid');
     statsGrid.appendChild(container);

@@ -1,9 +1,23 @@
 // Removed Plotly import since it's loaded from CDN
+import { addDeleteButton } from '../modules/uiUtils.js';
 
 export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) {
-    // console.log("Creating chart with xAxisTitle:", xAxisTitle);
-    // console.log("yAxisTitle:", yAxisTitle);
+    // Create a wrapper div for the chart and delete button
+    const existingElement = document.getElementById(id);
+    const wrapperDiv = document.createElement('div');
+    wrapperDiv.style.position = 'relative';
+    wrapperDiv.style.marginBottom = '20px';
     
+    // Create the chart container
+    const chartDiv = document.createElement('div');
+    chartDiv.id = `${id}-plot`;
+    wrapperDiv.appendChild(chartDiv);
+    
+    // Add delete button using the utility function
+    addDeleteButton(wrapperDiv, id);
+    
+    // Replace the existing element with our wrapper
+    existingElement.parentNode.replaceChild(wrapperDiv, existingElement);
 
     let trace;
     let layout;
@@ -67,7 +81,7 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
         };
     }
 
-    // Render the Plotly chart in the inner div
-    Plotly.newPlot(id, [trace], layout, {responsive: true});
+    // Render the Plotly chart in the chart div
+    Plotly.newPlot(`${id}-plot`, [trace], layout, {responsive: true});
     console.log("Chart created with x:", x, "and y:", y);
 }
