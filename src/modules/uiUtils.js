@@ -11,7 +11,7 @@ export function addMessageToChat(content, role) {
     }`;
     
     const innerDiv = document.createElement('div');
-    innerDiv.className = `max-w-[70%] rounded-lg p-3 ${
+    innerDiv.className = `max-w-[70%] rounded-lg p-3 break-words whitespace-pre-wrap ${
         role === 'user' 
             ? 'bg-blue-500 text-white ml-auto' 
             : 'bg-gray-200 text-gray-800'
