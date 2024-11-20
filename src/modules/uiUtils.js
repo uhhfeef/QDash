@@ -66,13 +66,23 @@ export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateT
         csvUpload.addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (file) {
+                const uploadLabel = document.getElementById('upload-label');
+                if (uploadLabel) {
+                    uploadLabel.textContent = 'Uploading...';
+                }
                 try {
                     await handleCsvUpload(file);
                     await updateTools();
-                    addMessageToChat(`Successfully loaded ${file.name}`, 'assistant');
+                    // addMessageToChat(`Successfully loaded ${file.name}`, 'assistant');
+                    if (uploadLabel) {
+                        uploadLabel.textContent = 'Upload CSV';
+                    }
                 } catch (error) {
                     console.error('Error uploading CSV:', error);
                     showError(`Failed to upload CSV: ${error.message}`);
+                    if (uploadLabel) {
+                        uploadLabel.textContent = 'Upload CSV';
+                    }
                 }
             }
         });
