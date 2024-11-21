@@ -1,10 +1,8 @@
 import { addMessageToChat } from './uiUtils.js';
-// import { executeSqlQuery } from '../services/sqlQuery.js';  // Comment out or remove this line
 import { executeDuckDbQuery } from '../services/duckDbService.js';
 import { createChart } from '../components/createChart.js';
 import { createSpace } from '../components/createSpaceForCharts.js';
 import { createCard } from '../components/createCard.js';
-import { createPieChart } from '../components/createPieChart.js';
 import { createStackedBarChart } from '../components/createStackedBarchart.js';
 export async function handleToolCall(toolCall, messages) {
     const args = JSON.parse(toolCall.function.arguments);
@@ -72,23 +70,7 @@ export async function handleToolCall(toolCall, messages) {
             createStackedBarChart(stackedBarChartId, window.x, window.y, args.stackBy, args.title, args.xAxisTitle, args.yAxisTitle);
             toolResult = { success: true, message: 'Stacked bar chart created successfully' };
             addMessageToChat(`Creating stacked bar chart with provided data.`, 'assistant');
-            break;
-
-        case 'createPieChart':
-            console.log('%c🥧 Creating Pie Chart:', 'color: #795548; font-weight: bold;', {
-                x: window.x,
-                y: window.y,
-                title: args.title
-            });
-            const pieChartId = await createSpace();
-            const values = typeof window.x[0] === 'number' ? window.x : window.y;
-            const labels = typeof window.x[0] === 'number' ? window.y : window.x;
-            createPieChart(pieChartId, values, labels, args.title);
-            toolResult = { success: true, message: 'Pie chart created successfully' };
-            addMessageToChat(`Creating pie chart with provided data.`, 'assistant');
-            break;
-        
-
+            break;    
     }
 
     console.log('%cTool Result:', 'color: #009688; font-weight: bold;', toolResult);

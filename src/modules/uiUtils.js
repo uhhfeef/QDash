@@ -1,5 +1,41 @@
 export function showError(message) {
-    addMessageToChat(`Error: ${message}`, 'assistant');
+    const container = document.getElementById('notification-container');
+    
+    // Clear any existing notifications
+    if (container.firstChild) {
+        container.firstChild.remove();
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = 'bg-red-50 text-red-600 px-4 py-2 rounded-lg text-sm flex justify-between items-center transition-all duration-300 opacity-0';
+    
+    const messageSpan = document.createElement('span');
+    messageSpan.textContent = message;
+    
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '×';
+    closeButton.className = 'ml-3 hover:text-red-800';
+    closeButton.onclick = () => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    };
+    
+    notification.appendChild(messageSpan);
+    notification.appendChild(closeButton);
+    container.appendChild(notification);
+    
+    // Trigger fade in
+    setTimeout(() => {
+        notification.style.opacity = '1';
+    }, 10);
+    
+    // Auto dismiss after 5 seconds
+    setTimeout(() => {
+        if (notification.parentElement) {
+            notification.style.opacity = '0';
+            setTimeout(() => notification.remove(), 300);
+        }
+    }, 5000);
 }
 
 export function addMessageToChat(content, role) {
@@ -93,13 +129,20 @@ export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateT
     const csvUpload = document.getElementById('csv-upload');
     
     if (sendButton) {
-        sendButton.addEventListener('click', () => handleChatSubmit());
+        sendButton.addEventListener('click', () => {
+            if (chatInput.value.trim()) {
+                handleChatSubmit();
+            }
+        });
     }
     
     if (chatInput) {
-        chatInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                handleChatSubmit();
+        chatInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                if (chatInput.value.trim()) {
+                    handleChatSubmit();
+                }
             }
         });
         

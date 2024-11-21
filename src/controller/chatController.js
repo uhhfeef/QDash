@@ -3,7 +3,7 @@
  */
 
 import { tools } from '../services/config.js';
-import { addMessageToChat, setupEventListeners, showError } from '../modules/uiUtils.js';
+import { addMessageToChat, showError } from '../modules/uiUtils.js';
 import { handleToolCall } from '../modules/toolExecutor.js';
 import { createChatManager, MAX_ITERATIONS } from '../modules/chatManager.js';
 import { sendChatRequest } from '../services/chatApiRequest.js';

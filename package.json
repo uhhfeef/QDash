@@ -9,7 +9,8 @@
     "start": "wrangler dev --assets dist",
     "build:css": "tailwindcss -i ./src/styles/styles.css -o ./dist/styles/output.css",
     "watch:css": "tailwindcss -i ./src/styles/styles.css -o ./dist/styles/output.css --watch",
-    "dev": "npm run watch:css & npm start"
+    "dev": "npm run watch:css & npm start",
+    "local": "node local-server.js"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.4",
