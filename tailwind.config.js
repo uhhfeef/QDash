@@ -5,7 +5,6 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}"
   ],
   safelist: [
-    // Add specific classes that are created dynamically
     'text-gray-700',
     'text-base',
     'font-semibold',

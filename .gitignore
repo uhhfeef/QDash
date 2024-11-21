@@ -1,3 +1,5 @@
+docs/
+.wrangler/
 # Dependencies
 node_modules/
 /.pnp

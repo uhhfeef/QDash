@@ -45,25 +45,52 @@ app.use('*', async (c, next) => {
   return response
 })
 
-// CORS middleware
+// CORS middleware with specific origin
 app.use('*', cors({
-  origin: 'https://qdash.afeefkhan99.workers.dev',  // Must be specific when using credentials
+  origin: ['https://qdash.afeefkhan99.workers.dev'],
   allowHeaders: ['Content-Type', 'Authorization'],
   allowMethods: ['POST', 'GET', 'OPTIONS'],
-  credentials: true
+  credentials: true,
+  maxAge: 86400
 }))
+
+// Security headers configuration
+const DEFAULT_SECURITY_HEADERS = {
+  "X-XSS-Protection": "0",
+  "X-Frame-Options": "DENY",
+  "X-Content-Type-Options": "nosniff",
+  "Referrer-Policy": "strict-origin-when-cross-origin",
+  "Cross-Origin-Embedder-Policy": "require-corp",
+  "Cross-Origin-Opener-Policy": "same-origin",
+  "Cross-Origin-Resource-Policy": "same-origin",
+  "Content-Security-Policy": [
+    "default-src 'self' https://*.workers.dev",
+    "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.workers.dev cdn.jsdelivr.net cdn.plot.ly",
+    "style-src 'self' 'unsafe-inline' https://*.workers.dev cdn.jsdelivr.net",
+    "img-src 'self' data: blob: https://*.workers.dev",
+    "font-src 'self' data: https://*.workers.dev",
+    "connect-src 'self' https://*.workers.dev https://cloud.langfuse.com",
+    "frame-ancestors 'none'",
+    "form-action 'self'",
+    "base-uri 'self'",
+    "upgrade-insecure-requests"
+  ].join('; '),
+  "Strict-Transport-Security": "max-age=63072000; includeSubDomains; preload"
+}
 
 // Security headers middleware
 app.use('*', async (c, next) => {
   const response = await next()
   if (response instanceof Response) {
-    response.headers.set('X-XSS-Protection', '1; mode=block')
-    response.headers.set('X-Content-Type-Options', 'nosniff')
-    response.headers.set('X-Frame-Options', 'DENY')
-    response.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin')
-    response.headers.set('Content-Security-Policy', "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';")
-    response.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains')
-    response.headers.set('Permissions-Policy', 'geolocation=(), microphone=()')
+    const newHeaders = new Headers(response.headers)
+    Object.entries(DEFAULT_SECURITY_HEADERS).forEach(([key, value]) => {
+      newHeaders.set(key, value)
+    })
+    return new Response(response.body, {
+      status: response.status,
+      statusText: response.statusText,
+      headers: newHeaders
+    })
   }
   return response
 })
@@ -285,7 +312,6 @@ app.post('/api/chat', async (c) => {
     });
     
     trace.update({});
-  
   
 
     // Return the entire completion object so client can access choices[0].message
