@@ -14,6 +14,7 @@ export function createChatManager() {
     }
 
     function getInitialMessages(userMessage) {
+        console.log('history:', formatHistory());
         return [
             {
                 "role": "system", 
@@ -21,7 +22,7 @@ export function createChatManager() {
             },
             {
                 "role": "user", 
-                "content": userMessage + " [Context - Previous messages:\n]" + formatHistory()
+                "content": userMessage 
             }
         ];
     }
