@@ -292,17 +292,39 @@ app.post('/api/chat', async (c) => {
   try {
     const { messages, tools, tool_choice } = await c.req.json()
 
-    const langfuse = new Langfuse({
-      publicKey: c.env.LANGFUSE_PUBLIC_KEY,
-      secretKey: c.env.LANGFUSE_SECRET_KEY,
-      baseUrl: c.env.LANGFUSE_HOST || "https://cloud.langfuse.com"
-    });
+    // const langfuse = new Langfuse({
+    //   publicKey: c.env.LANGFUSE_PUBLIC_KEY,
+    //   secretKey: c.env.LANGFUSE_SECRET_KEY,
+    //   baseUrl: c.env.LANGFUSE_HOST || "https://cloud.langfuse.com"
+    // });
+
+    // const langfuse = new Langfuse({
+    //   publicKey: 'pk-lf-641900c7-d8e1-4660-be5b-ec197bdfc030',
+    //   secretKey: 'sk-lf-7f978394-cedc-4152-aa84-855775601425',
+    //   baseUrl: 'https://cloud.langfuse.com'
+    // });
     
+    // const langfuseopenai = observeOpenAI(new OpenAI({ 
+    //   apiKey: c.env.OPENAI_API_KEY 
+    // }), {
+    //   clientInitParams: {
+    //     publicKey: "pk-lf-641900c7-d8e1-4660-be5b-ec197bdfc030",
+    //     secretKey: "sk-lf-7f978394-cedc-4152-aa84-855775601425",
+    //     baseUrl: "https://cloud.langfuse.com",
+    //   },
+    // });
+    
+    // const trace = langfuse.trace({});
+
     const langfuseopenai = observeOpenAI(new OpenAI({ 
       apiKey: c.env.OPENAI_API_KEY 
-    }), langfuse);
-    
-    const trace = langfuse.trace({});
+    }), {
+      clientInitParams: {
+        publicKey: "pk-lf-641900c7-d8e1-4660-be5b-ec197bdfc030",
+        secretKey: "sk-lf-7f978394-cedc-4152-aa84-855775601425",
+        baseUrl: "https://cloud.langfuse.com",
+      },
+    });
     
     const completion = await langfuseopenai.chat.completions.create({
       model: 'gpt-4o-mini',
@@ -311,8 +333,9 @@ app.post('/api/chat', async (c) => {
       tool_choice
     });
     
-    trace.update({});
-  
+    // trace.update({});
+
+    await langfuseopenai.flushAsync();
 
     // Return the entire completion object so client can access choices[0].message
     return c.json(completion)

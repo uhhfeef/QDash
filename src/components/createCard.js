@@ -61,7 +61,7 @@ export function createCard(title, value, trend) {
     // Add the wrapper to the container
     container.appendChild(contentWrapper);
 
-    Z
+    
     // Append container to the stats grid
     const statsGrid = document.querySelector('.stats-card-grid');
     statsGrid.appendChild(container);

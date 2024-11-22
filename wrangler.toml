@@ -32,3 +32,6 @@ vars = { ENVIRONMENT = "development" }
 
 [observability]
 enabled = true
+
+[outbound]
+allow = ["https://cloud.langfuse.com"]
