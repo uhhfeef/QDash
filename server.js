@@ -287,6 +287,14 @@ app.get('/api/auth-status', async (c) => {
 })
 */
 
+// Langfuse configuration endpoint
+app.get('/api/config/langfuse', async (c) => {
+  return c.json({
+    publicKey: c.env.LANGFUSE_PUBLIC_KEY,
+    baseUrl: "https://cloud.langfuse.com"
+  });
+});
+
 // Chat endpoint
 app.post('/api/chat', async (c) => {
   try {
@@ -324,8 +332,14 @@ app.post('/api/chat', async (c) => {
     
     await langfuseopenai.flushAsync();
 
-    // Return the entire completion object so client can access choices[0].message
-    return c.json(completion)
+    // Add trace_id to the response
+    const response = {
+      ...completion,
+      trace_id: completion.id // Langfuse uses OpenAI completion ID as trace ID
+    };
+
+    // Return the response with trace_id
+    return c.json(response)
   } catch (error) {
     console.error('[DEBUG] Chat error:', error)
     console.error('[DEBUG] Full error object:', JSON.stringify(error, null, 2))

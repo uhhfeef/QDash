@@ -37,18 +37,18 @@ export async function handleChatSubmit() {
 
             console.log('%c Sending chat request to LLM...', 'color: #0066ff; font-weight: bold;');
             const data = await sendChatRequest(messages, tools);
+            
+            console.log('%c Received response with trace_id:', 'color: #0066ff; font-weight: bold;', data.trace_id);
 
-            // console.log('%c Received chat response from LLM...', data);
             const message = data.choices[0].message;
             
             messages.push(message);
-            // console.log('%c Updated messages:', 'color: #ff6600; font-weight: bold;', messages);
             chatManager.addMessage(message);
 
             console.log('%c Received message:', 'color: #ff6600; font-weight: bold;', message);
 
             if (message.content) {
-                addMessageToChat(message.content, 'assistant');
+                addMessageToChat(message.content, 'assistant', data.trace_id);
                 if (message.content.includes('DONE')) break;
             }
             
@@ -69,4 +69,3 @@ export async function handleChatSubmit() {
         addMessageToChat('Sorry, there was an error processing your request.', 'assistant');
     }
 }
-

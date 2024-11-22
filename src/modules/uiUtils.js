@@ -1,3 +1,48 @@
+import { LangfuseWeb } from "langfuse";
+
+let langfuseWeb = null;
+
+// Initialize Langfuse with configuration from server
+async function initLangfuse() {
+    try {
+        const response = await fetch('/api/config/langfuse');
+        const config = await response.json();
+        langfuseWeb = new LangfuseWeb({
+            publicKey: config.publicKey,
+            baseUrl: "https://cloud.langfuse.com",
+        });
+        console.log('Langfuse initialized successfully');
+    } catch (error) {
+        console.error('Error initializing Langfuse:', error);
+    }
+}
+
+// Initialize Langfuse when the module loads
+initLangfuse();
+
+const handleUserFeedback = async (traceId, value) => {
+    try {
+        console.log('Sending feedback for value:', value, 'and traceId:', traceId);
+        if (!langfuseWeb) {
+            console.log('Langfuse not initialized, retrying initialization...');
+            await initLangfuse();
+        }
+        if (!langfuseWeb) {
+            throw new Error('Failed to initialize Langfuse');
+        }
+        await langfuseWeb.score({
+            traceId,
+            name: "user_feedback",
+            value,
+        });
+        console.log('Feedback sent successfully');
+        await langfuseWeb.flushAsync();
+
+    } catch (error) {
+        console.error('Error sending feedback:', error);
+    }
+};
+
 export function showError(message) {
     const container = document.getElementById('notification-container');
     
@@ -38,7 +83,7 @@ export function showError(message) {
     }, 5000);
 }
 
-export function addMessageToChat(content, role) {
+export function addMessageToChat(content, role, traceId) {
     const chatMessages = document.getElementById('chat-messages');
     const messageDiv = document.createElement('div');
     
@@ -47,12 +92,50 @@ export function addMessageToChat(content, role) {
     }`;
     
     const innerDiv = document.createElement('div');
-    innerDiv.className = `max-w-[70%] rounded-lg p-3 break-words whitespace-pre-wrap ${
+    innerDiv.className = `max-w-[70%] rounded-lg p-3 break-words whitespace-pre-wrap relative ${
         role === 'user' 
             ? 'bg-blue-500 text-white ml-auto' 
             : 'bg-gray-200 text-gray-800'
     }`;
     innerDiv.textContent = content;
+    
+    // Add thumbs up/down buttons for messages containing 'DONE'
+    if (content.includes('DONE') && role === 'assistant') {
+        const feedbackDiv = document.createElement('div');
+        feedbackDiv.className = 'hidden group-hover:flex gap-2 absolute -bottom-2 -right-2 bg-white rounded-lg shadow-md p-1';
+        
+        const thumbsUp = document.createElement('button');
+        thumbsUp.innerHTML = '👍';
+        thumbsUp.className = 'hover:scale-110 transition-transform';
+        thumbsUp.onclick = async (e) => {
+            console.log('Thumbs up clicked');
+            e.stopPropagation();
+            thumbsUp.classList.add('selected');
+            thumbsDown.classList.remove('selected');
+            if (traceId) {
+                await handleUserFeedback(traceId, 1);
+            }
+        };
+        
+        const thumbsDown = document.createElement('button');
+        thumbsDown.innerHTML = '👎';
+        thumbsDown.className = 'hover:scale-110 transition-transform';
+        thumbsDown.onclick = async (e) => {
+            e.stopPropagation();
+            thumbsDown.classList.add('selected');
+            thumbsUp.classList.remove('selected');
+            if (traceId) {
+                await handleUserFeedback(traceId, 0);
+            }
+        };
+        
+        feedbackDiv.appendChild(thumbsUp);
+        feedbackDiv.appendChild(thumbsDown);
+        innerDiv.appendChild(feedbackDiv);
+        
+        // Add group class to enable hover functionality
+        innerDiv.classList.add('group', 'hover:shadow-lg');
+    }
     
     messageDiv.appendChild(innerDiv);
     chatMessages.appendChild(messageDiv);
