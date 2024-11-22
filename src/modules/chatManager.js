@@ -21,7 +21,7 @@ export function createChatManager() {
             },
             {
                 "role": "user", 
-                "content": userMessage + " Context - Previous messages:\n" + formatHistory()
+                "content": userMessage + " [Context - Previous messages:\n]" + formatHistory()
             }
         ];
     }

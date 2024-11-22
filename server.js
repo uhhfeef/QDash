@@ -291,39 +291,28 @@ app.get('/api/auth-status', async (c) => {
 app.post('/api/chat', async (c) => {
   try {
     const { messages, tools, tool_choice } = await c.req.json()
-
-    // const langfuse = new Langfuse({
-    //   publicKey: c.env.LANGFUSE_PUBLIC_KEY,
-    //   secretKey: c.env.LANGFUSE_SECRET_KEY,
-    //   baseUrl: c.env.LANGFUSE_HOST || "https://cloud.langfuse.com"
-    // });
-
-    // const langfuse = new Langfuse({
-    //   publicKey: 'pk-lf-641900c7-d8e1-4660-be5b-ec197bdfc030',
-    //   secretKey: 'sk-lf-7f978394-cedc-4152-aa84-855775601425',
-    //   baseUrl: 'https://cloud.langfuse.com'
-    // });
     
-    // const langfuseopenai = observeOpenAI(new OpenAI({ 
-    //   apiKey: c.env.OPENAI_API_KEY 
-    // }), {
-    //   clientInitParams: {
-    //     publicKey: "pk-lf-641900c7-d8e1-4660-be5b-ec197bdfc030",
-    //     secretKey: "sk-lf-7f978394-cedc-4152-aa84-855775601425",
-    //     baseUrl: "https://cloud.langfuse.com",
-    //   },
-    // });
-    
-    // const trace = langfuse.trace({});
+    // Get session ID from cookie
+    const sessionId = getCookie(c, 'session');
+
+    // Retrieve session data from KV store
+    const sessionDataStr = await c.env.SESSION_STORE.get(sessionId);
+
+    const sessionData = JSON.parse(sessionDataStr);
+    console.log('[DEBUG] Retrieved session data:', sessionData);
 
     const langfuseopenai = observeOpenAI(new OpenAI({ 
       apiKey: c.env.OPENAI_API_KEY 
     }), {
       clientInitParams: {
-        publicKey: "pk-lf-641900c7-d8e1-4660-be5b-ec197bdfc030",
-        secretKey: "sk-lf-7f978394-cedc-4152-aa84-855775601425",
+        publicKey: c.env.LANGFUSE_PUBLIC_KEY,
+        secretKey: c.env.LANGFUSE_SECRET_KEY,
         baseUrl: "https://cloud.langfuse.com",
       },
+      userId: String(sessionData.userId), // Convert to string
+      metadata: {
+        username: sessionData.username
+      }
     });
     
     const completion = await langfuseopenai.chat.completions.create({
@@ -333,8 +322,6 @@ app.post('/api/chat', async (c) => {
       tool_choice
     });
     
-    // trace.update({});
-
     await langfuseopenai.flushAsync();
 
     // Return the entire completion object so client can access choices[0].message
