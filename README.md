@@ -54,16 +54,9 @@ Your private dashboard creator will be available at `http://localhost:8787`.
 
 ### Creating Your First Dashboard
 
-1. Navigate to `http://localhost:8787` after starting the server
-2. Click "New Dashboard" in the top right
-3. Choose a template or start from scratch
-
-### Importing Data
-
-QDash supports the following data formats:
-- CSV
-
-Simply drag and drop your files or use the import button in the dashboard interface.
+1. Navigate to `http://localhost:3000` after starting the server
+2. Click the "Upload CSV" button and select a CSV file
+3. Start querying in natural language to create your first dashboard
 
 ### Using AI Features
 
