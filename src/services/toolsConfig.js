@@ -1,9 +1,3 @@
-/**
- * @fileoverview Tool definitions for AI interactions
- */
-
-import { XAxis } from "recharts";
-
 export function generateTools(tableSchema) {
     return [
         {
