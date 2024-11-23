@@ -8,6 +8,62 @@ import { randomUUID } from 'node:crypto'
 
 const app = new Hono()
 
+// Security: Rate limiting
+const rateLimit = new Map();
+const RATE_LIMIT = 60; // requests per minute
+const RATE_WINDOW = 60000; // 1 minute in milliseconds
+
+// Security middleware
+app.use('*', async (c, next) => {
+  // 1. Add security headers
+  c.header('X-Content-Type-Options', 'nosniff');
+  c.header('X-Frame-Options', 'DENY');
+  c.header('X-XSS-Protection', '1; mode=block');
+  c.header('Strict-Transport-Security', 'max-age=31536000; includeSubDomains');
+  
+  // 2. Block WordPress and common CMS scanning attempts
+  if (c.req.path.toLowerCase().includes('/wp-') || 
+      c.req.path.toLowerCase().includes('/wordpress') ||
+      c.req.path.toLowerCase().includes('/admin') ||
+      c.req.path.toLowerCase().includes('/joomla') ||
+      c.req.path.toLowerCase().includes('/drupal')) {
+    console.log(`[Security] Blocked CMS scan attempt: ${c.req.path} from IP: ${c.req.header('x-forwarded-for') || 'unknown'}`);
+    return c.json({ error: 'Not Found' }, 404);
+  }
+
+  // 3. Rate limiting
+  const ip = c.req.header('x-forwarded-for') || 'unknown';
+  const now = Date.now();
+  
+  // Clean up old entries and check rate limit
+  if (rateLimit.has(ip)) {
+    const requests = rateLimit.get(ip).filter(time => now - time < RATE_WINDOW);
+    if (requests.length >= RATE_LIMIT) {
+      console.log(`[Security] Rate limit exceeded for IP: ${ip}`);
+      return c.json({ error: 'Too Many Requests' }, 429);
+    }
+    requests.push(now);
+    rateLimit.set(ip, requests);
+  } else {
+    rateLimit.set(ip, [now]);
+  }
+
+  // Clean up rate limit map every hour
+  if (now % 3600000 < 1000) { // Once per hour-ish
+    const hourAgo = now - 3600000;
+    for (const [ip, times] of rateLimit.entries()) {
+      const recentTimes = times.filter(time => time > hourAgo);
+      if (recentTimes.length === 0) {
+        rateLimit.delete(ip);
+      } else {
+        rateLimit.set(ip, recentTimes);
+      }
+    }
+  }
+
+  await next();
+});
+
 // List of public paths that don't require authentication
 const publicPaths = [
   '/login',
