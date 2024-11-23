@@ -185,7 +185,8 @@ app.post('/api/login', async (c) => {
     
     const sessionData = {
       userId: user.id,
-      username: user.username
+      username: user.username,
+      email: user.email
     };
     console.log('[DEBUG] Session data:', sessionData);
     
@@ -291,7 +292,6 @@ app.get('/api/auth-status', async (c) => {
 app.get('/api/config/langfuse', async (c) => {
   return c.json({
     publicKey: c.env.LANGFUSE_PUBLIC_KEY,
-    secretKey: c.env.LANGFUSE_SECRET_KEY,
     baseUrl: "https://cloud.langfuse.com"
   });
 });
@@ -320,7 +320,8 @@ app.post('/api/chat', async (c) => {
       },
       userId: String(sessionData.userId), // Convert to string
       metadata: {
-        username: sessionData.username
+        username: sessionData.username,
+        email: sessionData.email
       }
     });
     
