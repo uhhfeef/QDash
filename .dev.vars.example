@@ -1,0 +1,9 @@
+# Cloudflare Workers KV Bindings
+ASSETS=your_assets_kv_binding
+SESSION_STORE=your_session_store_kv_binding
+DB=your_database_binding
+
+# API Keys
+OPENAI_API_KEY=your_openai_api_key_here
+LANGFUSE_PUBLIC_KEY=your_langfuse_public_key_here
+LANGFUSE_SECRET_KEY=your_langfuse_secret_key_here
