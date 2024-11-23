@@ -4,6 +4,7 @@ docs/
 node_modules/
 /.pnp
 .pnp.js
+migrations/
 
 # Environment variables
 .env
