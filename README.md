@@ -1,223 +1,98 @@
-# QDash - The Fastest Private Dashboard Creator with AI
+# QDash
 
-QDash is a lightning-fast, completely private dashboard creation platform that leverages AI for instant data visualization. Built with security-first architecture and optimized for speed, it allows you to create beautiful, interactive dashboards in seconds while keeping your data completely private and secure.
-
-## Key Features
-
-- ⚡️ Instant dashboard creation with AI assistance
-- 🔒 Complete data privacy - all processing happens locally
-- 🚀 Zero-latency data visualization
-- 🎯 One-click chart generation
-- 🛡️ End-to-end encryption
-- 🎨 Real-time customization
-- ⚙️ Local-first architecture
-
-## Prerequisites
-
-- Node.js (v16 or higher)
-- npm or yarn
-- OpenAI API key (optional, for AI features)
+An AI-powered dashboard for data visualization and analysis.
 
 ## Quick Start
 
-1. Clone the repository:
-```bash
-git clone https://github.com/uhhfeef/qdash.git
-cd qdash
-```
-
-2. Install dependencies:
+1. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Set up environment variables:
+2. Set up environment:
 ```bash
 cp .env.example .env
+# Add your OpenAI API key to .env
 ```
 
-4. Start the local server:
+3. Start the server:
 ```bash
-npm run dev
+npm run local
 ```
 
-Your private dashboard creator will be available at `http://localhost:8787`.
+4. Open `http://localhost:3000` in your browser
 
-## Why QDash?
+## Features
 
-- **Privacy First**: Your data never leaves your machine. All processing happens locally.
-- **Lightning Fast**: Create complex dashboards in seconds with AI assistance.
-- **No Learning Curve**: Natural language commands to create and modify charts.
-- **Complete Control**: Full customization capabilities with zero compromises.
+- 📊 AI-powered chart generation
+- 💬 Natural language queries
+- 📈 Interactive data visualization
+- 📁 CSV file support
+- 🤖 OpenAI integration
 
 ## Usage Guide
 
 ### Creating Your First Dashboard
 
-1. Navigate to `http://localhost:3000` after starting the server
+1. Navigate to `http://localhost:3000`
 2. Click the "Upload CSV" button and select a CSV file
 3. Start querying in natural language to create your first dashboard
 
 ### Using AI Features
 
-Example commands that work well with QDash:
+QDash understands natural language commands. Try these examples:
 - "Create a bar chart showing sales by region"
-- "Plot monthly revenue trends"
+- "Show me a line graph of monthly revenue"
 - "Generate a pie chart of customer demographics"
-- "Compare this year's sales with last year"
+- "Plot the trend of website traffic over time"
 
-### Basic Operations
+### Tips for Best Results
 
-1. **Adding Charts**:
-   - Upload a CSV file with the CSV upload button
-   - Type in natural language directly in the chatbox to create a chart
+1. **Data Preparation**:
+   - Ensure your CSV files have clear column headers
+   - Clean your data before uploading
+   - Remove any unnecessary columns
 
-2. **Customizing Visualizations**:
-   - Coming soon: Drag and drop to move, resize, and rotate charts
-   - Coming soon: Edit and customize chart properties
+2. **Query Tips**:
+   - Be specific about the chart type you want
+   - Mention the columns or metrics you're interested in
+   - Specify any filters or time ranges
 
-## Environment Setup
+## Development Setup
 
-1. Create a `.env` file in the root directory:
-```bash
-cp .env.example .env
-```
+### Prerequisites
 
-2. Add the following environment variables to your `.env` file:
+- Node.js 18 or higher
+- npm or yarn
+- OpenAI API key
+
+### Environment Variables
+
+Create a `.env` file with:
 ```env
-# Required
-OPENAI_API_KEY=your_openai_api_key_here
-
-# Optional - for analytics
-LANGFUSE_SECRET_KEY=your_langfuse_secret_key
-LANGFUSE_PUBLIC_KEY=your_langfuse_public_key
-LANGFUSE_HOST=your_langfuse_host
-
-# Security
-SESSION_SECRET=your_session_secret  # Used for cookie encryption
+OPENAI_API_KEY=your_openai_api_key
 ```
 
-3. Make sure the environment variables are loaded:
-   - For local development, the variables will be automatically loaded from `.env`
-   - For production, set these variables in your deployment environment
+### Local Development
 
-## Helper Commands
-
-Here are some useful commands for development:
-
+1. Install dependencies:
 ```bash
-# Start local development server (with hot reload)
-npm run dev:local
-
-# Start local server (production build)
-npm run local
-
-# Build the project
-npm run build
-
-```
-
-## Troubleshooting
-
-### Common Issues
-
-1. **OpenAI API Issues**
-   - Error: "Failed to process chat request"
-   - Solution: Check your OpenAI API key in `.env`
-   - Make sure you have sufficient API credits
-
-2. **Session/Login Issues**
-   - Error: "Unauthorized" or "Invalid session"
-   - Solution: Clear browser cookies and try logging in again
-   - Default credentials: username: `demo`, password: `demo123`
-
-3. **Port Already in Use**
-   - The server will automatically find an available port
-   - Default port is 3000, will increment if busy
-
-4. **Missing Dependencies**
-   ```bash
-   # Reinstall dependencies
-   npm install
-
-   # If you have issues with specific packages
-   npm install dotenv openai @hono/node-server
-   ```
-
-### Development Tips
-
-1. **Checking Logs**
-   - Open browser DevTools (F12)
-   - Check Console for error messages
-   - Server logs will appear in your terminal
-
-2. **Testing the API**
-   - Use the built-in chat interface
-   - All API endpoints require authentication except:
-     - `/api/login`
-     - `/api/register`
-
-3. **File Locations**
-   - Built files are in `dist/`
-   - Source files are in `src/`
-   - Static assets should go in `public/`
-
-## Contributing
-
-We welcome contributions! Please follow these steps:
-
-1. Fork the repository
-2. Create a feature branch
-3. Commit your changes
-4. Push to your fork
-5. Submit a pull request
-
-
-### Upgrading
-
-To upgrade to the latest version:
-
-```bash
-git pull origin main
 npm install
+```
+
+2. Start development server:
+```bash
+npm run dev:local
+```
+
+3. Build for production:
+```bash
 npm run build
-```
-
-## Project Structure
-
-```
-qdash/
-├── config/           # Configuration files
-├── db/              # Database related files
-├── docs/            # Documentation
-├── public/          # Static assets
-├── src/             # Source code
-│   ├── styles/      # CSS files
-│   └── js/          # JavaScript files
-├── server.js        # Main server file
-└── webpack.config.js # Webpack configuration
-```
-
-## Development
-
-### Available Scripts
-
-- `npm run dev` - Start local development server
-- `npm run build` - Create optimized production build
-- `npm run build:css` - Build Tailwind CSS
-- `npm start` - Launch production server
-
-### Environment Setup
-
-Create a `.env` file with your configuration:
-
-```env
-OPENAI_API_KEY=your_openai_api_key (optional)
 ```
 
 ## Deployment Options
 
-### Local Development (Recommended)
+### Local Deployment (Recommended)
 This is the standard way to run QDash. No Cloudflare account required.
 
 1. Build the application:
@@ -232,28 +107,30 @@ npm run local
 
 Your dashboard will be available at `http://localhost:3000`
 
-### Cloudflare Workers Deployment (Restricted)
-⚠️ **Note: This deployment method is restricted to authorized users only.**
+## Troubleshooting
 
-Deployment to Cloudflare Workers requires:
-- Access to the authorized Cloudflare account
-- Access to the project's D1 database (`qdash-users`)
-- Access to the project's KV namespace (`SESSION_STORE`)
-- Valid Cloudflare API tokens and secrets
+### Common Issues
 
-If you are an authorized deployer, you will need:
-1. The required Cloudflare credentials
-2. Access to the project's Cloudflare resources
-3. Contact the project maintainers for deployment access
+1. **OpenAI API Issues**
+   - Check your API key in `.env`
+   - Verify API credits/quota
 
-For security reasons, the Cloudflare deployment process is restricted. Please use the local development setup for personal use.
+2. **Server Issues**
+   - Ensure port 3000 is available
+   - Check Node.js version (18+)
+
+3. **Data Issues**
+   - Verify CSV format
+   - Check file encoding (UTF-8)
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
 
 ## License
 
-This project is licensed under the ISC License - see the [LICENSE](LICENSE) file for details.
-
-## Acknowledgments
-
-- Built with [Hono.js](https://honojs.dev/)
-- UI components from [Tailwind CSS](https://tailwindcss.com/)
-- Charts powered by [Plotly.js](https://plotly.com/javascript/)
+This project is licensed under the [MIT License](LICENSE). See the [LICENSE](LICENSE) file for details.
