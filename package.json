@@ -2,7 +2,7 @@
   "name": "chart-dashboard",
   "version": "1.0.0",
   "description": "Interactive chart dashboard with OpenAI integration",
-  "main": "server.js",
+  "main": "backend/server.js",
   "type": "module",
   "scripts": {
     "build": "npm run build:css && webpack --mode production",
@@ -10,7 +10,7 @@
     "build:css": "tailwindcss -i ./src/styles/styles.css -o ./dist/styles/output.css",
     "watch:css": "tailwindcss -i ./src/styles/styles.css -o ./dist/styles/output.css --watch",
     "dev": "npm run watch:css & npm start",
-    "local": "node local-server.js",
+    "local": "node backend/local-server.js",
     "dev:local": "npm run watch:css & npm run local"
   },
   "dependencies": {

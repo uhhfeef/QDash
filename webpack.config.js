@@ -7,7 +7,7 @@ import TerserPlugin from 'terser-webpack-plugin';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-export default {
+const config = {
     mode: 'production',
     entry: {
         main: './src/index.js'
@@ -19,37 +19,6 @@ export default {
         clean: true,
         publicPath: '/',
         assetModuleFilename: 'assets/[name][ext]'
-    },
-    devtool: 'source-map',
-    externals: {
-        'plotly.js-dist': 'Plotly'
-    },
-    optimization: {
-        minimize: true,
-        minimizer: [new TerserPlugin({
-            terserOptions: {
-                compress: {
-                    drop_console: false,
-                },
-            },
-        })],
-        splitChunks: {
-            chunks: 'all',
-            minSize: 0,
-            cacheGroups: {
-                vendor: {
-                    test: /[\\/]node_modules[\\/]/,
-                    name: 'vendors',
-                    chunks: 'all'
-                },
-                common: {
-                    name: 'common',
-                    minChunks: 2,
-                    chunks: 'all',
-                    priority: -20
-                }
-            }
-        },
     },
     module: {
         rules: [
@@ -82,7 +51,38 @@ export default {
                     'postcss-loader'
                 ]
             }
-        ],
+        ]
+    },
+    devtool: 'source-map',
+    externals: {
+        'plotly.js-dist': 'Plotly'
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [new TerserPlugin({
+            terserOptions: {
+                compress: {
+                    drop_console: false,
+                },
+            },
+        })],
+        splitChunks: {
+            chunks: 'all',
+            minSize: 0,
+            cacheGroups: {
+                vendor: {
+                    test: /[\\/]node_modules[\\/]/,
+                    name: 'vendors',
+                    chunks: 'all'
+                },
+                common: {
+                    name: 'common',
+                    minChunks: 2,
+                    chunks: 'all',
+                    priority: -20
+                }
+            }
+        },
     },
     plugins: [
         new MiniCssExtractPlugin({
@@ -121,3 +121,5 @@ export default {
         }],
     },
 };
+
+export default config;
