@@ -291,6 +291,7 @@ app.get('/api/auth-status', async (c) => {
 app.get('/api/config/langfuse', async (c) => {
   return c.json({
     publicKey: c.env.LANGFUSE_PUBLIC_KEY,
+    secretKey: c.env.LANGFUSE_SECRET_KEY,
     baseUrl: "https://cloud.langfuse.com"
   });
 });
