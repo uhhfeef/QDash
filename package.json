@@ -10,7 +10,8 @@
     "build:css": "tailwindcss -i ./src/styles/styles.css -o ./dist/styles/output.css",
     "watch:css": "tailwindcss -i ./src/styles/styles.css -o ./dist/styles/output.css --watch",
     "dev": "npm run watch:css & npm start",
-    "local": "node local-server.js"
+    "local": "node local-server.js",
+    "dev:local": "npm run watch:css & npm run local"
   },
   "dependencies": {
     "@cloudflare/kv-asset-handler": "^0.3.4",
@@ -21,6 +22,7 @@
     "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "dotenv": "^16.4.5",
     "hono": "^4.6.10",
     "langfuse": "^3.29.1",
     "lucide-react": "^0.454.0",
