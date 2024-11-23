@@ -64,7 +64,7 @@ app.post('/api/chat', async (c) => {
 
   try {
     const completion = await openai.chat.completions.create({
-      model: "gpt-4",
+      model: "gpt-4o-mini",
       messages: body.messages,
       tools: body.tools || [],
       tool_choice: body.tool_choice || "auto"
