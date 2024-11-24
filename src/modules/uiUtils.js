@@ -239,15 +239,21 @@ export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateT
 
     if (csvUpload) {
         csvUpload.addEventListener('change', async (e) => {
+            console.log('CSV file selected');
             const file = e.target.files[0];
+            console.log(file);
             if (file) {
                 const uploadLabel = document.getElementById('upload-label');
                 if (uploadLabel) {
                     uploadLabel.textContent = 'Uploading...';
                 }
                 try {
-                    await handleCsvUpload(file);
-                    await updateTools();
+                    const schema = await handleCsvUpload(file);
+                    if (schema) {
+                        updateTools();
+                    } else {
+                        e.target.value = ''; // Clear the file input if wrong headers
+                    }
                     // addMessageToChat(`Successfully loaded ${file.name}`, 'assistant');
                     if (uploadLabel) {
                         uploadLabel.textContent = 'Upload CSV';

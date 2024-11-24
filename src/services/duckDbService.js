@@ -42,11 +42,22 @@ export async function handleCsvUpload(file) {
         // Register the file content with DuckDB
         await db.registerFileBuffer(file.name, new Uint8Array(await file.arrayBuffer()));
         
+        // Check if the file has headers
+        const hasHeaders = await checkCsvHeaders(file.name);
+        // console.log('hasHeaders value:', hasHeaders);
+        // console.log('Type of hasHeaders:', typeof hasHeaders);
+        // console.log('!hasHeaders evaluates to:', !hasHeaders);
+
+        if (hasHeaders == false) {
+            alert('1 or more headers are not present. Please check your CSV file and try again.');
+            return false;
+        }
+        
         // Create table from CSV without dropping existing ones
         await conn.query(`
             CREATE TABLE IF NOT EXISTS ${tableName} AS 
             SELECT * 
-            FROM read_csv_auto('${file.name}', header=true, AUTO_DETECT=true)
+            FROM read_csv_auto('${file.name}', header=${hasHeaders}, AUTO_DETECT=true)
         `);
         
         // Add table to our tracked tables
@@ -104,6 +115,44 @@ export async function executeDuckDbQuery(query) {
     } catch (error) {
         // console.error("Error executing DuckDB query:", error);
         throw error;
+    }
+}
+
+export async function checkCsvHeaders(fileName) {
+    try {
+        console.log('Checking CSV headers...');
+        // Read first row as raw text to preserve commas
+        const rawResult = await conn.query(`
+            SELECT *
+            FROM read_csv_auto('${fileName}', header=false, AUTO_DETECT=true)
+            LIMIT 2
+        `);
+
+        const rows = await rawResult.toArray();
+        if (rows.length < 2) {
+            return false; // Not enough rows to determine headers
+        }
+
+        // Get the first two rows
+        const firstRow = Object.values(rows[0]).join(',');  // Convert to CSV string
+        const secondRow = Object.values(rows[1]).join(','); // Convert to CSV string
+
+        // Split by comma and filter out empty values
+        const potentialHeaders = firstRow.split(',').filter(val => val.trim() !== '');
+        const dataColumns = secondRow.split(',').filter(val => val.trim() !== '');
+
+        // console.log('Potential headers:', potentialHeaders);
+        // console.log('Data columns:', dataColumns);
+        // console.log('Header count:', potentialHeaders.length);
+        // console.log('Data column count:', dataColumns.length);
+
+        // Return true if both rows have the same number of columns (indicating headers)
+        const hasHeaders = potentialHeaders.length === dataColumns.length;
+        // console.log('Has headers:', hasHeaders);
+        return hasHeaders;
+    } catch (error) {
+        console.error('Error checking CSV headers:', error);
+        return false; // Default to assuming no headers in case of error
     }
 }
 
