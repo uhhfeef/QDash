@@ -27,16 +27,54 @@
                 <div class="chat-container bg-white rounded-xl shadow-lg p-6 flex flex-col flex-1 overflow-hidden border border-gray-200">
                     <div id="chat-messages" class="flex-1 flex flex-col w-full overflow-y-auto p-4 space-y-4 mb-4"></div>
                     <div class="chat-input-container flex flex-col gap-4 mt-auto">
-                        <div class="uploaded-file-info text-sm text-gray-600 hidden">
-                            Currently loaded: <span id="uploaded-filename" class="font-medium"></span>
+                        <div class="uploaded-file-info text-sm text-gray-600">
+                            <span id="upload-status" class="hidden">Uploading...</span>
+                            <div id="loaded-files" class="hidden">
+                                <span class="font-medium">Loaded files: </span>
+                                <span id="uploaded-files-list"></span>
+                            </div>
                         </div>
-                        <textarea id="chat-input" placeholder="Create a dashboard..." class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none overflow-hidden" rows="1"></textarea>
-                        <div class="flex gap-2">
-                            <label for="csv-upload" class="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-600 hover:to-purple-700 active:from-indigo-700 active:to-purple-800 transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center gap-2 cursor-pointer">
-                                <span id="upload-label">Upload CSV</span>
-                                <input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="this.previousElementSibling.textContent = 'Uploading...';">
+                        <script>
+                            let uploadedFiles = new Set();
+                            
+                            function updateFilesList() {
+                                const filesList = document.getElementById('uploaded-files-list');
+                                filesList.textContent = Array.from(uploadedFiles).join(', ');
+                                document.getElementById('loaded-files').classList.remove('hidden');
+                            }
+
+                            function handleFileUpload(files) {
+                                document.getElementById('upload-status').classList.remove('hidden');
+                                let filesRemaining = files.length;
+
+                                Array.from(files).forEach(file => {
+                                    const reader = new FileReader();
+                                    reader.onload = function(e) {
+                                        uploadedFiles.add(file.name);
+                                        filesRemaining--;
+                                        
+                                        if (filesRemaining === 0) {
+                                            updateFilesList();
+                                            document.getElementById('upload-status').classList.add('hidden');
+                                        }
+                                    };
+                                    reader.readAsText(file);
+                                });
+                            }
+                        </script>
+                        <div class="relative flex items-center">
+                            <label for="csv-upload" class="absolute left-3 inline-flex items-center justify-center h-8 w-8 text-black hover:bg-gray-300 rounded-lg transition-colors cursor-pointer border-none bg-transparent">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" />
+                                </svg>
+                                <input type="file" id="csv-upload" class="hidden" accept=".csv" multiple onchange="handleFileUpload(this.files)">
                             </label>
-                            <button id="send-button" class="flex-1 px-4 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm hover:shadow flex items-center justify-center">Send</button>
+                            <textarea id="chat-input" placeholder="Create a dashboard..." class="w-full px-4 py-3 pl-12 pr-12 border border-gray-200 rounded-3xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none overflow-hidden" rows="1"></textarea>
+                            <button id="send-button" class="absolute right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black text-white hover:opacity-70 transition-colors focus-visible:outline-none focus-visible:outline-black disabled:bg-[#D7D7D7] disabled:text-[#f4f4f4] disabled:hover:opacity-100">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
                         </div>
                     </div>
                 </div>

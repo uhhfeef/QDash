@@ -92,7 +92,7 @@ export function addMessageToChat(content, role, traceId) {
     }`;
     
     const innerDiv = document.createElement('div');
-    innerDiv.className = `max-w-[90%] px-4 break-words whitespace-pre-wrap relative mx-auto w-full max-w-2xl text-gray-800`;
+    innerDiv.className = `max-w-[90%] break-words whitespace-pre-wrap relative mx-auto w-full max-w-2xl text-gray-800`;
 
     // Check if the message contains an executed query
     if (content.startsWith('Executed query:')) {
