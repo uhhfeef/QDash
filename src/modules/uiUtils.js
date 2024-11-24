@@ -97,8 +97,19 @@ export function addMessageToChat(content, role, traceId) {
             ? 'bg-blue-500 text-white ml-auto' 
             : 'bg-gray-200 text-gray-800'
     }`;
-    innerDiv.textContent = content;
-    
+
+    // Check if the message contains an executed query
+    if (content.startsWith('Executed query:')) {
+        const [prefix, ...queryParts] = content.split('Executed query:');
+        const query = queryParts.join('Executed query:').trim(); // Join back in case there are multiple colons
+        const codeBlock = document.createElement('div');
+        codeBlock.innerHTML = `Executed query:<pre class="bg-gray-700 text-white p-2 rounded-md mt-1 text-sm whitespace-pre-wrap"><code>${query}</code></pre>`;
+        innerDiv.innerHTML = ''; // Clear the text content
+        innerDiv.appendChild(codeBlock);
+    } else {
+        innerDiv.textContent = content;
+    }
+
     // Add thumbs up/down buttons for messages containing 'DONE'
     if (content.includes('DONE') && role === 'assistant') {
         const feedbackDiv = document.createElement('div');
