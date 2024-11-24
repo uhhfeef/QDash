@@ -147,7 +147,7 @@ export async function checkCsvHeaders(fileName) {
         // console.log('Data column count:', dataColumns.length);
 
         // Return true if both rows have the same number of columns (indicating headers)
-        const hasHeaders = potentialHeaders.length === dataColumns.length;
+        const hasHeaders = potentialHeaders.length === dataColumns.length || potentialHeaders.length > dataColumns.length;
         // console.log('Has headers:', hasHeaders);
         return hasHeaders;
     } catch (error) {
