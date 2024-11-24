@@ -5,7 +5,7 @@ export function generateTools(tableSchema) {
             function: {
                 name: "executeSqlQuery",
                 strict: true,
-                description: `Execute a SQL query on the database based on user request. The data will be used to create charts or cards. For chart requests, you must always output 2 values, x and y. For card requests, you must always have the main value in x and a trending percentage value in y. For pie chart, values would be in x and labels for the values in y. It SHOULD only be based on the database and not on random values. Schema is: ${tableSchema}`,
+                description: `Execute a SQL query on the database based on user request.Schema is: ${tableSchema}`,
                 parameters: {
                     type: "object",
                     properties: {
