@@ -87,16 +87,12 @@ export function addMessageToChat(content, role, traceId) {
     const chatMessages = document.getElementById('chat-messages');
     const messageDiv = document.createElement('div');
     
-    messageDiv.className = `message flex w-full mb-4 ${
-        role === 'user' ? 'justify-end' : 'justify-start'
+    messageDiv.className = `message flex w-full ${
+        role === 'user' ? 'bg-gray-100 max-w-[90%] rounded-3xl py-2.5 ml-auto' : 'bg-white'
     }`;
     
     const innerDiv = document.createElement('div');
-    innerDiv.className = `max-w-[70%] rounded-lg p-3 break-words whitespace-pre-wrap relative ${
-        role === 'user' 
-            ? 'bg-blue-500 text-white ml-auto' 
-            : 'bg-gray-200 text-gray-800'
-    }`;
+    innerDiv.className = `max-w-[90%] px-4 break-words whitespace-pre-wrap relative mx-auto w-full max-w-2xl text-gray-800`;
 
     // Check if the message contains an executed query
     if (content.startsWith('Executed query:')) {
