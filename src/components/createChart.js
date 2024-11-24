@@ -78,7 +78,14 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
                 }
             },
             barcornerradius: 8,
-            autosize: true
+            autosize: true,
+            height: 350,
+            margin: {
+                l: 50,
+                r: 30,
+                t: 40,
+                b: 50
+            }
         };
     }
 

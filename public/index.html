@@ -20,27 +20,32 @@
             <h1 class="text-3xl font-bold text-gray-900">QDash</h1>
             <button id="logoutBtn" class="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors">Logout</button>
         </header>
-        <main class="flex-1 flex flex-col">
-            <div class="space-y-8 mb-8">
-                <div class="stats-card-grid grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"></div>
-                <div class="chart-container grid grid-cols-1 md:grid-cols-2 gap-6"></div>
-            </div>
-            <div class="flex-1"></div>
-            <div class="space-y-2">
-                <div id="notification-container" class="mx-auto w-full max-w-2xl"></div>
-                <div class="uploaded-file-info text-sm text-gray-600 mx-auto w-full max-w-2xl hidden">
-                    Currently loaded: <span id="uploaded-filename" class="font-medium"></span>
-                </div>
-                <div class="chat-container bg-white rounded-xl shadow-sm p-6 mx-auto w-full max-w-2xl">
-                    <div id="chat-messages" class="flex flex-col w-full max-h-[50vh] overflow-y-auto p-4 space-y-4 mb-4"></div>
-                    <div class="chat-input-container flex gap-4 items-center">
-                        <textarea id="chat-input" placeholder="Create a dashboard..." class="flex-1 px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none overflow-hidden" rows="1"></textarea>                        <label for="csv-upload" class="px-6 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-600 hover:to-purple-700 active:from-indigo-700 active:to-purple-800 transition-all duration-200 shadow-sm hover:shadow-md flex items-center gap-2 cursor-pointer">
-                            <span id="upload-label">Upload CSV</span>
-                            <input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="this.previousElementSibling.textContent = 'Uploading...';">
-                        </label>
-                        <button id="send-button" class="px-6 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm hover:shadow flex items-center justify-center min-w-[100px]">Send</button>
+        <main class="flex-1 flex gap-6">
+            <!-- Sidebar -->
+            <div class="w-96 flex flex-col space-y-2 h-[calc(100vh-8rem)] sticky top-6">
+                <div id="notification-container"></div>
+                <div class="chat-container bg-white rounded-xl shadow-sm p-6 flex flex-col flex-1 overflow-hidden">
+                    <div id="chat-messages" class="flex-1 flex flex-col w-full overflow-y-auto p-4 space-y-4 mb-4"></div>
+                    <div class="chat-input-container flex flex-col gap-4 mt-auto">
+                        <div class="uploaded-file-info text-sm text-gray-600 hidden">
+                            Currently loaded: <span id="uploaded-filename" class="font-medium"></span>
+                        </div>
+                        <textarea id="chat-input" placeholder="Create a dashboard..." class="w-full px-4 py-3 border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none overflow-hidden" rows="1"></textarea>
+                        <div class="flex gap-2">
+                            <label for="csv-upload" class="flex-1 px-4 py-3 bg-gradient-to-r from-indigo-500 to-purple-600 text-white font-medium rounded-xl hover:from-indigo-600 hover:to-purple-700 active:from-indigo-700 active:to-purple-800 transition-all duration-200 shadow-sm hover:shadow-md flex items-center justify-center gap-2 cursor-pointer">
+                                <span id="upload-label">Upload CSV</span>
+                                <input type="file" id="csv-upload" class="hidden" accept=".csv" onchange="this.previousElementSibling.textContent = 'Uploading...';">
+                            </label>
+                            <button id="send-button" class="flex-1 px-4 py-3 bg-blue-600 text-white font-medium rounded-xl hover:bg-blue-700 active:bg-blue-800 transition-colors shadow-sm hover:shadow flex items-center justify-center">Send</button>
+                        </div>
                     </div>
                 </div>
+            </div>
+            
+            <!-- Main Content Area -->
+            <div class="flex-1 space-y-8 overflow-y-auto">
+                <div class="stats-card-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div>
+                <div class="chart-container grid grid-cols-1 md:grid-cols-2 gap-6 auto-rows-[400px]"></div>
             </div>
         </main>
     </div>
