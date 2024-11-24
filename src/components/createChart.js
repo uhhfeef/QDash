@@ -52,6 +52,7 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
             x: x,
             y: y,
             type: chartType,
+            text: chartType === 'bar' ? y : undefined,
             marker: {
                 color: 'rgb(38, 98, 217)'
             },
