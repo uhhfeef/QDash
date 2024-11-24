@@ -150,7 +150,12 @@ export function addMessageToChat(content, role, traceId) {
     
     messageDiv.appendChild(innerDiv);
     chatMessages.appendChild(messageDiv);
-    chatMessages.scrollTop = chatMessages.scrollHeight;
+    
+    // Smooth scroll to the bottom
+    chatMessages.scrollTo({
+        top: chatMessages.scrollHeight,
+        behavior: 'smooth'
+    });
 }
 
 export function autoResizeChatInput(element) {
