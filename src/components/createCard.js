@@ -52,12 +52,12 @@ export function createCard(title, value, trend) {
 
     if (!isNumeric) {
         const textDiv = document.createElement('div');
-        textDiv.className = 'text-gray-900 font-inter text-6xl font-semibold';
+        textDiv.className = 'text-gray-900 font-inter text-4xl font-semibold';
         textDiv.textContent = valueToDisplay;
         plotWrapper.appendChild(textDiv);
     } else {
         const numberDiv = document.createElement('div');
-        numberDiv.className = 'text-gray-900 font-inter text-6xl font-semibold';
+        numberDiv.className = 'text-gray-900 font-inter text-3xl font-semibold';
         numberDiv.textContent = new Intl.NumberFormat().format(valueToDisplay);
         plotWrapper.appendChild(numberDiv);
     }
