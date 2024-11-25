@@ -34,34 +34,6 @@
                                 <span id="uploaded-files-list"></span>
                             </div>
                         </div>
-                        <script>
-                            let uploadedFiles = new Set();
-                            
-                            function updateFilesList() {
-                                const filesList = document.getElementById('uploaded-files-list');
-                                filesList.textContent = Array.from(uploadedFiles).join(', ');
-                                document.getElementById('loaded-files').classList.remove('hidden');
-                            }
-
-                            function handleFileUpload(files) {
-                                document.getElementById('upload-status').classList.remove('hidden');
-                                let filesRemaining = files.length;
-
-                                Array.from(files).forEach(file => {
-                                    const reader = new FileReader();
-                                    reader.onload = function(e) {
-                                        uploadedFiles.add(file.name);
-                                        filesRemaining--;
-                                        
-                                        if (filesRemaining === 0) {
-                                            updateFilesList();
-                                            document.getElementById('upload-status').classList.add('hidden');
-                                        }
-                                    };
-                                    reader.readAsText(file);
-                                });
-                            }
-                        </script>
                         <div class="relative flex items-center">
                             <label for="csv-upload" class="absolute left-3 inline-flex items-center justify-center h-8 w-8 text-black hover:bg-gray-300 rounded-lg transition-colors cursor-pointer border-none bg-transparent">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">

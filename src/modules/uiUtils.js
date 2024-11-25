@@ -218,6 +218,15 @@ export function addDeleteButton(wrapperDiv, id) {
     return deleteButton;
 }
 
+// File upload handling
+let uploadedFiles = new Set();
+
+export function updateFilesList() {
+    const filesList = document.getElementById('uploaded-files-list');
+    filesList.textContent = Array.from(uploadedFiles).join(', ');
+    document.getElementById('loaded-files').classList.remove('hidden');
+}
+
 export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateTools }) {
     const sendButton = document.getElementById('send-button');
     const chatInput = document.getElementById('chat-input');
@@ -251,31 +260,41 @@ export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateT
 
     if (csvUpload) {
         csvUpload.addEventListener('change', async (e) => {
-            console.log('CSV file selected');
-            const file = e.target.files[0];
-            console.log(file);
-            if (file) {
-                const uploadLabel = document.getElementById('upload-label');
-                if (uploadLabel) {
-                    uploadLabel.textContent = 'Uploading...';
-                }
-                try {
-                    const schema = await handleCsvUpload(file);
-                    if (schema) {
-                        updateTools();
-                    } else {
-                        e.target.value = ''; // Clear the file input if wrong headers
+            console.log('CSV files selected');
+            const files = Array.from(e.target.files);
+            if (files.length > 0) {
+                const uploadStatus = document.getElementById('upload-status');
+                uploadStatus.classList.remove('hidden');
+                
+                try {                    
+                    // Process all files sequentially
+                    for (const file of files) {
+                        console.log(`Processing file: ${file.name}`);
+                        let dots = '...';
+                        const intervalId = setInterval(() => {
+                            dots = dots === '...' ? '.' : dots + '.';
+                            uploadStatus.textContent = `Processing ${file.name}${dots}`;
+                        }, 300);
+                        
+                        const schema = await handleCsvUpload(file);
+                        if (!schema) {
+                            console.error(`Failed to process ${file.name}`);
+                            e.target.value = ''; // Clear the file input if wrong headers
+                            clearInterval(intervalId);
+                            break;
+                        }
+                        uploadedFiles.add(file.name);
+                        updateFilesList();
+                        clearInterval(intervalId);
                     }
-                    // addMessageToChat(`Successfully loaded ${file.name}`, 'assistant');
-                    if (uploadLabel) {
-                        uploadLabel.textContent = 'Upload CSV';
-                    }
+                    
+                    // Update tools after all files are processed
+                    updateTools();
+                    uploadStatus.classList.add('hidden');
                 } catch (error) {
                     console.error('Error uploading CSV:', error);
                     showError(`Failed to upload CSV: ${error.message}`);
-                    if (uploadLabel) {
-                        uploadLabel.textContent = 'Upload CSV';
-                    }
+                    uploadStatus.classList.add('hidden');
                 }
             }
         });

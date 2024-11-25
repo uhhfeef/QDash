@@ -37,7 +37,7 @@ export async function handleCsvUpload(file) {
         }
 
         const tableName = file.name.replace('.csv', '').replace(/[^a-zA-Z0-9]/g, '_');
-        currentTableName = tableName;
+        console.log(`Processing table: ${tableName}`);
         
         // Register the file content with DuckDB
         await db.registerFileBuffer(file.name, new Uint8Array(await file.arrayBuffer()));
@@ -49,7 +49,7 @@ export async function handleCsvUpload(file) {
         // console.log('!hasHeaders evaluates to:', !hasHeaders);
 
         if (hasHeaders == false) {
-            alert('1 or more headers are not present. Please check your CSV file and try again.');
+            alert('1 or more headers are not present in file: ' + file.name);
             return false;
         }
         
@@ -62,22 +62,17 @@ export async function handleCsvUpload(file) {
         
         // Add table to our tracked tables
         loadedTables.add(tableName);
-        console.log(loadedTables);
         
-        // Update UI to show uploaded filename
-        const fileInfoContainer = document.querySelector('.uploaded-file-info');
-        const filenameElement = document.getElementById('uploaded-filename');
-        if (fileInfoContainer && filenameElement) {
-            const existingText = filenameElement.textContent;
-            const newText = existingText ? `${existingText}, ${file.name}` : file.name;
-            filenameElement.textContent = newText;
-            fileInfoContainer.classList.remove('hidden');
+        // Set current table name only if it's not already set
+        if (!currentTableName) {
+            currentTableName = tableName;
         }
-
+        
+        console.log('Current loaded tables:', Array.from(loadedTables));
+        
         // Get schema information
         const schemaInfo = await getSchema();
         isLoaded = true;
-
         return schemaInfo;
     } catch (error) {
         console.error("Error uploading CSV:", error);
@@ -91,10 +86,17 @@ export async function getSchema() {
             throw new Error("Database not initialized");
         }
 
+        // Get list of loaded table names
+        const tableNames = Array.from(loadedTables);
+        console.log('Table names:', tableNames);
+        
+        // Build a query to get schema for all loaded tables
         const result = await conn.query(`
-            SELECT sql 
+            SELECT name, sql 
             FROM sqlite_master 
-            WHERE type='table'
+            WHERE type='table' 
+            AND name IN (${tableNames.map(name => `'${name}'`).join(',')})
+            ORDER BY name
         `);
 
         return result;

@@ -52,7 +52,8 @@ const initApp = async () => {
             setupEventListeners({
                 handleChatSubmit,
                 handleCsvUpload,
-                updateTools
+                updateTools,
+                updateFilesList: window.updateFilesList
             });
 
             initialized = true;
