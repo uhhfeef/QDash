@@ -6,30 +6,29 @@ export function createCard(title, value, trend) {
     
     // Create the container div with stats card styling
     const container = document.createElement('div');
-    container.className = 'bg-white p-4 rounded-lg overflow-visible';
+    container.className = 'bg-white p-6 rounded-3xl shadow-lg border border-gray-200 overflow-visible flex flex-col min-h-[10rem]';
     container.id = `card-${Date.now()}`;
     
     // Create wrapper div for positioning delete button
     const contentWrapper = document.createElement('div');
-    contentWrapper.style.position = 'relative';
+    contentWrapper.className = 'flex flex-col flex-1 relative';
     
     // Add delete button using the utility function
     addDeleteButton(contentWrapper, container.id);
     
     // Create and append title elements
     const titleWrapper = document.createElement('div');
-    titleWrapper.className = 'w-full flex justify-center';
+    titleWrapper.className = 'w-full';
     
     const titleElement = document.createElement('div');
-    titleElement.className = 'text-gray-500 text-sm font-medium mb-2 text-center';
+    titleElement.className = 'text-gray-500 text-sm font-medium text-center';
     titleElement.textContent = title;
     
     titleWrapper.appendChild(titleElement);
     
     // Create plot wrapper
     const plotWrapper = document.createElement('div');
-    plotWrapper.style.width = '100%';
-    plotWrapper.style.height = '100px';
+    plotWrapper.className = 'flex-1 flex items-center justify-center';
     const plotId = `plot-${Date.now()}`;
     plotWrapper.id = plotId;
 
@@ -51,6 +50,18 @@ export function createCard(title, value, trend) {
         trendWrapper.appendChild(trendElement);
     }
 
+    if (!isNumeric) {
+        const textDiv = document.createElement('div');
+        textDiv.className = 'text-gray-900 font-inter text-4xl font-semibold';
+        textDiv.textContent = valueToDisplay;
+        plotWrapper.appendChild(textDiv);
+    } else {
+        const numberDiv = document.createElement('div');
+        numberDiv.className = 'text-gray-900 font-inter text-4xl font-semibold';
+        numberDiv.textContent = new Intl.NumberFormat().format(valueToDisplay);
+        plotWrapper.appendChild(numberDiv);
+    }
+    
     // Move all content into the wrapper instead of the container
     contentWrapper.appendChild(titleWrapper);
     contentWrapper.appendChild(plotWrapper);
@@ -61,51 +72,7 @@ export function createCard(title, value, trend) {
     // Add the wrapper to the container
     container.appendChild(contentWrapper);
 
-    
     // Append container to the stats grid
     const statsGrid = document.querySelector('.stats-card-grid');
     statsGrid.appendChild(container);
-
-    if (!isNumeric) {
-        // Not using Plotly for text values. Some display error.
-        const textDiv = document.createElement('div');
-        textDiv.className = 'text-gray-900 font-inter text-center h-full flex items-center justify-center';
-        textDiv.style.height = '100px';
-        textDiv.style.fontSize = '36px';
-        textDiv.textContent = valueToDisplay;
-        plotWrapper.appendChild(textDiv);
-    } else {
-        // Use Plotly for numeric values
-        const data = [{
-            type: 'indicator',
-            mode: "number",
-            value: valueToDisplay,
-            title: { text: "" },
-            number: {
-                font: { 
-                    size: 36,
-                    color: "#111827",
-                    family: "Inter, system-ui, sans-serif",
-                    weight: "600"
-                },
-                valueformat: ",d"
-            }
-        }];
-
-        const layout = {
-            height: 100,
-            margin: { t: 0, b: 0, l: 0, r: 0 },  
-            paper_bgcolor: 'rgba(0,0,0,0)',
-            plot_bgcolor: 'rgba(0,0,0,0)',
-            showlegend: false,
-            autosize: true
-        };
-
-        // Create the plot only for numeric values
-        Plotly.newPlot(plotId, data, layout, {
-            responsive: true,
-            displayModeBar: false,
-            staticPlot: true
-        });
-    }
 }
