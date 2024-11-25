@@ -173,20 +173,7 @@ export function addDeleteButton(wrapperDiv, id) {
     // Create delete button
     const deleteButton = document.createElement('button');
     deleteButton.innerHTML = '×';
-    deleteButton.style.position = 'absolute';
-    deleteButton.style.right = '10px';
-    deleteButton.style.top = '10px';
-    deleteButton.style.background = 'rgba(255, 255, 255, 0.8)';
-    deleteButton.style.border = '1px solid #ddd';
-    deleteButton.style.borderRadius = '50%';
-    deleteButton.style.width = '24px';
-    deleteButton.style.height = '24px';
-    deleteButton.style.cursor = 'pointer';
-    deleteButton.style.fontSize = '18px';
-    deleteButton.style.display = 'flex';
-    deleteButton.style.alignItems = 'center';
-    deleteButton.style.justifyContent = 'center';
-    deleteButton.style.zIndex = '1000';
+    deleteButton.classList.add('absolute', 'top-2', 'right-2', 'bg-white', 'border', 'border-gray-300', 'rounded-full', 'w-6', 'h-6', 'cursor-pointer', 'flex', 'items-center', 'justify-center', 'z-10', 'text-lg');
     
     // Add hover effect
     deleteButton.onmouseover = () => {
