@@ -33,22 +33,22 @@ export function createCard(title, value, trend) {
     plotWrapper.id = plotId;
 
     // Create trend display
-    let trendWrapper;
-    if (trend !== undefined && trend !== null) {
-        trendWrapper = document.createElement('div');
-        trendWrapper.className = 'w-full flex justify-center mt-2';
+    // let trendWrapper;
+    // if (trend !== undefined && trend !== null) {
+    //     trendWrapper = document.createElement('div');
+    //     trendWrapper.className = 'w-full flex justify-center mt-2';
         
-        const trendElement = document.createElement('div');
-        const trendValue = typeof trend === 'number' ? trend.toFixed(1) : trend;
-        const isPositive = !isNaN(parseFloat(trendValue)) && parseFloat(trendValue) > 0;
-        const trendColor = isPositive ? 'text-green-600' : 'text-red-600';
-        const trendArrow = isPositive ? '↑' : '↓';
+    //     const trendElement = document.createElement('div');
+    //     const trendValue = typeof trend === 'number' ? trend.toFixed(1) : trend;
+    //     const isPositive = !isNaN(parseFloat(trendValue)) && parseFloat(trendValue) > 0;
+    //     const trendColor = isPositive ? 'text-green-600' : 'text-red-600';
+    //     const trendArrow = isPositive ? '↑' : '↓';
         
-        trendElement.className = `text-sm font-medium ${trendColor}`;
-        trendElement.textContent = `${trendArrow}${Math.abs(trendValue)}% vs last month`;
+    //     trendElement.className = `text-sm font-medium ${trendColor}`;
+    //     trendElement.textContent = `${trendArrow}${Math.abs(trendValue)}% vs last month`;
         
-        trendWrapper.appendChild(trendElement);
-    }
+    //     trendWrapper.appendChild(trendElement);
+    // }
 
     if (!isNumeric) {
         const textDiv = document.createElement('div');
@@ -65,9 +65,9 @@ export function createCard(title, value, trend) {
     // Move all content into the wrapper instead of the container
     contentWrapper.appendChild(titleWrapper);
     contentWrapper.appendChild(plotWrapper);
-    if (trendWrapper) {
-        contentWrapper.appendChild(trendWrapper);
-    }
+    // if (trendWrapper) {
+    //     contentWrapper.appendChild(trendWrapper);
+    // }
     
     // Add the wrapper to the container
     container.appendChild(contentWrapper);
