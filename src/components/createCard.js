@@ -6,7 +6,7 @@ export function createCard(title, value, trend) {
     
     // Create the container div with stats card styling
     const container = document.createElement('div');
-    container.className = 'bg-white p-6 rounded-3xl shadow-lg border border-gray-200 overflow-visible flex flex-col min-h-[10rem]';
+    container.className = 'bg-white p-6 rounded-3xl shadow overflow-visible flex flex-col min-h-[10rem]';
     container.id = `card-${Date.now()}`;
     
     // Create wrapper div for positioning delete button
