@@ -21,7 +21,7 @@ export function createCard(title, value, trend) {
     titleWrapper.className = 'w-full';
     
     const titleElement = document.createElement('div');
-    titleElement.className = 'text-gray-500 text-sm font-medium text-center';
+    titleElement.className = 'text-gray-500 text-sm mt-4 font-medium text-center';
     titleElement.textContent = title;
     
     titleWrapper.appendChild(titleElement);
@@ -52,12 +52,12 @@ export function createCard(title, value, trend) {
 
     if (!isNumeric) {
         const textDiv = document.createElement('div');
-        textDiv.className = 'text-gray-900 font-inter text-4xl font-semibold';
+        textDiv.className = 'text-gray-900 font-inter text-6xl font-semibold';
         textDiv.textContent = valueToDisplay;
         plotWrapper.appendChild(textDiv);
     } else {
         const numberDiv = document.createElement('div');
-        numberDiv.className = 'text-gray-900 font-inter text-4xl font-semibold';
+        numberDiv.className = 'text-gray-900 font-inter text-6xl font-semibold';
         numberDiv.textContent = new Intl.NumberFormat().format(valueToDisplay);
         plotWrapper.appendChild(numberDiv);
     }
