@@ -2,6 +2,9 @@
 
 An AI-powered dashboard for data visualization and analysis.
 
+<img width="1511" alt="Screenshot 2024-11-25 at 6 59 55 pm" src="https://github.com/user-attachments/assets/1636fc9d-b302-4e63-a069-e1aed70c16ed">
+
+
 ## Quick Start
 
 1. Install dependencies:
