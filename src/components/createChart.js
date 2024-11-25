@@ -37,7 +37,18 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
 
         // layout for pie chart
         layout = {
-            title: title,
+            title: {
+                text: title,
+                font: { size: 16 },
+                xref: 'paper',
+                x: 0.5,
+                xanchor: 'center',
+                yref: 'paper',
+                y: 1,
+                yanchor: 'bottom',
+                pad: { t: 10 },
+                wrap: true
+            },
             autosize: true,
             height: Math.floor((window.innerHeight - 8 * 16) * 0.6),
             margin: {
@@ -66,25 +77,40 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
 
         // layout for other charts
         layout = {
-            title: title,
+            title: {
+                text: title,
+                font: { size: 16 },
+                xref: 'paper',
+                x: 0.5,
+                xanchor: 'center',
+                yref: 'paper',
+                y: 1,
+                yanchor: 'bottom',
+                pad: { t: 10 },
+                wrap: true
+            },
             xaxis: {
                 title: {
-                    text: xAxisTitle
-                }
+                    text: xAxisTitle,
+                    standoff: 40,
+                    y: -0.2  // Position below the axis
+                },
+                tickangle: -45  // Angle the tick labels if they're long
             },
             yaxis: {
                 title: {
-                    text: yAxisTitle
+                    text: yAxisTitle,
+                    standoff: 30
                 }
             },
             barcornerradius: 8,
             autosize: true,
             height: Math.floor((window.innerHeight - 8 * 16) * 0.6),
             margin: {
-                l: 50,
+                l: 60,
                 r: 30,
                 t: 40,
-                b: 50
+                b: 100  // Increased even more to accommodate angled labels and title
             }
         };
     }
