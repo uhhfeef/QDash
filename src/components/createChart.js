@@ -39,7 +39,7 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
         layout = {
             title: title,
             autosize: true,
-            height: 350,
+            height: Math.floor((window.innerHeight - 8 * 16) * 0.6),
             margin: {
                 l: 30,
                 r: 30,
@@ -79,7 +79,7 @@ export function createChart(id, x, y, chartType, title, xAxisTitle, yAxisTitle) 
             },
             barcornerradius: 8,
             autosize: true,
-            height: 350,
+            height: Math.floor((window.innerHeight - 8 * 16) * 0.6),
             margin: {
                 l: 50,
                 r: 30,
