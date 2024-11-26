@@ -35,7 +35,18 @@
             <div class="w-96 flex flex-col h-[calc(100vh-8rem)] sticky top-6">
                 <div id="notification-container"></div>
                 <div class="m-0 bg-white rounded-3xl shadow-lg p-6 flex flex-col flex-1 overflow-hidden border border-gray-200">
-                    <div id="chat-messages" class="flex-1 flex flex-col w-full overflow-y-auto p-4 space-y-4 mb-4"></div>
+                    <div id="chat-messages" class="flex-1 flex flex-col w-full overflow-y-auto p-4 space-y-4 mb-4">
+                        <div class="message flex w-full bg-gray-50 rounded-xl p-4 border border-gray-200">
+                            <div class="max-w-[90%] break-words text-gray-600 text-sm">
+                                <p class="mb-2"><strong>Welcome to QDash!</strong></p>
+                                <ul class="list-disc pl-5 space-y-2">
+                                    <li>⚠️ <strong>Demo Notice:</strong> This is a demonstration version. Values, charts, and cards may not be 100% accurate. Always verify the data independently.</li>
+                                    <li>📊 <strong>File Support:</strong> You can upload multiple files or single files in Excel (.xlsx, .xls) or CSV format. Additional format support coming soon!</li>
+                                    <li>🔗 <strong>Need Help?</strong> Have specific requirements? Connect with me on LinkedIn for personalized assistance in building your custom dashboard.</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
                     <div class="chat-input-container flex flex-col gap-4 mt-auto">
                         <div class="uploaded-file-info text-sm text-gray-600">
                             <span id="upload-status" class="hidden">Uploading...</span>
