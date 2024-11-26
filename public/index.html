@@ -6,6 +6,7 @@
     <title>QDash</title>
     <link rel="icon" type="image/x-icon" href="/favicon.ico">
     <link href="/assets/styles/output.css" rel="stylesheet">
+    <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
     <style>
         .loading { visibility: hidden; }
@@ -48,7 +49,7 @@
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                                     <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" />
                                 </svg>
-                                <input type="file" id="csv-upload" class="hidden" accept=".csv" multiple onchange="handleFileUpload(this.files)">
+                                <input type="file" id="csv-upload" class="hidden" accept=".csv, .xlsx, .xls" multiple onchange="handleFileUpload(this.files)">
                             </label>
                             <textarea id="chat-input" placeholder="Create a dashboard..." class="w-full px-4 py-3 pl-12 pr-12 border border-gray-200 rounded-3xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none overflow-hidden" rows="1"></textarea>
                             <button id="send-button" class="absolute right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black text-white hover:opacity-70 transition-colors focus-visible:outline-none focus-visible:outline-black disabled:bg-[#D7D7D7] disabled:text-[#f4f4f4] disabled:hover:opacity-100">

@@ -29,35 +29,70 @@ export function getLoadedTables() {
     return Array.from(loadedTables); 
 }
 
-// This function is being called from the index.js file
-export async function handleCsvUpload(file) {
+// Convert Excel file to CSV data
+async function excelToCSV(file) {
+    return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = async (e) => {
+            try {
+                const data = new Uint8Array(e.target.result);
+                const workbook = XLSX.read(data, { type: 'array' });
+                
+                // Get the first worksheet
+                const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                
+                // Convert to CSV
+                const csvContent = XLSX.utils.sheet_to_csv(firstSheet);
+                
+                // Create a new File object with CSV content
+                const csvFile = new File(
+                    [csvContent],
+                    file.name.replace(/\.[^/.]+$/, '.csv'),
+                    { type: 'text/csv' }
+                );
+                
+                resolve(csvFile);
+            } catch (error) {
+                reject(error);
+            }
+        };
+        reader.onerror = reject;
+        reader.readAsArrayBuffer(file);
+    });
+}
+
+// This function handles both CSV and Excel file uploads
+export async function handleFileUpload(file) {
     try {
         if (!conn) {
             throw new Error("Database connection not initialized");
         }
 
-        const tableName = file.name.replace('.csv', '').replace(/[^a-zA-Z0-9]/g, '_');
+        const fileExtension = file.name.split('.').pop().toLowerCase();
+        
+        // Convert Excel to CSV if needed
+        const processFile = ['xlsx', 'xls'].includes(fileExtension) 
+            ? await excelToCSV(file)
+            : file;
+
+        const tableName = processFile.name.replace(/\.[^/.]+$/, '').replace(/[^a-zA-Z0-9]/g, '_');
         console.log(`Processing table: ${tableName}`);
         
         // Register the file content with DuckDB
-        await db.registerFileBuffer(file.name, new Uint8Array(await file.arrayBuffer()));
+        await db.registerFileBuffer(processFile.name, new Uint8Array(await processFile.arrayBuffer()));
         
         // Check if the file has headers
-        const hasHeaders = await checkCsvHeaders(file.name);
-        // console.log('hasHeaders value:', hasHeaders);
-        // console.log('Type of hasHeaders:', typeof hasHeaders);
-        // console.log('!hasHeaders evaluates to:', !hasHeaders);
-
-        if (hasHeaders == false) {
+        const hasHeaders = await checkCsvHeaders(processFile.name);
+        if (hasHeaders === false) {
             alert('1 or more headers are not present in file: ' + file.name);
             return false;
         }
         
-        // Create table from CSV without dropping existing ones
+        // Create table from file
         await conn.query(`
             CREATE TABLE IF NOT EXISTS ${tableName} AS 
             SELECT * 
-            FROM read_csv_auto('${file.name}', header=${hasHeaders}, AUTO_DETECT=true)
+            FROM read_csv_auto('${processFile.name}', header=${hasHeaders}, AUTO_DETECT=true)
         `);
         
         // Add table to our tracked tables
@@ -75,7 +110,7 @@ export async function handleCsvUpload(file) {
         isLoaded = true;
         return schemaInfo;
     } catch (error) {
-        console.error("Error uploading CSV:", error);
+        console.error("Error uploading file:", error);
         throw error;
     }
 }

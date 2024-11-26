@@ -9,7 +9,7 @@ const loadAppDependencies = async () => {
     const { initDuckDB } = await import('./services/duckDbConfig.js');
     const { handleChatSubmit } = await import('./controller/chatController.js');
     const { setupEventListeners } = await import('./modules/uiUtils.js');
-    const { initialize, handleCsvUpload } = await import('./services/duckDbService.js');
+    const { initialize, handleFileUpload } = await import('./services/duckDbService.js');
     const { updateTools } = await import('./services/config.js');
     
     return {
@@ -18,7 +18,7 @@ const loadAppDependencies = async () => {
         setupEventListeners,
         initialize,
         updateTools,
-        handleCsvUpload
+        handleFileUpload
     };
 };
 
@@ -41,7 +41,7 @@ const initApp = async () => {
                 setupEventListeners,
                 initialize,
                 updateTools,
-                handleCsvUpload
+                handleFileUpload
             } = await loadAppDependencies();
 
             // Initialize DuckDB once
@@ -51,7 +51,7 @@ const initApp = async () => {
             // Setup event listeners
             setupEventListeners({
                 handleChatSubmit,
-                handleCsvUpload,
+                handleFileUpload,
                 updateTools,
                 updateFilesList: window.updateFilesList
             });

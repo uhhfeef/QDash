@@ -214,7 +214,7 @@ export function updateFilesList() {
     document.getElementById('loaded-files').classList.remove('hidden');
 }
 
-export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateTools }) {
+export function setupEventListeners({ handleChatSubmit, handleFileUpload, updateTools }) {
     const sendButton = document.getElementById('send-button');
     const chatInput = document.getElementById('chat-input');
     const csvUpload = document.getElementById('csv-upload');
@@ -247,7 +247,7 @@ export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateT
 
     if (csvUpload) {
         csvUpload.addEventListener('change', async (e) => {
-            console.log('CSV files selected');
+            console.log('file files selected');
             const files = Array.from(e.target.files);
             if (files.length > 0) {
                 const uploadStatus = document.getElementById('upload-status');
@@ -263,7 +263,7 @@ export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateT
                             uploadStatus.textContent = `Processing ${file.name}${dots}`;
                         }, 300);
                         
-                        const schema = await handleCsvUpload(file);
+                        const schema = await handleFileUpload(file);
                         if (!schema) {
                             console.error(`Failed to process ${file.name}`);
                             e.target.value = ''; // Clear the file input if wrong headers
@@ -279,8 +279,8 @@ export function setupEventListeners({ handleChatSubmit, handleCsvUpload, updateT
                     updateTools();
                     uploadStatus.classList.add('hidden');
                 } catch (error) {
-                    console.error('Error uploading CSV:', error);
-                    showError(`Failed to upload CSV: ${error.message}`);
+                    console.error('Error uploading file:', error);
+                    showError(`Failed to upload file: ${error.message}`);
                     uploadStatus.classList.add('hidden');
                 }
             }
