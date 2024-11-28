@@ -1,12 +1,18 @@
+<div align="center">
+
+<img src="public/images/logo.png" alt="QDash Logo" width="180"/>
+
 # QDash
 
-<p align="center">
-  <img src="public/images/logo.png" alt="QDash Logo" width="200"/>
-</p>
+### Privacy-First, AI-Powered Data Visualization
 
-A privacy-first, AI-powered dashboard for data visualization and analysis. Your data stays on your computer - always.
+[Quick Start](#quick-start) • [Privacy & Security](#privacy--security)
 
-<img width="1511" alt="Screenshot 2024-11-25 at 6 59 55 pm" src="https://github.com/user-attachments/assets/1636fc9d-b302-4e63-a069-e1aed70c16ed">
+---
+
+</div>
+
+Your data stays on your computer - always. QDash is a powerful, browser-based dashboard that lets you visualize and analyze your data with AI assistance, without compromising privacy.
 
 ## Privacy & Security
 
