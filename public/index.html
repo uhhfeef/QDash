@@ -6,6 +6,7 @@
     <title>QDash</title>
     <link rel="icon" type="image/png" href="/images/logo.png">
     <link href="/assets/styles/output.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;700&display=swap" rel="stylesheet">
     <script src="https://unpkg.com/xlsx/dist/xlsx.full.min.js"></script>
     <script src="https://cdn.plot.ly/plotly-2.35.2.min.js"></script>
     <style>
@@ -16,86 +17,107 @@
     <script defer="defer" src="/assets/js/main.bundle.js"></script>
 </head>
 <body class="bg-gray-50">
-    <div class="min-h-screen p-6 flex flex-col">
-        <header class="mb-8 flex justify-between items-center">
-            <div class="flex flex-col gap-2">
-                <div class="flex items-center">
-                    <h1 class="text-3xl font-black italic uppercase">
-                        <span class="text-slate-900">Q</span>
-                        <span class="bg-gradient-to-r from-slate-400 to-slate-300 text-transparent bg-clip-text tracking-wider">DASH</span>
+    <div class="min-h-screen flex flex-col">
+        <!-- Navbar -->
+        <nav class="bg-white border-b border-gray-200 px-4 py-2">
+            <div class="flex items-center justify-between">
+                <!-- Logo and Brand -->
+                <div class="flex items-center gap-2">
+                    <img src="/images/logo.png" alt="QDash Logo" class="h-8 w-8">
+                    <h1 class="text-xl font-black uppercase" style="font-family: 'Outfit', sans-serif;">
+                        QDASH
                     </h1>
-                    <div class="w-3 h-0.5 bg-slate-900 -skew-x-45 ml-2"></div>
-                    <div class="w-2 h-0.5 bg-slate-900 -skew-x-45 ml-0.5"></div>
+                </div>
+
+                <!-- Right Side Items -->
+                <div class="flex items-center">
+
+                    <!-- Bug Icon -->
+                    <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3m0 0v3m0-3h3m-3 0H9m12 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+
+                    <!-- Help Icon -->
+                    <button class="p-2 text-gray-600 hover:bg-gray-100 rounded-full">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </button>
+
+                    <!-- User Profile -->
+                    <button id="logoutBtn" class="flex items-center gap-2 px-3 py-1.5 hover:bg-gray-100 rounded-full">
+                        <div class="w-6 h-6 bg-gray-800 rounded-full flex items-center justify-center">
+                            <span class="text-xs text-white"></span>
+                        </div>
+                    </button>
                 </div>
             </div>
-            <div class="flex items-center gap-4">
-                <a href="https://www.linkedin.com/in/afeef-khan/" target="_blank" rel="noopener noreferrer" class="text-gray-400 hover:text-[#0077b5] transition-colors">
-                    <svg class="w-9 h-9 fill-current" viewBox="0 0 24 24">
-                        <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
-                    </svg>
-                </a>
-                <button id="logoutBtn" class="px-4 py-2 bg-black text-white rounded-lg hover:opacity-70 transition-colors">Logout</button>
-            </div>
-        </header>
-        <main class="flex-1 flex gap-6">
-            <!-- Sidebar -->
-            <div class="w-96 flex flex-col h-[calc(100vh-8rem)] sticky top-6">
-                <div id="notification-container"></div>
-                <div class="m-0 bg-white rounded-3xl shadow-lg p-6 flex flex-col flex-1 overflow-hidden border border-gray-200">
-                    <div id="chat-messages" class="flex-1 flex flex-col w-full overflow-y-auto p-4 space-y-4 mb-4">
-                        <div class="message flex w-full bg-gray-50 rounded-xl p-4 border border-gray-200">
-                            <div class="max-w-[90%] break-words text-gray-600 text-sm">
-                                <p class="mb-2"><strong>Welcome to QDash!</strong></p>
-                                <ul class="list-disc pl-5 space-y-2">
-                                    <li>⚠️ <strong>Demo Notice:</strong> This is a demonstration version. Values, charts, and cards may not be 100% accurate. Always verify the data independently.</li>
-                                    <li>📊 <strong>File Support:</strong> You can upload multiple files or single files in Excel (.xlsx, .xls) or CSV format. Additional format support coming soon!</li>
-                                    <li>🔗 <strong>Need Help?</strong> Have specific requirements? Connect with me on LinkedIn for personalized assistance in building your custom dashboard.</li>
-                                </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="flex-1 p-6">
+            <div class="flex-1 flex gap-6">
+                <!-- Sidebar -->
+                <div class="w-96 flex flex-col h-[calc(100vh-7rem)] sticky top-6">
+                    <div id="notification-container"></div>
+                    <div class="m-0 bg-white rounded-3xl shadow-lg p-6 flex flex-col flex-1 overflow-hidden border border-gray-200">
+                        <div id="chat-messages" class="flex-1 flex flex-col w-full overflow-y-auto p-4 space-y-4 mb-4">
+                            <div class="message flex w-full bg-gray-50 rounded-xl p-4 border border-gray-200">
+                                <div class="max-w-[90%] break-words text-gray-600 text-sm">
+                                    <p class="mb-2"><strong>Welcome to QDash!</strong></p>
+                                    <ul class="list-disc pl-5 space-y-2">
+                                        <li>⚠️ <strong>Demo Notice:</strong> This is a demonstration version. Values, charts, and cards may not be 100% accurate. Always verify the data independently.</li>
+                                        <li>📊 <strong>File Support:</strong> You can upload multiple files or single files in Excel (.xlsx, .xls) or CSV format. Additional format support coming soon!</li>
+                                        <li>🔗 <strong>Need Help?</strong> Have specific requirements? Connect with me on LinkedIn for personalized assistance in building your custom dashboard.</li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="chat-input-container flex flex-col gap-4 mt-auto">
+                            <div class="uploaded-file-info text-sm text-gray-600">
+                                <span id="upload-status" class="hidden">Uploading...</span>
+                                <div id="loaded-files" class="hidden">
+                                    <span class="font-medium">Loaded files: </span>
+                                    <span id="uploaded-files-list"></span>
+                                </div>
+                            </div>
+                            <div class="relative flex items-center">
+                                <label for="csv-upload" class="absolute left-3 inline-flex items-center justify-center h-8 w-8 text-black hover:bg-gray-300 rounded-lg transition-colors cursor-pointer border-none bg-transparent">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" />
+                                    </svg>
+                                    <input type="file" id="csv-upload" class="hidden" accept=".csv, .xlsx, .xls" multiple onchange="handleFileUpload(this.files)">
+                                </label>
+                                <textarea id="chat-input" placeholder="Create a dashboard..." class="w-full px-4 py-3 pl-12 pr-12 border border-gray-200 rounded-3xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none overflow-hidden" rows="1"></textarea>
+                                <button id="send-button" class="absolute right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black text-white hover:opacity-70 transition-colors focus-visible:outline-none focus-visible:outline-black disabled:bg-[#D7D7D7] disabled:text-[#f4f4f4] disabled:hover:opacity-100">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                    </svg>
+                                </button>
                             </div>
                         </div>
                     </div>
-                    <div class="chat-input-container flex flex-col gap-4 mt-auto">
-                        <div class="uploaded-file-info text-sm text-gray-600">
-                            <span id="upload-status" class="hidden">Uploading...</span>
-                            <div id="loaded-files" class="hidden">
-                                <span class="font-medium">Loaded files: </span>
-                                <span id="uploaded-files-list"></span>
-                            </div>
+                </div>
+                
+                <!-- Main Content Area -->
+                <div class="flex-1 flex flex-col gap-6 h-[calc(100vh-7rem)] overflow-auto">
+                    <div class="stats-card-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 h-1/4">
+                        <div class="bg-gray-100 rounded-xl p-6 flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
+                            Cards go here
                         </div>
-                        <div class="relative flex items-center">
-                            <label for="csv-upload" class="absolute left-3 inline-flex items-center justify-center h-8 w-8 text-black hover:bg-gray-300 rounded-lg transition-colors cursor-pointer border-none bg-transparent">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M8 4a3 3 0 00-3 3v4a5 5 0 0010 0V7a1 1 0 112 0v4a7 7 0 11-14 0V7a5 5 0 0110 0v4a3 3 0 11-6 0V7a1 1 0 012 0v4a1 1 0 102 0V7a3 3 0 00-3-3z" clip-rule="evenodd" />
-                                </svg>
-                                <input type="file" id="csv-upload" class="hidden" accept=".csv, .xlsx, .xls" multiple onchange="handleFileUpload(this.files)">
-                            </label>
-                            <textarea id="chat-input" placeholder="Create a dashboard..." class="w-full px-4 py-3 pl-12 pr-12 border border-gray-200 rounded-3xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all resize-none overflow-hidden" rows="1"></textarea>
-                            <button id="send-button" class="absolute right-3 flex h-8 w-8 items-center justify-center rounded-full bg-black text-white hover:opacity-70 transition-colors focus-visible:outline-none focus-visible:outline-black disabled:bg-[#D7D7D7] disabled:text-[#f4f4f4] disabled:hover:opacity-100">
-                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M3.293 9.707a1 1 0 010-1.414l6-6a1 1 0 011.414 0l6 6a1 1 0 01-1.414 1.414L11 5.414V17a1 1 0 11-2 0V5.414L4.707 9.707a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
+                        <div class="bg-gray-100 rounded-xl p-6 flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
+                            Cards go here
                         </div>
                     </div>
-                </div>
-            </div>
-            
-            <!-- Main Content Area -->
-            <div class="flex-1 flex flex-col gap-6 h-[calc(100vh-8rem)] overflow-auto">
-                <div class="stats-card-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 h-1/4">
-                    <div class="bg-gray-100 rounded-xl p-6 flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
-                        Cards go here
-                    </div>
-                    <div class="bg-gray-100 rounded-xl p-6 flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
-                        Cards go here
-                    </div>
-                </div>
-                <div class="chart-container grid grid-cols-1 md:grid-cols-2 gap-6 h-3/4">
-                    <div class="bg-gray-100 rounded-xl p-6 flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
-                        Charts go here
-                    </div>
-                    <div class="bg-gray-100 rounded-xl p-6 flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
-                        Charts go here
+                    <div class="chart-container grid grid-cols-1 md:grid-cols-2 gap-6 h-3/4">
+                        <div class="bg-gray-100 rounded-xl p-6 flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
+                            Charts go here
+                        </div>
+                        <div class="bg-gray-100 rounded-xl p-6 flex items-center justify-center text-gray-400 border-2 border-dashed border-gray-200">
+                            Charts go here
+                        </div>
                     </div>
                 </div>
             </div>

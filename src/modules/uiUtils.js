@@ -208,6 +208,26 @@ export function addDeleteButton(wrapperDiv, id) {
 // File upload handling
 let uploadedFiles = new Set();
 
+// Get and update username initial in UI
+export async function updateUserInitial() {
+    try {
+        const response = await fetch('/api/validate-session', {
+            credentials: 'include'
+        });
+        const data = await response.json();
+        
+        if (response.ok && data.valid && data.username) {
+            const initial = data.username.charAt(0).toUpperCase();
+            const userInitialElement = document.querySelector('#logoutBtn span');
+            if (userInitialElement) {
+                userInitialElement.textContent = initial;
+            }
+        }
+    } catch (error) {
+        console.error('Error updating user initial:', error);
+    }
+}
+
 export function updateFilesList() {
     const filesList = document.getElementById('uploaded-files-list');
     filesList.textContent = Array.from(uploadedFiles).join(', ');

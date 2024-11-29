@@ -8,7 +8,7 @@ import './styles/styles.css';
 const loadAppDependencies = async () => {
     const { initDuckDB } = await import('./services/duckDbConfig.js');
     const { handleChatSubmit } = await import('./controller/chatController.js');
-    const { setupEventListeners } = await import('./modules/uiUtils.js');
+    const { setupEventListeners, updateUserInitial } = await import('./modules/uiUtils.js');
     const { initialize, handleFileUpload } = await import('./services/duckDbService.js');
     const { updateTools } = await import('./services/config.js');
     
@@ -18,7 +18,8 @@ const loadAppDependencies = async () => {
         setupEventListeners,
         initialize,
         updateTools,
-        handleFileUpload
+        handleFileUpload,
+        updateUserInitial
     };
 };
 
@@ -41,8 +42,12 @@ const initApp = async () => {
                 setupEventListeners,
                 initialize,
                 updateTools,
-                handleFileUpload
+                handleFileUpload,
+                updateUserInitial
             } = await loadAppDependencies();
+
+            // Update user initial in UI
+            await updateUserInitial();
 
             // Initialize DuckDB once
             const connection = await initDuckDB();
