@@ -29,24 +29,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 // Handle logout button click
-document.getElementById('logoutBtn')?.addEventListener('click', async () => {
-    try {
-        console.log('[DEBUG] Logging out...');
-        const response = await fetch('/api/logout', {
-            method: 'POST',
-            credentials: 'include'
-        });
-        
-        if (response.ok) {
-            console.log('[DEBUG] Logout successful');
-            window.location.href = '/login';
-        } else {
-            console.error('[DEBUG] Logout failed');
-            const error = await response.text();
-            alert(`Logout failed: ${error}`);
+document.getElementById('logoutBtn')?.addEventListener('click', async (e) => {
+    if (confirm('Are you sure you want to logout?')) {
+        try {
+            console.log('[DEBUG] Logging out...');
+            const response = await fetch('/api/logout', {
+                method: 'POST',
+                credentials: 'include'
+            });
+            
+            if (response.ok) {
+                console.log('[DEBUG] Logout successful');
+                window.location.href = '/login';
+            } else {
+                console.error('[DEBUG] Logout failed');
+                const error = await response.text();
+                alert(`Logout failed: ${error}`);
+            }
+        } catch (error) {
+            console.error('[DEBUG] Error during logout:', error);
+            alert('Error during logout. Please try again.');
         }
-    } catch (error) {
-        console.error('[DEBUG] Error during logout:', error);
-        alert('Error during logout. Please try again.');
     }
 });
