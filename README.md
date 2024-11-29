@@ -12,7 +12,7 @@
 
 </div>
 
-Your data stays on your computer - always. QDash is a powerful, browser-based dashboard that lets you visualize and analyze your data with AI assistance, without compromising privacy.
+QDash is a powerful, browser-based dashboard that lets you visualize and analyze your data with AI assistance, without compromising privacy. Your data stays on your computer - always. 
 
 ## Privacy & Security
 
