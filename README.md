@@ -24,6 +24,14 @@ QDash prioritizes your privacy above all else:
 
 ## Quick Start
 
+### Option 1: Use the Hosted Version (Recommended)
+
+Visit [app.qdash.site](https://app.qdash.site) to start using QDash immediately - no installation required!
+
+### Option 2: Self-Host
+
+If you prefer to run QDash locally:
+
 1. Install dependencies:
 ```bash
 npm install
