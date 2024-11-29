@@ -2,6 +2,8 @@
  * @fileoverview Handles all API communication for the chat
  */
 
+import { showUpgradeNotification } from '../modules/uiUtils.js';
+
 export async function sendChatRequest(messages, tools) {
     try {
         const response = await fetch('/api/chat', {
@@ -16,6 +18,12 @@ export async function sendChatRequest(messages, tools) {
                 tool_choice: "auto"
             })
         });
+
+        if (response.status === 402) {
+            const data = await response.json();
+            showUpgradeNotification(data.requestCount);
+            throw new Error(data.message);
+        }
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);

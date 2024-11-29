@@ -307,3 +307,54 @@ export function setupEventListeners({ handleChatSubmit, handleFileUpload, update
         });
     }
 }
+
+export function showUpgradeNotification(requestCount) {
+    const container = document.getElementById('notification-container');
+    
+    // Clear any existing notifications
+    if (container.firstChild) {
+        container.firstChild.remove();
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = 'bg-yellow-50 border-l-4 border-yellow-400 p-4 rounded-lg text-sm flex flex-col gap-2 transition-all duration-300 opacity-0';
+    
+    const header = document.createElement('div');
+    header.className = 'flex items-center justify-between';
+    
+    const title = document.createElement('p');
+    title.className = 'text-yellow-700 font-semibold';
+    title.textContent = 'Upgrade Required';
+    
+    const closeButton = document.createElement('button');
+    closeButton.innerHTML = '×';
+    closeButton.className = 'text-yellow-700 hover:text-yellow-800';
+    closeButton.onclick = () => {
+        notification.style.opacity = '0';
+        setTimeout(() => notification.remove(), 300);
+    };
+    
+    header.appendChild(title);
+    header.appendChild(closeButton);
+    
+    const message = document.createElement('p');
+    message.className = 'text-yellow-600';
+    message.textContent = `You've reached the limit of 1000 free requests (Current usage: ${requestCount} requests)`;
+    
+    const upgradeButton = document.createElement('button');
+    upgradeButton.className = 'bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors w-fit';
+    upgradeButton.textContent = 'Upgrade Now';
+    upgradeButton.onclick = () => {
+        window.location.href = '/pricing';
+    };
+    
+    notification.appendChild(header);
+    notification.appendChild(message);
+    notification.appendChild(upgradeButton);
+    container.appendChild(notification);
+    
+    // Trigger fade in
+    setTimeout(() => {
+        notification.style.opacity = '1';
+    }, 10);
+}

@@ -366,6 +366,32 @@ app.post('/api/chat', async (c) => {
     const sessionData = JSON.parse(sessionDataStr);
     console.log('[DEBUG] Retrieved session data:', sessionData);
 
+    // Check request limit
+    const requestCount = await checkUserRequestLimit(c.env, sessionData.userId);
+    console.log('[DEBUG] Request count:', requestCount);
+    console.log('[DEBUG] User ID:', sessionData.userId);
+    if (requestCount >= 1000) {
+      return c.json({ 
+        error: 'Free tier limit reached',
+        message: 'You have reached the limit of 1000 free requests. Please upgrade to our paid plan to continue using the service.',
+        requestCount,
+        requiresUpgrade: true,
+        upgradeUrl: '/pricing',  // Frontend URL for the pricing/upgrade page
+        currentUsage: {
+          total: requestCount,
+          limit: 1000,
+          remaining: 0
+        }
+      }, 402);  // 402 Payment Required status code
+    }
+
+    // Log the request before making API call
+    await c.env.DB.prepare(
+      'INSERT INTO user_requests (id, user_id, endpoint) VALUES (?, ?, ?)'
+    )
+    .bind(randomUUID(), sessionData.userId, '/api/chat')
+    .run();
+
     const langfuseopenai = observeOpenAI(new OpenAI({ 
       apiKey: c.env.OPENAI_API_KEY 
     }), {
@@ -374,7 +400,7 @@ app.post('/api/chat', async (c) => {
         secretKey: c.env.LANGFUSE_SECRET_KEY,
         baseUrl: "https://cloud.langfuse.com",
       },
-      userId: String(sessionData.userId), // Convert to string
+      userId: String(sessionData.userId),
       metadata: {
         username: sessionData.username,
         email: sessionData.email
@@ -404,6 +430,17 @@ app.post('/api/chat', async (c) => {
     return c.json({ error: error.message }, 500)
   }
 })
+
+// Helper function to check user request limits
+async function checkUserRequestLimit(env, userId) {
+  const { results } = await env.DB.prepare(
+    'SELECT COUNT(*) as count FROM user_requests WHERE CAST(user_id AS TEXT) = CAST(? AS TEXT) AND timestamp > datetime("now", "-30 days")'
+  )
+  .bind(String(userId))
+  .all();
+  
+  return results[0].count;
+}
 
 // Static asset handler - MUST be last
 app.get('/*', async (c) => {
@@ -439,23 +476,5 @@ app.get('/*', async (c) => {
 
 // Local session store for development
 const localSessionStore = new Map()
-
-// Initialize database tables
-async function initDatabase(db) {
-  try {
-    await db.prepare(`
-      CREATE TABLE IF NOT EXISTS users (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT UNIQUE,
-        email TEXT UNIQUE,
-        password TEXT,
-        created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-      )
-    `).run()
-    console.log('[DEBUG] Database initialized successfully')
-  } catch (error) {
-    console.error('[DEBUG] Database initialization error:', error)
-  }
-}
 
 export default app
