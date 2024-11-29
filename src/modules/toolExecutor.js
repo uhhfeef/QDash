@@ -4,6 +4,7 @@ import { createChart } from '../components/createChart.js';
 import { createSpace } from '../components/createSpaceForCharts.js';
 import { createCard } from '../components/createCard.js';
 import { createStackedBarChart } from '../components/createStackedBarchart.js';
+
 export async function handleToolCall(toolCall, messages) {
     const args = JSON.parse(toolCall.function.arguments);
     let toolResult;
@@ -11,6 +12,11 @@ export async function handleToolCall(toolCall, messages) {
     console.group(`%c🛠️ Tool Call: ${toolCall.function.name}`, 'color: #4CAF50; font-weight: bold; font-size: 12px;');
     console.log('%cArguments:', 'color: #2196F3; font-weight: bold;', args);
     
+    // Remove all placeholders
+    ['.chart-container', '.stats-card-grid'].forEach(container => 
+        document.querySelectorAll(`${container} .bg-gray-100`).forEach(el => el.remove())
+    );
+
     switch (toolCall.function.name) {
         case 'executeSqlQuery':
             console.log('%c📊 Executing SQL query:', 'color: #FF9800; font-weight: bold;', args.query);
