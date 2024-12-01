@@ -171,6 +171,7 @@ app.get('/', async (c) => {
 // Login page route
 app.get('/login', async (c) => {
   try {
+    // Serve login page
     const asset = await c.env.ASSETS.fetch(new Request('/login.html'))
     return asset.ok ? c.html(await asset.text()) : c.text('Failed to load login page', 500)
   } catch (error) {

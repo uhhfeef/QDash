@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Dashboard</title>
+    <title>Login - QDash</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="bg-gray-50">
@@ -11,7 +11,7 @@
         <div class="max-w-md w-full space-y-8 p-8 bg-white rounded-xl shadow-lg">
             <div>
                 <h2 class="mt-6 text-center text-3xl font-extrabold text-gray-900" id="formTitle">
-                    Sign in to Dashboard
+                    Sign in to QDash
                 </h2>
             </div>
 
@@ -37,6 +37,44 @@
                         class="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
                         Sign in
                     </button>
+                </div>
+                <!-- Social Login Section -->
+                <div class="mt-6">
+                    <div class="relative">
+                        <div class="absolute inset-0 flex items-center">
+                            <div class="w-full border-t border-gray-300"></div>
+                        </div>
+                        <div class="relative flex justify-center text-sm">
+                            <span class="px-2 bg-white text-gray-500">Or continue with</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 grid grid-cols-2 gap-3">
+                        <div>
+                            <a href="#" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <img class="h-5 w-5" src="https://www.google.com/favicon.ico" alt="Google logo">
+                                <span class="ml-2">Google</span>
+                            </a>
+                        </div>
+                        <div>
+                            <a href="#" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <img class="h-5 w-5" src="https://github.com/favicon.ico" alt="GitHub logo">
+                                <span class="ml-2">GitHub</span>
+                            </a>
+                        </div>
+                        <div>
+                            <a href="#" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <img class="h-5 w-5" src="https://www.linkedin.com/favicon.ico" alt="LinkedIn logo">
+                                <span class="ml-2">LinkedIn</span>
+                            </a>
+                        </div>
+                        <div>
+                            <a href="#" class="w-full inline-flex justify-center py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <img class="h-5 w-5" src="https://www.microsoft.com/favicon.ico" alt="Microsoft logo">
+                                <span class="ml-2">Microsoft</span>
+                            </a>
+                        </div>
+                    </div>
                 </div>
                 <div class="text-sm text-center">
                     <button type="button" id="toggleRegister" class="font-medium text-indigo-600 hover:text-indigo-500">
