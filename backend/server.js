@@ -5,6 +5,7 @@ import { observeOpenAI, Langfuse  } from "langfuse";
 import { setCookie, getCookie, deleteCookie } from 'hono/cookie'
 import bcrypt from 'bcryptjs'
 import { randomUUID } from 'node:crypto'
+import auth from './routes/auth.js'
 
 const app = new Hono()
 
@@ -49,7 +50,7 @@ app.use('*', async (c, next) => {
   }
 
   // Clean up rate limit map every hour
-  if (now % 3600000 < 1000) { // Once per hour-ish
+  if (now % 3600000 < 500) { // Once per hour-ish
     const hourAgo = now - 3600000;
     for (const [ip, times] of rateLimit.entries()) {
       const recentTimes = times.filter(time => time > hourAgo);
@@ -150,6 +151,9 @@ app.use('*', async (c, next) => {
   }
   return response
 })
+
+// Mount auth routes
+app.route('/', auth)
 
 // Root route handler - just serve index.html
 app.get('/', async (c) => {
@@ -371,16 +375,16 @@ app.post('/api/chat', async (c) => {
     const requestCount = await checkUserRequestLimit(c.env, sessionData.userId);
     console.log('[DEBUG] Request count:', requestCount);
     console.log('[DEBUG] User ID:', sessionData.userId);
-    if (requestCount >= 1000) {
+    if (requestCount >= 500) {
       return c.json({ 
         error: 'Free tier limit reached',
-        message: 'You have reached the limit of 1000 free requests. Please upgrade to our paid plan to continue using the service.',
+        message: 'You have reached the limit of 500 free requests. Please upgrade to our paid plan to continue using the service.',
         requestCount,
         requiresUpgrade: true,
         upgradeUrl: '/pricing',  // Frontend URL for the pricing/upgrade page
         currentUsage: {
           total: requestCount,
-          limit: 1000,
+          limit: 500,
           remaining: 0
         }
       }, 402);  // 402 Payment Required status code

@@ -49,13 +49,15 @@ export async function handleChatSubmit() {
 
             if (message.content) {
                 addMessageToChat(message.content, 'assistant', data.trace_id);
-                if (message.content.includes('DONE')) break;
+                // if (message.content.includes('DONE')) break;
             }
             
             if (message.tool_calls) {
                 for (const toolCall of message.tool_calls) {
                     await handleToolCall(toolCall, messages);
                 }
+            } else {
+                break;
             }
         }
         console.groupEnd();

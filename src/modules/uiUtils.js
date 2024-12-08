@@ -339,7 +339,7 @@ export function showUpgradeNotification(requestCount) {
     
     const message = document.createElement('p');
     message.className = 'text-yellow-600';
-    message.textContent = `You've reached the limit of 1000 free requests (Current usage: ${requestCount} requests)`;
+    message.textContent = `You've reached the limit of 500 free requests (Current usage: ${requestCount} requests)`;
     
     const upgradeButton = document.createElement('button');
     upgradeButton.className = 'bg-yellow-500 text-white px-4 py-2 rounded hover:bg-yellow-600 transition-colors w-fit';
